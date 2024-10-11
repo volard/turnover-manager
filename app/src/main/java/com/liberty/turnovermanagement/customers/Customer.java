@@ -2,7 +2,9 @@ package com.liberty.turnovermanagement.customers;
 
 import androidx.annotation.NonNull;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer  implements Serializable {
     private int id;
     private String surname;
     private String name;

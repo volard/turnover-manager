@@ -8,24 +8,23 @@ import java.util.ArrayList;
 
 public class ProductsViewModel extends ViewModel {
 
-    private final MutableLiveData<ArrayList<Product>> items;
+    private final MutableLiveData<ArrayList<Product>> products;
 
     public ProductsViewModel() {
-        items = new MutableLiveData<>();
-        items.setValue(new ArrayList<>());
+        products = new MutableLiveData<>();
+        products.setValue(new ArrayList<>());
     }
 
-    public LiveData<ArrayList<Product>> getItems() {
-        return items;
+    public LiveData<ArrayList<Product>> getProducts() {
+        return products;
     }
 
-    public void addNewItem() {
-        ArrayList<Product> currentList = items.getValue();
+    public void addNewProduct(Product product) {
+        ArrayList<Product> currentList = products.getValue();
         if (currentList == null) {
             currentList = new ArrayList<>();
         }
-        Product newProduct = new Product("another one " + currentList.size());
-        currentList.add(newProduct);
-        items.setValue(currentList);
+        currentList.add(product);
+        products.setValue(currentList);
     }
 }

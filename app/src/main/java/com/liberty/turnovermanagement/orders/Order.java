@@ -5,9 +5,10 @@ import androidx.annotation.NonNull;
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.products.Product;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Order {
+public class Order  implements Serializable {
     private long id;
     private Product product;
     private int amount;

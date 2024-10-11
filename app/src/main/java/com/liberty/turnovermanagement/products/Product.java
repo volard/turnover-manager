@@ -4,9 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.liberty.turnovermanagement.Utils;
 
+import java.io.Serializable;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Product {
+public class Product implements Serializable {
     private long id;
     private String name;
     private int amount;
