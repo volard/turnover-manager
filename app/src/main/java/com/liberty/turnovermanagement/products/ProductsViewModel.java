@@ -52,4 +52,17 @@ public class ProductsViewModel extends ViewModel {
         products.setValue(fakeProducts);
     }
 
+    public void updateProduct(Product updatedProduct) {
+        ArrayList<Product> currentList = products.getValue();
+        if (currentList != null) {
+            for (int i = 0; i < currentList.size(); i++) {
+                if (currentList.get(i).getName().equals(updatedProduct.getName())) {
+                    currentList.set(i, updatedProduct);
+                    break;
+                }
+            }
+            products.setValue(currentList);
+        }
+    }
+
 }

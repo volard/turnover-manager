@@ -27,9 +27,41 @@ public class ProductsFragment extends Fragment {
     private ListView listView;
     private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> addProductLauncher;
+    private ActivityResultLauncher<Intent> addEditProductLauncher;
     private ArrayAdapter<Product> adapter;
     private ProductsViewModel viewModel;
     private FragmentProductsBinding binding;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addEditProductLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Product product = (Product) data.getSerializableExtra("product");
+                            boolean isNewProduct = data.getBooleanExtra("isNewProduct", true);
+                            if (product != null) {
+                                if (isNewProduct) {
+                                    viewModel.addNewProduct(product);
+                                } else {
+                                    viewModel.updateProduct(product);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void openAddEditProductActivity(Product product) {
+        Intent intent = new Intent(requireContext(), AddProductActivity.class);
+        if (product != null) {
+            intent.putExtra("product", product);
+        }
+        addEditProductLauncher.launch(intent);
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -53,6 +85,13 @@ public class ProductsFragment extends Fragment {
             adapter.clear();
             adapter.addAll(items);
             adapter.notifyDataSetChanged();
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Product product = adapter.getItem(position);
+            if (product != null) {
+                openAddEditProductActivity(product);
+            }
         });
 
         addProductLauncher = registerForActivityResult(
