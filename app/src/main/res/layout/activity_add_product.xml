@@ -32,4 +32,12 @@
         android:layout_height="wrap_content"
         android:text="Save Product" />
 
+    <Button
+        android:id="@+id/buttonDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:backgroundTint="#FF0000"
+        android:visibility="gone" />
+
 </LinearLayout>

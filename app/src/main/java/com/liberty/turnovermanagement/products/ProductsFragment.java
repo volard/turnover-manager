@@ -42,8 +42,11 @@ public class ProductsFragment extends Fragment {
                         if (data != null) {
                             Product product = (Product) data.getSerializableExtra("product");
                             boolean isNewProduct = data.getBooleanExtra("isNewProduct", true);
+                            boolean isDelete = data.getBooleanExtra("delete", false);
                             if (product != null) {
-                                if (isNewProduct) {
+                                if (isDelete) {
+                                    viewModel.deleteProduct(product);
+                                } else if (isNewProduct) {
                                     viewModel.addNewProduct(product);
                                 } else {
                                     viewModel.updateProduct(product);

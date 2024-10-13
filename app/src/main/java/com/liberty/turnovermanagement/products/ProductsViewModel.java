@@ -65,4 +65,17 @@ public class ProductsViewModel extends ViewModel {
         }
     }
 
+    public void deleteProduct(Product product) {
+        ArrayList<Product> currentList = products.getValue();
+        if (currentList != null) {
+            for (int i = 0; i < currentList.size(); i++) {
+                if (currentList.get(i).getId() == product.getId()) {
+                    currentList.remove(i);
+                    break;
+                }
+            }
+            products.setValue(currentList);
+        }
+    }
+
 }
