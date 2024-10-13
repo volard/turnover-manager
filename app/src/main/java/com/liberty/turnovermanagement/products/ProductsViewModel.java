@@ -56,7 +56,7 @@ public class ProductsViewModel extends ViewModel {
         ArrayList<Product> currentList = products.getValue();
         if (currentList != null) {
             for (int i = 0; i < currentList.size(); i++) {
-                if (currentList.get(i).getName().equals(updatedProduct.getName())) {
+                if (currentList.get(i).getId() == updatedProduct.getId()) {
                     currentList.set(i, updatedProduct);
                     break;
                 }

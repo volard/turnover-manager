@@ -26,7 +26,6 @@ public class ProductsFragment extends Fragment {
 
     private ListView listView;
     private FloatingActionButton fab;
-    private ActivityResultLauncher<Intent> addProductLauncher;
     private ActivityResultLauncher<Intent> addEditProductLauncher;
     private ArrayAdapter<Product> adapter;
     private ProductsViewModel viewModel;
@@ -94,26 +93,7 @@ public class ProductsFragment extends Fragment {
             }
         });
 
-        addProductLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        Product product = (Product) data.getSerializableExtra("product");
-                        if (product != null) {
-                            viewModel.addNewProduct(product);
-                        }
-                    }
-                }
-            }
-        );
-
-        // Update your FAB click listener
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), AddProductActivity.class);
-            addProductLauncher.launch(intent);
-        });
+        fab.setOnClickListener(v -> openAddEditProductActivity(null));
 
         return root;
     }
