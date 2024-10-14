@@ -45,7 +45,7 @@ public class ProductsFragment extends Fragment {
                             boolean isDelete = data.getBooleanExtra("delete", false);
                             if (product != null) {
                                 if (isDelete) {
-                                    viewModel.deleteProduct(product);
+                                    viewModel.softDelete(product);
                                 } else if (isNewProduct) {
                                     viewModel.addNewProduct(product);
                                 } else {

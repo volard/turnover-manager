@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
 
@@ -19,11 +20,14 @@ public class AddProductActivity extends AppCompatActivity {
     private Button buttonSave;
     private Product existingProduct;
     private Button buttonDelete;
+    private ProductsViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_product);
+
+        viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
 
         editTextName = findViewById(R.id.editTextName);
         editTextAmount = findViewById(R.id.editTextAmount);
@@ -68,20 +72,20 @@ public class AddProductActivity extends AppCompatActivity {
         int amount = Integer.parseInt(editTextAmount.getText().toString());
         double price = Double.parseDouble(editTextPrice.getText().toString());
 
-        Product product;
+        Intent resultIntent = new Intent();
+
         if (existingProduct != null) {
             // Update existing product
             existingProduct.setName(name);
             existingProduct.setAmount(amount);
             existingProduct.setPrice(price);
-            product = existingProduct;
+            viewModel.updateProduct(existingProduct);
         } else {
             // Create new product
-            product = new Product(name, amount, price);
+            Product product = new Product(name, amount, price);
+            resultIntent.putExtra("product", product);
         }
 
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("product", product);
         resultIntent.putExtra("isNewProduct", existingProduct == null);
         setResult(Activity.RESULT_OK, resultIntent);
         finish();

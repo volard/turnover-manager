@@ -2,9 +2,18 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+configurations {
+    create("cleanedAnnotations")
+    implementation {
+        exclude(group = "org.jetbrains", module = "annotations")
+    }
+}
+
+
 android {
     namespace = "com.liberty.turnovermanagement"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.liberty.turnovermanagement"
@@ -35,6 +44,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.room.runtime)
+    implementation(libs.room.compiler)
+    annotationProcessor(libs.room.compiler)
 
     implementation(libs.appcompat)
     implementation(libs.material)

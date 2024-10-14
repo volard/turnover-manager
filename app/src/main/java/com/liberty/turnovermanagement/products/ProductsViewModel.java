@@ -1,33 +1,36 @@
 package com.liberty.turnovermanagement.products;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+
+import com.liberty.turnovermanagement.AppDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class ProductsViewModel extends ViewModel {
+public class ProductsViewModel extends AndroidViewModel {
+    private final ProductDao productDao;
 
-    private final MutableLiveData<ArrayList<Product>> products;
+    private final LiveData<List<Product>> products;
 
-    public ProductsViewModel() {
-        products = new MutableLiveData<>();
-        products.setValue(new ArrayList<>());
-        populateWithFakeData();
+    public ProductsViewModel(Application application) {
+        super(application);
+        AppDatabase db = AppDatabase.getDatabase(application);
+        productDao = db.productDao();
+        products = productDao.getAllProducts();
     }
 
-    public LiveData<ArrayList<Product>> getProducts() {
+    public LiveData<List<Product>> getProducts() {
         return products;
     }
 
     public void addNewProduct(Product product) {
-        ArrayList<Product> currentList = products.getValue();
-        if (currentList == null) {
-            currentList = new ArrayList<>();
-        }
-        currentList.add(product);
-        products.setValue(currentList);
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            productDao.insert(product);
+        });
     }
 
     private void populateWithFakeData() {
@@ -49,33 +52,19 @@ public class ProductsViewModel extends ViewModel {
             fakeProducts.add(new Product(name, amount, price));
         }
 
-        products.setValue(fakeProducts);
+//        products.setValue(fakeProducts);
     }
 
     public void updateProduct(Product updatedProduct) {
-        ArrayList<Product> currentList = products.getValue();
-        if (currentList != null) {
-            for (int i = 0; i < currentList.size(); i++) {
-                if (currentList.get(i).getId() == updatedProduct.getId()) {
-                    currentList.set(i, updatedProduct);
-                    break;
-                }
-            }
-            products.setValue(currentList);
-        }
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            productDao.update(updatedProduct);
+        });
     }
 
-    public void deleteProduct(Product product) {
-        ArrayList<Product> currentList = products.getValue();
-        if (currentList != null) {
-            for (int i = 0; i < currentList.size(); i++) {
-                if (currentList.get(i).getId() == product.getId()) {
-                    currentList.remove(i);
-                    break;
-                }
-            }
-            products.setValue(currentList);
-        }
+    public void softDelete(Product product) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            productDao.softDelete(product.getId());
+        });
     }
 
 }

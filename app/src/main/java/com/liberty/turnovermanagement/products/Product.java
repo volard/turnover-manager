@@ -1,32 +1,24 @@
 package com.liberty.turnovermanagement.products;
 
 import androidx.annotation.NonNull;
-
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 import com.liberty.turnovermanagement.Utils;
-
 import java.io.Serializable;
-import java.util.concurrent.ThreadLocalRandom;
 
+@Entity(tableName = "products")
 public class Product implements Serializable {
+    @PrimaryKey(autoGenerate = true)
     private long id;
     private String name;
     private int amount;
     private double price;
     private boolean isDeleted;
 
-    public Product() {
-        id = Utils.generateUID();
-    }
-
-    // Default constructor
-    public Product(String name) {
-        this();
-        this.name = name;
-    }
 
     // Constructor with all fields
     public Product(String name, int amount, double price, boolean isDeleted) {
-        this();
         this.name = name;
         this.amount = amount;
         this.price = price;
@@ -34,6 +26,7 @@ public class Product implements Serializable {
     }
 
     // Constructor without isDeleted (assuming false by default)
+    @Ignore
     public Product(String name, int amount, double price) {
         this(name, amount, price, false);
     }
@@ -84,5 +77,13 @@ public class Product implements Serializable {
     @Override
     public String toString() {
         return  name + "\namount = " + amount + "\nprice = " + price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return id == product.id;
     }
 }
