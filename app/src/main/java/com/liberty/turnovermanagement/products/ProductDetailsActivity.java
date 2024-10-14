@@ -7,33 +7,35 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
 
-public class AddProductActivity extends AppCompatActivity {
+public class ProductDetailsActivity extends AppCompatActivity {
 
     private EditText editTextName, editTextAmount, editTextPrice;
     private Button buttonSave;
     private Product existingProduct;
     private Button buttonDelete;
+    private TextView labelDeleted;
     private ProductsViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_product);
+        setContentView(R.layout.activity_details_product);
 
         viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
 
-        editTextName = findViewById(R.id.editTextName);
+        editTextName   = findViewById(R.id.editTextName);
         editTextAmount = findViewById(R.id.editTextAmount);
-        editTextPrice = findViewById(R.id.editTextPrice);
-        buttonSave = findViewById(R.id.buttonSave);
-        buttonDelete = findViewById(R.id.buttonDelete);
+        editTextPrice  = findViewById(R.id.editTextPrice);
+        buttonSave     = findViewById(R.id.buttonSave);
+        buttonDelete   = findViewById(R.id.buttonDelete);
+        labelDeleted   = findViewById(R.id.labelDeleted);
 
         existingProduct = (Product) getIntent().getSerializableExtra("product");
         if (existingProduct != null) {
@@ -42,8 +44,18 @@ public class AddProductActivity extends AppCompatActivity {
             editTextAmount.setText(String.valueOf(existingProduct.getAmount()));
             editTextPrice.setText(String.valueOf(existingProduct.getPrice()));
 
-            // Show delete button only for existing products
-            buttonDelete.setVisibility(View.VISIBLE);
+            if (existingProduct.isDeleted()){
+                editTextName.setEnabled(false);
+                editTextAmount.setEnabled(false);
+                editTextPrice.setEnabled(false);
+
+                buttonSave.setVisibility(View.GONE);
+                labelDeleted.setVisibility(View.VISIBLE);
+            }
+            else{
+                // Show delete button only for existing products
+                buttonDelete.setVisibility(View.VISIBLE);
+            }
         }
 
         buttonSave.setOnClickListener(v -> saveProduct());

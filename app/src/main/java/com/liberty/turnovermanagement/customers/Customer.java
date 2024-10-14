@@ -1,39 +1,40 @@
 package com.liberty.turnovermanagement.customers;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 
-public class Customer  implements Serializable {
+@Entity(tableName = "customers")
+public class Customer implements Serializable {
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private String surname;
     private String name;
-    private String middlename;
+    private String middleName;
     private String phone;
     private String email;
-
-    // Default constructor
-    public Customer() {
+    private boolean isDeleted = false;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    // Constructor with all fields
-    public Customer(int id, String surname, String name, String middlename, String phone, String email) {
-        this.id = id;
+    public Customer(String surname, String name, String middleName, String phone, String email, boolean isDeleted) {
         this.surname = surname;
         this.name = name;
-        this.middlename = middlename;
+        this.middleName = middleName;
         this.phone = phone;
         this.email = email;
+        this.isDeleted = isDeleted;
     }
 
-    // Constructor without id (useful when id is auto-generated)
-    public Customer(String surname, String name, String middlename, String phone, String email) {
-        this.surname = surname;
-        this.name = name;
-        this.middlename = middlename;
-        this.phone = phone;
-        this.email = email;
+    @Ignore
+    public Customer(String surname, String name, String middleName, String phone, String email) {
+        this(surname, name, middleName, phone, email, false);
     }
+
 
     // Getters
     public int getId() {
@@ -48,8 +49,8 @@ public class Customer  implements Serializable {
         return name;
     }
 
-    public String getMiddlename() {
-        return middlename;
+    public String getMiddleName() {
+        return middleName;
     }
 
     public String getPhone() {
@@ -73,8 +74,8 @@ public class Customer  implements Serializable {
         this.name = name;
     }
 
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public void setPhone(String phone) {
@@ -92,7 +93,7 @@ public class Customer  implements Serializable {
                 "id=" + id +
                 ", surname='" + surname + '\'' +
                 ", name='" + name + '\'' +
-                ", middlename='" + middlename + '\'' +
+                ", middleName='" + middleName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 '}';

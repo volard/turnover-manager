@@ -5,15 +5,18 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.liberty.turnovermanagement.customers.Customer;
+import com.liberty.turnovermanagement.customers.CustomerDao;
 import com.liberty.turnovermanagement.products.Product;
 import com.liberty.turnovermanagement.products.ProductDao;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Product.class}, version = 1)
+@Database(entities = {Product.class, Customer.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ProductDao productDao();
+    public abstract CustomerDao customerDao();
 
     private static volatile AppDatabase INSTANCE;
 
@@ -28,6 +31,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "main_database")
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

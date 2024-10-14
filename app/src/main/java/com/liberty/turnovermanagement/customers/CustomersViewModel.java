@@ -1,19 +1,47 @@
 package com.liberty.turnovermanagement.customers;
 
+
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class CustomersViewModel extends ViewModel {
+import com.liberty.turnovermanagement.AppDatabase;
 
-    private final MutableLiveData<String> mText;
+import java.util.List;
 
-    public CustomersViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+public class CustomersViewModel extends AndroidViewModel {
+    private final CustomerDao customerDao;
+
+    private final LiveData<List<Customer>> customers;
+
+    public CustomersViewModel(Application application) {
+        super(application);
+        AppDatabase db = AppDatabase.getDatabase(application);
+        customerDao = db.customerDao();
+        customers = customerDao.getAllCustomers();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<List<Customer>> getCustomers() {
+        return customers;
     }
+
+    public void addNew(Customer customer) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            customerDao.insert(customer);
+        });
+    }
+
+    public void update(Customer customer) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            customerDao.update(customer);
+        });
+    }
+
+    public void softDelete(Customer customer) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            customerDao.softDelete(customer.getId());
+        });
+    }
+
 }

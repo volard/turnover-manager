@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import com.liberty.turnovermanagement.Utils;
 import java.io.Serializable;
 
 @Entity(tableName = "products")
@@ -15,7 +14,6 @@ public class Product implements Serializable {
     private int amount;
     private double price;
     private boolean isDeleted;
-
 
     // Constructor with all fields
     public Product(String name, int amount, double price, boolean isDeleted) {
@@ -69,9 +67,6 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
 
     @NonNull
     @Override

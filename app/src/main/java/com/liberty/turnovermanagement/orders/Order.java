@@ -1,6 +1,8 @@
 package com.liberty.turnovermanagement.orders;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.products.Product;
@@ -8,7 +10,9 @@ import com.liberty.turnovermanagement.products.Product;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Order  implements Serializable {
+@Entity(tableName = "orders")
+public class Order implements Serializable {
+    @PrimaryKey(autoGenerate = true)
     private long id;
     private Product product;
     private int amount;
@@ -18,13 +22,8 @@ public class Order  implements Serializable {
     private String street;
     private String home;
 
-    // Default constructor
-    public Order() {
-    }
-
     // Constructor with all fields
-    public Order(long id, Product product, int amount, Customer customer, LocalDateTime datetime, String city, String street, String home) {
-        this.id = id;
+    public Order(Product product, int amount, Customer customer, LocalDateTime datetime, String city, String street, String home) {
         this.product = product;
         this.amount = amount;
         this.customer = customer;
@@ -113,6 +112,14 @@ public class Order  implements Serializable {
                 ", street='" + street + '\'' +
                 ", home='" + home + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return id == order.id;
     }
 
 }

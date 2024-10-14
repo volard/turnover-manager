@@ -58,7 +58,7 @@ public class ProductsFragment extends Fragment {
     }
 
     private void openAddEditProductActivity(Product product) {
-        Intent intent = new Intent(requireContext(), AddProductActivity.class);
+        Intent intent = new Intent(requireContext(), ProductDetailsActivity.class);
         if (product != null) {
             intent.putExtra("product", product);
         }
