@@ -23,4 +23,10 @@
         android:name="com.liberty.turnovermanagement.customers.CustomersFragment"
         android:label="@string/title_customers"
         tools:layout="@layout/fragment_customers" />
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.liberty.turnovermanagement.settings.SettingsFragment"
+        android:label="Настройки"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

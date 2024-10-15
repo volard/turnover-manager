@@ -29,6 +29,7 @@ public class CustomersFragment extends Fragment {
     private ArrayAdapter<Customer> adapter;
     private CustomersViewModel viewModel;
     private FragmentProductsBinding binding;
+    private View emptyStateLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,8 +73,17 @@ public class CustomersFragment extends Fragment {
 
         binding = FragmentProductsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
         listView = root.findViewById(R.id.listView);
+
+        emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
+
+        // Set empty view for ListView
+        listView.setEmptyView(emptyStateLayout);
+
+        // Add the empty view to the parent layout
+        ((ViewGroup) listView.getParent()).addView(emptyStateLayout);
+
+
         fab = root.findViewById(R.id.fab);
 
         adapter = new ArrayAdapter<>(

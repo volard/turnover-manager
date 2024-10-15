@@ -23,6 +23,7 @@
 
         <activity android:name=".products.ProductDetailsActivity" />
         <activity android:name=".customers.CustomerDetailsActivity" />
+        <activity android:name=".orders.OrderDetailsActivity" />
 
     </application>
 

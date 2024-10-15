@@ -4,20 +4,24 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.customers.CustomerDao;
+import com.liberty.turnovermanagement.orders.model.Order;
+import com.liberty.turnovermanagement.orders.OrderDao;
 import com.liberty.turnovermanagement.products.Product;
 import com.liberty.turnovermanagement.products.ProductDao;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Product.class, Customer.class}, version = 2)
+@Database(entities = {Product.class, Customer.class, Order.class}, version = 4, exportSchema = false)
+@TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ProductDao productDao();
     public abstract CustomerDao customerDao();
-
+    public abstract OrderDao orderDao();
     private static volatile AppDatabase INSTANCE;
 
     // Add this block

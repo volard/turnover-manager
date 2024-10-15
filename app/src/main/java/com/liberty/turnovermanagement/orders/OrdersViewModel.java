@@ -1,19 +1,47 @@
 package com.liberty.turnovermanagement.orders;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class OrdersViewModel extends ViewModel {
+import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.orders.model.Order;
 
-    private final MutableLiveData<String> mText;
+import java.util.List;
 
-    public OrdersViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+public class OrdersViewModel extends AndroidViewModel {
+    private final OrderDao orderDao;
+
+    private final LiveData<List<Order>> orders;
+
+    public OrdersViewModel(Application application) {
+        super(application);
+        AppDatabase db = AppDatabase.getDatabase(application);
+        orderDao = db.orderDao();
+        orders = orderDao.getAllOrders();
     }
 
-    public LiveData<String> getText() {
-        return mText;
+    public LiveData<List<Order>> getOrders() {
+        return orders;
     }
+
+    public void addNewProduct(Order order) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            orderDao.insert(order);
+        });
+    }
+
+    public void update(Order order) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            orderDao.update(order);
+        });
+    }
+
+    public void delete(Order order) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            orderDao.delete(order);
+        });
+    }
+
 }

@@ -31,6 +31,8 @@ public class ProductsFragment extends Fragment {
     private ProductsViewModel viewModel;
     private FragmentProductsBinding binding;
 
+    private View emptyStateLayout;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,14 @@ public class ProductsFragment extends Fragment {
 
         listView = root.findViewById(R.id.listView);
         fab = root.findViewById(R.id.fab);
+
+        emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
+
+        // Set empty view for ListView
+        listView.setEmptyView(emptyStateLayout);
+
+        // Add the empty view to the parent layout
+        ((ViewGroup) listView.getParent()).addView(emptyStateLayout);
 
         adapter = new ArrayAdapter<>(
                 requireContext(),

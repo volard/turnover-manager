@@ -1,33 +1,149 @@
 package com.liberty.turnovermanagement.orders;
 
+
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.liberty.turnovermanagement.databinding.FragmentOrdersBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.liberty.turnovermanagement.R;
+import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
+import com.liberty.turnovermanagement.orders.model.Order;
+
+import java.util.ArrayList;
 
 public class OrdersFragment extends Fragment {
 
-    private FragmentOrdersBinding binding;
+    private ListView listView;
+    private FloatingActionButton fab;
+    private ActivityResultLauncher<Intent> detailsOrderLauncher;
+    private ArrayAdapter<Order> adapter;
+    private OrdersViewModel viewModel;
+    private FragmentProductsBinding binding;
+    private View emptyStateLayout;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        detailsOrderLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Order order = (Order) data.getSerializableExtra("order");
+                            boolean isNewProduct = data.getBooleanExtra("isNewOrder", true);
+                            boolean isDelete = data.getBooleanExtra("delete", false);
+                            if (order != null) {
+                                if (isDelete) {
+                                    viewModel.delete(order);
+                                } else if (isNewProduct) {
+                                    viewModel.addNewProduct(order);
+                                } else {
+                                    viewModel.update(order);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void openAddEditProductActivity(Order order) {
+        Intent intent = new Intent(requireContext(), OrderDetailsActivity.class);
+        if (order != null) {
+            intent.putExtra("order", order);
+        }
+        detailsOrderLauncher.launch(intent);
+    }
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        OrdersViewModel ordersViewModel =
-                new ViewModelProvider(this).get(OrdersViewModel.class);
+        viewModel = new ViewModelProvider(this).get(OrdersViewModel.class);
 
-        binding = FragmentOrdersBinding.inflate(inflater, container, false);
+        binding = FragmentProductsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        ordersViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
+
+        listView = root.findViewById(R.id.listView);
+
+        // Set empty view for ListView
+        listView.setEmptyView(emptyStateLayout);
+
+        // Add the empty view to the parent layout
+        ((ViewGroup) listView.getParent()).addView(emptyStateLayout);
+
+
+        fab = root.findViewById(R.id.fab);
+
+        adapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_list_item_1,
+                new ArrayList<>()
+        );
+        listView.setAdapter(adapter);
+
+        viewModel.getOrders().observe(getViewLifecycleOwner(), items -> {
+            adapter.clear();
+            adapter.addAll(items);
+            adapter.notifyDataSetChanged();
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Order order = adapter.getItem(position);
+            if (order != null) {
+                openAddEditProductActivity(order);
+            }
+        });
+
+        fab.setOnClickListener(view -> {
+            if (canCreateOrder()) {
+                // Open the new order creation screen
+                openNewOrderScreen();
+            } else {
+                showImpossibleToCreateOrderNotification(view);
+            }
+        });
+
+
         return root;
     }
+    private boolean canCreateOrder() {
+        // Check if there are any products and customers
+        return viewModel.hasProducts() && viewModel.hasCustomers();
+    }
+
+    private void updateEmptyState() {
+        if (itemList.isEmpty()) {
+            emptyStateLayout.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.GONE);
+        } else {
+            emptyStateLayout.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showImpossibleToCreateOrderNotification(View view) {
+        Snackbar.make(view,
+                        "Impossible to create order: no products or customers created",
+                        Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
+
 
     @Override
     public void onDestroyView() {

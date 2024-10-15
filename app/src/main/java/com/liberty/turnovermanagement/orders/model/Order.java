@@ -1,32 +1,46 @@
-package com.liberty.turnovermanagement.orders;
+package com.liberty.turnovermanagement.orders.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.liberty.turnovermanagement.Converters;
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.products.Product;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity(tableName = "orders")
+@Entity(tableName = "orders",
+        foreignKeys = {
+                @ForeignKey(entity = Customer.class,
+                        parentColumns = "id",
+                        childColumns = "customerId"),
+                @ForeignKey(entity = Product.class,
+                        parentColumns = "id",
+                        childColumns = "productId")
+        })
 public class Order implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private long id;
-    private Product product;
     private int amount;
-    private Customer customer;
+    public long customerId;
+    public long productId;
+
+    @TypeConverters(Converters.class)
+    @NonNull
     private LocalDateTime datetime;
     private String city;
     private String street;
     private String home;
 
     // Constructor with all fields
-    public Order(Product product, int amount, Customer customer, LocalDateTime datetime, String city, String street, String home) {
-        this.product = product;
+    public Order(long productId, int amount, long customerId, @NonNull LocalDateTime datetime, String city, String street, String home) {
+        this.productId = productId;
         this.amount = amount;
-        this.customer = customer;
+        this.customerId = customerId;
         this.datetime = datetime;
         this.city = city;
         this.street = street;
@@ -38,18 +52,11 @@ public class Order implements Serializable {
         return id;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     public int getAmount() {
         return amount;
     }
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
+    @NonNull
     public LocalDateTime getDatetime() {
         return datetime;
     }
@@ -71,19 +78,19 @@ public class Order implements Serializable {
         this.id = id;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
     public void setAmount(int amount) {
         this.amount = amount;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomer(long customerId) {
+        this.customerId = customerId;
     }
 
-    public void setDatetime(LocalDateTime datetime) {
+    public void setDatetime(@NonNull LocalDateTime datetime) {
         this.datetime = datetime;
     }
 
@@ -102,16 +109,13 @@ public class Order implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", product=" + (product != null ? product.getName() : "null") +
-                ", amount=" + amount +
-                ", customer=" + (customer != null ? customer.getSurname() + ", " + customer.getName() : "null") +
-                ", datetime=" + (datetime != null ? datetime.toString() : "null") +
-                ", city='" + city + '\'' +
-                ", street='" + street + '\'' +
-                ", home='" + home + '\'' +
-                '}';
+        return "Order\n" +
+                "id = " + id +
+                "\namount = " + amount +
+                "\ndatetime = " + datetime +
+                "\ncity = '" + city + '\'' +
+                "\nstreet = '" + street + '\'' +
+                "\nhome = '" + home + '\'';
     }
 
     @Override
