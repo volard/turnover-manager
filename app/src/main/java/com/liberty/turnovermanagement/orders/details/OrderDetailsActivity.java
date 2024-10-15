@@ -122,8 +122,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void setupProductSpinner() {
-        List<Product> products = viewModel.getProducts();
-        ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
+        ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, new ArrayList<>());
         spinnerProducts.setAdapter(adapter);
 
         // Set a listener for item selection if needed
@@ -138,6 +137,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
                 // ...
             }
         });
+
+        viewModel.getProducts().observe(this, items -> {
+            adapter.clear();
+            adapter.addAll(items);
+            adapter.notifyDataSetChanged();
+        });
+
         if (existingOrder != null){
             int positionToSelect = -1;
             for (int i = 0; i < adapter.getCount(); i++) {
@@ -155,36 +161,41 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void setupCustomerSpinner() {
-//        List<Customer> customers = viewModel.getCustomers();
-//        CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
-//        spinnerProducts.setAdapter(adapter);
-//
-//        // Set a listener for item selection if needed
-//        spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                selectedCustomer = (Customer) parent.getItemAtPosition(position);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                // ...
-//            }
-//        });
-//        if (existingOrder != null){
-//            int positionToSelect = -1;
-//            for (int i = 0; i < adapter.getCount(); i++) {
-//                if (adapter.getItem(i).getId() == existingOrder.customer.getId()) {
-//                    positionToSelect = i;
-//                    break;
-//                }
-//            }
-//            assert positionToSelect != -1; // if so, its a bug
-//            spinnerCustomers.setSelection(positionToSelect);
-//        }
-//        else {
-//            spinnerCustomers.setSelection(0);
-//        }
+        CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, new ArrayList<>());
+        spinnerCustomers.setAdapter(adapter);
+
+        viewModel.getCustomers().observe(this, items -> {
+            adapter.clear();
+            adapter.addAll(items);
+            adapter.notifyDataSetChanged();
+        });
+
+        // Set a listener for item selection if needed
+        spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCustomer = (Customer) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // ...
+            }
+        });
+        if (existingOrder != null){
+            int positionToSelect = -1;
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (adapter.getItem(i).getId() == existingOrder.customer.getId()) {
+                    positionToSelect = i;
+                    break;
+                }
+            }
+            assert positionToSelect != -1; // if so, its a bug
+            spinnerCustomers.setSelection(positionToSelect);
+        }
+        else {
+            spinnerCustomers.setSelection(0);
+        }
     }
 
     private void deleteOrder() {

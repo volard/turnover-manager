@@ -1,6 +1,5 @@
 package com.liberty.turnovermanagement.orders.list;
 
-import android.adservices.customaudience.AddCustomAudienceOverrideRequest;
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
@@ -28,6 +27,7 @@ public class OrdersViewModel extends AndroidViewModel {
 
     public OrdersViewModel(Application application) {
         super(application);
+
         AppDatabase db = AppDatabase.getDatabase(application);
         orderDao       = db.orderDao();
         productDao     = db.productDao();
@@ -58,12 +58,12 @@ public class OrdersViewModel extends AndroidViewModel {
         return orderDao.getOrderWithDetailsById(id);
     }
 
-    public List<Product> getProducts(){
-        return productDao.getAll().getValue();
+    public LiveData<List<Product>> getProducts(){
+        return productDao.getAll();
     }
 
-    public List<Customer> getCustomers(){
-        return customerDao.getAll().getValue();
+    public LiveData<List<Customer>> getCustomers(){
+        return customerDao.getAll();
     }
 
     public LiveData<Boolean> canCreateOrder() {

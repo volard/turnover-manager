@@ -19,10 +19,9 @@ import com.liberty.turnovermanagement.products.ProductsViewModel;
 public class CustomerDetailsActivity extends AppCompatActivity {
 
     private EditText editTextSurName, editTextName, editTextMiddleName, editTextPhone, editTextEmail;
-    private Button buttonSave;
+    private Button buttonSave, buttonDelete;
     private TextView labelDeleted;
     private Customer existingCustomer;
-    private Button buttonDelete;
     private CustomersViewModel viewModel;
 
     @Override
@@ -61,7 +60,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
                 labelDeleted.setVisibility(View.VISIBLE);
             }
             else{
-                // Show delete button only for existing products
+                // Show delete button only for existing item
                 buttonDelete.setVisibility(View.VISIBLE);
             }
         }
@@ -71,29 +70,29 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     }
 
     private void deleteCustomer() {
-        if (existingCustomer != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Delete item")
-                    .setMessage("Are you sure you want to delete this item?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        Intent resultIntent = new Intent();
-                        resultIntent.putExtra("customer", existingCustomer);
-                        resultIntent.putExtra("delete", true);
-                        setResult(Activity.RESULT_OK, resultIntent);
-                        finish();
-                    })
-                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                    .show();
+        if (existingCustomer == null) {
+            return;
         }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete item")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("customer", existingCustomer);
+                    resultIntent.putExtra("delete", true);
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void saveCustomer() {
-        String name = editTextName.getText().toString().trim();
-        String surName = editTextSurName.getText().toString().trim();
+        String name       = editTextName.getText().toString().trim();
+        String surName    = editTextSurName.getText().toString().trim();
         String middleName = editTextMiddleName.getText().toString().trim();
-        String phone = editTextPhone.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
-
+        String phone      = editTextPhone.getText().toString().trim();
+        String email      = editTextEmail.getText().toString().trim();
 
         Intent resultIntent = new Intent();
 
@@ -106,7 +105,6 @@ public class CustomerDetailsActivity extends AppCompatActivity {
             existingCustomer.setEmail(email);
             viewModel.update(existingCustomer);
         } else {
-            // Create new product
             Customer customer = new Customer(name, surName, middleName, phone, email);
             resultIntent.putExtra("customer", customer);
         }

@@ -94,7 +94,7 @@ public class ProductsFragment extends Fragment {
         );
         listView.setAdapter(adapter);
 
-        viewModel.getProducts().observe(getViewLifecycleOwner(), items -> {
+        viewModel.getProducts().observe(this, items -> {
             adapter.clear();
             adapter.addAll(items);
             adapter.notifyDataSetChanged();

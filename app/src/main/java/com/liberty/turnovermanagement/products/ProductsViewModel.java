@@ -26,7 +26,7 @@ public class ProductsViewModel extends AndroidViewModel {
         AppDatabase db = AppDatabase.getDatabase(application);
         productDao = db.productDao();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
         boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
         if (isArchivedVisible){
             products.setValue(productDao.getAbsolutelyAll().getValue());
@@ -54,7 +54,7 @@ public class ProductsViewModel extends AndroidViewModel {
                 }
             };
 
-    public LiveData<List<Product>> getProducts() {
+    public MutableLiveData<List<Product>> getProducts() {
         return products;
     }
 
