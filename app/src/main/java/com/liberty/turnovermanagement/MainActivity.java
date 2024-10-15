@@ -1,11 +1,10 @@
 package com.liberty.turnovermanagement;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Window;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.navigation.NavController;
@@ -21,9 +20,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Remove app title
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        // Get shared settings
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        // Get current theme
+
+        // Set theme
         boolean isDarkTheme = sharedPreferences.getBoolean("isDarkTheme", false);
 
         if (isDarkTheme) {
@@ -32,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
+
+        // Set locale
+        String languageCode = sharedPreferences.getString("language", "en");
+        LocaleHelper.setLocale(this, languageCode);
 
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());

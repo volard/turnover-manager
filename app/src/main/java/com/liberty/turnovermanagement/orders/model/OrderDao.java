@@ -8,9 +8,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.liberty.turnovermanagement.orders.model.Order;
-import com.liberty.turnovermanagement.orders.model.OrderWithDetails;
-
 import java.util.List;
 
 @Dao

@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.liberty.turnovermanagement.customers.Customer;
-import com.liberty.turnovermanagement.products.Product;
 
 import java.util.List;
 

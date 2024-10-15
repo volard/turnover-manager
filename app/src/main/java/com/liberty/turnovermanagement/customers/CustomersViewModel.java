@@ -2,13 +2,11 @@ package com.liberty.turnovermanagement.customers;
 
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
 
@@ -16,7 +14,7 @@ import java.util.List;
 
 public class CustomersViewModel extends AndroidViewModel {
     private final CustomerDao customerDao;
-    private final MutableLiveData<List<Customer>> customers = new MutableLiveData<>();
+    private LiveData<List<Customer>> customers;
     private SharedPreferences sharedPreferences;
 
     public CustomersViewModel(Application application) {
@@ -27,10 +25,10 @@ public class CustomersViewModel extends AndroidViewModel {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
         boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
         if (isArchivedVisible){
-            customers.setValue(customerDao.getAbsolutelyAll().getValue());
+            customers = customerDao.getAbsolutelyAll();
         }
         else {
-            customers.setValue(customerDao.getAll().getValue());
+            customers = customerDao.getAll();
         }
         // Set up a listener for preference changes
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
@@ -42,10 +40,10 @@ public class CustomersViewModel extends AndroidViewModel {
                     if ("isArchivedVisible".equals(key)) {
                         boolean isArchivedVisible = sharedPreferences.getBoolean(key, false);
                         if (isArchivedVisible){
-                            customers.setValue(customerDao.getAbsolutelyAll().getValue());
+                            customers = customerDao.getAbsolutelyAll();
                         }
                         else {
-                            customers.setValue(customerDao.getAll().getValue());
+                            customers = customerDao.getAll();
                         }
                     }
                 }

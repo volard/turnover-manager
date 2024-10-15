@@ -6,7 +6,6 @@ import android.preference.PreferenceManager;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
 
@@ -17,7 +16,7 @@ import java.util.Random;
 public class ProductsViewModel extends AndroidViewModel {
     private final ProductDao productDao;
 
-    private final MutableLiveData<List<Product>> products = new MutableLiveData<>();;
+    private LiveData<List<Product>> products;;
 
     private SharedPreferences sharedPreferences;
 
@@ -29,10 +28,10 @@ public class ProductsViewModel extends AndroidViewModel {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
         boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
         if (isArchivedVisible){
-            products.setValue(productDao.getAbsolutelyAll().getValue());
+            products = productDao.getAbsolutelyAll();
         }
         else {
-            products.setValue(productDao.getAll().getValue());
+            products = productDao.getAll();
         }
         // Set up a listener for preference changes
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
@@ -45,16 +44,16 @@ public class ProductsViewModel extends AndroidViewModel {
                     if ("isArchivedVisible".equals(key)) {
                         boolean isArchivedVisible = sharedPreferences.getBoolean(key, false);
                         if (isArchivedVisible){
-                            products.setValue(productDao.getAbsolutelyAll().getValue());
+                            products = productDao.getAbsolutelyAll();
                         }
                         else {
-                            products.setValue(productDao.getAll().getValue());
+                            products = productDao.getAll();
                         }
                     }
                 }
             };
 
-    public MutableLiveData<List<Product>> getProducts() {
+    public LiveData<List<Product>> getProducts() {
         return products;
     }
 

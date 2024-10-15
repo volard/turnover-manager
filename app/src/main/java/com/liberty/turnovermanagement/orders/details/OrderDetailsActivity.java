@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -23,14 +22,12 @@ import com.liberty.turnovermanagement.orders.list.OrdersViewModel;
 import com.liberty.turnovermanagement.orders.model.Order;
 import com.liberty.turnovermanagement.orders.model.OrderWithDetails;
 import com.liberty.turnovermanagement.products.Product;
-import com.liberty.turnovermanagement.products.ProductsViewModel;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 public class OrderDetailsActivity extends AppCompatActivity {

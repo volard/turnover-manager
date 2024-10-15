@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
-import com.liberty.turnovermanagement.products.Product;
-import com.liberty.turnovermanagement.products.ProductsViewModel;
 
 public class CustomerDetailsActivity extends AppCompatActivity {
 

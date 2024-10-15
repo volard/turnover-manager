@@ -22,10 +22,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.databinding.FragmentOrdersBinding;
-import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
 import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 import com.liberty.turnovermanagement.orders.model.Order;
-import com.liberty.turnovermanagement.orders.model.OrderWithDetails;
 
 import java.util.ArrayList;
 

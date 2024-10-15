@@ -4,7 +4,6 @@ import androidx.room.Embedded;
 import androidx.room.Relation;
 
 import com.liberty.turnovermanagement.customers.Customer;
-import com.liberty.turnovermanagement.orders.details.ProductSpinnerAdapter;
 import com.liberty.turnovermanagement.products.Product;
 
 import java.io.Serializable;

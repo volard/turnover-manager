@@ -1,9 +1,10 @@
 package com.liberty.turnovermanagement.products;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.*;
-
-import com.liberty.turnovermanagement.customers.Customer;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
