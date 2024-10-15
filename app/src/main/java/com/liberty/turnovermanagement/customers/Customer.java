@@ -89,14 +89,10 @@ public class Customer implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", surname='" + surname + '\'' +
-                ", name='" + name + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return  "[ "+ id + " ]\n" +
+                "Fullname: " + surname + ' ' + name + " " + middleName +
+                "\nPhone: "  + phone +
+                "\nEmail: " + email + (isDeleted ? "\nDELETED" : "");
     }
 }
 

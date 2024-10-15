@@ -1,11 +1,10 @@
-package com.liberty.turnovermanagement.orders.model;
+package com.liberty.turnovermanagement.orders.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
@@ -23,15 +22,4 @@ public interface OrderDao {
 
     @Delete
     void delete(Order order);
-
-    @Query("SELECT EXISTS(SELECT 1 FROM orders LIMIT 1)")
-    boolean hasAny();
-
-    @Transaction
-    @Query("SELECT * FROM orders")
-    List<OrderWithDetails> getOrdersWithDetails();
-
-    @Transaction
-    @Query("SELECT * FROM orders WHERE id = :orderId")
-    OrderWithDetails getOrderWithDetailsById(long orderId);
 }

@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.orders.model;
+package com.liberty.turnovermanagement.orders.data;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
@@ -81,6 +81,10 @@ public class Order implements Serializable {
     public void setProductId(long productId) {
         this.productId = productId;
     }
+
+    public long getProductId(){ return productId; }
+
+    public long getCustomerId() { return customerId; }
 
     public void setAmount(int amount) {
         this.amount = amount;

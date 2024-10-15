@@ -72,7 +72,7 @@ public class Product implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return  name + "\namount = " + amount + "\nprice = " + price;
+        return  "[ " + id + " ]\n" + "Name: " + name + "\nAmount: " + amount + "\nPrice: " + price + " ₽" + (isDeleted ? "\nDELETED" : "");
     }
 
     @Override

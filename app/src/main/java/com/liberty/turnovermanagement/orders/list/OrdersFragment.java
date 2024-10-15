@@ -23,7 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.databinding.FragmentOrdersBinding;
 import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
-import com.liberty.turnovermanagement.orders.model.Order;
+import com.liberty.turnovermanagement.orders.data.Order;
 
 import java.util.ArrayList;
 
@@ -66,7 +66,7 @@ public class OrdersFragment extends Fragment {
     private void openOrderDetailsActivity(Order order) {
         Intent intent = new Intent(requireContext(), OrderDetailsActivity.class);
         if (order != null) {
-            intent.putExtra("order", viewModel.getFullOrder(order.getId()));
+            intent.putExtra("order", order);
         }
         detailsOrderLauncher.launch(intent);
     }

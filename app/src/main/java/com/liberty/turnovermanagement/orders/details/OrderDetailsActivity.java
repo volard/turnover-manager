@@ -19,8 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.orders.list.OrdersViewModel;
-import com.liberty.turnovermanagement.orders.model.Order;
-import com.liberty.turnovermanagement.orders.model.OrderWithDetails;
+import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.Product;
 
 import java.text.SimpleDateFormat;
@@ -28,13 +27,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class OrderDetailsActivity extends AppCompatActivity {
 
     private EditText editTextCity, editTextStreet, editTextHome, editTextAmount;
     private Button buttonSave, buttonDelete, btnDateTimePicker;
-    private OrderWithDetails existingOrder;
+    private Order existingOrder;
     private TextView tvSelectedDateTime;
     private Product selectedProduct;
     private Customer selectedCustomer;
@@ -103,13 +103,15 @@ public class OrderDetailsActivity extends AppCompatActivity {
         setupProductSpinner();
         setupCustomerSpinner();
 
-        existingOrder = (OrderWithDetails) getIntent().getSerializableExtra("order");
+        existingOrder = (Order) getIntent().getSerializableExtra("order");
         if (existingOrder != null) {
             // Pre-fill fields if editing an existing product
-            editTextCity.setText(existingOrder.order.getCity());
-            editTextStreet.setText(String.valueOf(existingOrder.order.getStreet()));
-            editTextHome.setText(String.valueOf(existingOrder.order.getHome()));
-            editTextAmount.setText(String.valueOf(existingOrder.order.getAmount()));
+            editTextCity.setText(existingOrder.getCity());
+            editTextStreet.setText(String.valueOf(existingOrder.getStreet()));
+            editTextHome.setText(String.valueOf(existingOrder.getHome()));
+            editTextAmount.setText(String.valueOf(existingOrder.getAmount()));
+            calendar = GregorianCalendar.from(existingOrder.getDatetime().atZone(ZoneId.systemDefault()));
+            updateSelectedDateTime();
 
             buttonDelete.setVisibility(View.VISIBLE);
         }
@@ -144,7 +146,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         if (existingOrder != null){
             int positionToSelect = -1;
             for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).getId() == existingOrder.product.getId()) {
+                if (adapter.getItem(i).getId() == existingOrder.getProductId()) {
                     positionToSelect = i;
                     break;
                 }
@@ -182,7 +184,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         if (existingOrder != null){
             int positionToSelect = -1;
             for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).getId() == existingOrder.customer.getId()) {
+                if (adapter.getItem(i).getId() == existingOrder.getCustomerId()) {
                     positionToSelect = i;
                     break;
                 }
@@ -196,7 +198,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void deleteOrder() {
-        if (existingOrder != null) {
+        if (existingOrder == null) {
             return;
         }
 
@@ -227,13 +229,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         if (existingOrder != null) {
             // Update existing product
-            existingOrder.order.setCity(city);
-            existingOrder.order.setAmount(amount);
-            existingOrder.order.setStreet(street);
-            existingOrder.order.setHome(home);
-            existingOrder.order.setProductId(selectedProduct.getId());
-            existingOrder.order.setCustomerId(selectedCustomer.getId());
-            viewModel.update(existingOrder.order);
+            existingOrder.setCity(city);
+            existingOrder.setAmount(amount);
+            existingOrder.setStreet(street);
+            existingOrder.setHome(home);
+            existingOrder.setProductId(selectedProduct.getId());
+            existingOrder.setCustomerId(selectedCustomer.getId());
+            viewModel.update(existingOrder);
         } else {
             // Create new order and dependencies
             Order order = new Order(selectedProduct.getId(), amount, selectedCustomer.getId(),
