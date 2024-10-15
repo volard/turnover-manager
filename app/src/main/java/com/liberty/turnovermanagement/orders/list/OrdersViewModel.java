@@ -1,16 +1,19 @@
-package com.liberty.turnovermanagement.orders;
+package com.liberty.turnovermanagement.orders.list;
 
+import android.adservices.customaudience.AddCustomAudienceOverrideRequest;
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.customers.CustomerDao;
 import com.liberty.turnovermanagement.orders.model.Order;
+import com.liberty.turnovermanagement.orders.model.OrderDao;
+import com.liberty.turnovermanagement.orders.model.OrderWithDetails;
+import com.liberty.turnovermanagement.products.Product;
 import com.liberty.turnovermanagement.products.ProductDao;
 
 import java.util.List;
@@ -51,11 +54,21 @@ public class OrdersViewModel extends AndroidViewModel {
         return orders;
     }
 
+    public OrderWithDetails getFullOrder(long id){
+        return orderDao.getOrderWithDetailsById(id);
+    }
+
+    public List<Product> getProducts(){
+        return productDao.getAll().getValue();
+    }
+
+    public List<Customer> getCustomers(){
+        return customerDao.getAll().getValue();
+    }
 
     public LiveData<Boolean> canCreateOrder() {
         return canCreateOrder;
     }
-
 
     public void addNewProduct(Order order) {
         AppDatabase.databaseWriteExecutor.execute(() -> {

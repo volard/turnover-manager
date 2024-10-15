@@ -37,26 +37,27 @@ public class ProductsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addEditProductLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Product product = (Product) data.getSerializableExtra("product");
-                            boolean isNewProduct = data.getBooleanExtra("isNewProduct", true);
-                            boolean isDelete = data.getBooleanExtra("delete", false);
-                            if (product != null) {
-                                if (isDelete) {
-                                    viewModel.softDelete(product);
-                                } else if (isNewProduct) {
-                                    viewModel.addNewProduct(product);
-                                } else {
-                                    viewModel.updateProduct(product);
-                                }
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Product product = (Product) data.getSerializableExtra("product");
+                        boolean isNewProduct = data.getBooleanExtra("isNewProduct", true);
+                        boolean isDelete = data.getBooleanExtra("delete", false);
+                        if (product != null) {
+                            if (isDelete) {
+                                viewModel.softDelete(product);
+                            } else if (isNewProduct) {
+                                viewModel.addNewProduct(product);
+                            } else {
+                                viewModel.updateProduct(product);
                             }
                         }
                     }
-                });
+                }
+            }
+        );
     }
 
     private void openAddEditProductActivity(Product product) {

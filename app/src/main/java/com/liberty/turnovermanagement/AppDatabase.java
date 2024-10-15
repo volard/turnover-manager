@@ -9,7 +9,7 @@ import androidx.room.TypeConverters;
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.customers.CustomerDao;
 import com.liberty.turnovermanagement.orders.model.Order;
-import com.liberty.turnovermanagement.orders.OrderDao;
+import com.liberty.turnovermanagement.orders.model.OrderDao;
 import com.liberty.turnovermanagement.products.Product;
 import com.liberty.turnovermanagement.products.ProductDao;
 

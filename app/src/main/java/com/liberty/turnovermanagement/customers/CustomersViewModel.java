@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
 
@@ -15,27 +16,49 @@ import java.util.List;
 
 public class CustomersViewModel extends AndroidViewModel {
     private final CustomerDao customerDao;
-
-    private final LiveData<List<Customer>> customers;
+    private final MutableLiveData<List<Customer>> customers = new MutableLiveData<>();
+    private SharedPreferences sharedPreferences;
 
     public CustomersViewModel(Application application) {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         customerDao = db.customerDao();
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
         boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
         if (isArchivedVisible){
-            customers = customerDao.getAbsolutelyAll();
+            customers.setValue(customerDao.getAbsolutelyAll().getValue());
         }
         else {
-            customers = customerDao.getAll();
+            customers.setValue(customerDao.getAll().getValue());
         }
-
+        // Set up a listener for preference changes
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if ("isArchivedVisible".equals(key)) {
+                        boolean isArchivedVisible = sharedPreferences.getBoolean(key, false);
+                        if (isArchivedVisible){
+                            customers.setValue(customerDao.getAbsolutelyAll().getValue());
+                        }
+                        else {
+                            customers.setValue(customerDao.getAll().getValue());
+                        }
+                    }
+                }
+            };
 
     public LiveData<List<Customer>> getCustomers() {
         return customers;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
     public void addNew(Customer customer) {

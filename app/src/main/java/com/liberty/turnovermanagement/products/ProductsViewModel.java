@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
 
@@ -16,7 +17,9 @@ import java.util.Random;
 public class ProductsViewModel extends AndroidViewModel {
     private final ProductDao productDao;
 
-    private final LiveData<List<Product>> products;
+    private final MutableLiveData<List<Product>> products = new MutableLiveData<>();;
+
+    private SharedPreferences sharedPreferences;
 
     public ProductsViewModel(Application application) {
         super(application);
@@ -26,12 +29,30 @@ public class ProductsViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
         boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
         if (isArchivedVisible){
-            products = productDao.getAbsolutelyAll();
+            products.setValue(productDao.getAbsolutelyAll().getValue());
         }
         else {
-            products = productDao.getAll();
+            products.setValue(productDao.getAll().getValue());
         }
+        // Set up a listener for preference changes
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                    if ("isArchivedVisible".equals(key)) {
+                        boolean isArchivedVisible = sharedPreferences.getBoolean(key, false);
+                        if (isArchivedVisible){
+                            products.setValue(productDao.getAbsolutelyAll().getValue());
+                        }
+                        else {
+                            products.setValue(productDao.getAll().getValue());
+                        }
+                    }
+                }
+            };
 
     public LiveData<List<Product>> getProducts() {
         return products;

@@ -3,6 +3,7 @@ package com.liberty.turnovermanagement.orders.model;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -86,7 +87,7 @@ public class Order implements Serializable {
         this.amount = amount;
     }
 
-    public void setCustomer(long customerId) {
+    public void setCustomerId(long customerId) {
         this.customerId = customerId;
     }
 

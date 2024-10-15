@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.orders;
+package com.liberty.turnovermanagement.orders.list;
 
 
 import android.app.Activity;
@@ -20,10 +20,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.liberty.turnovermanagement.R;
+import com.liberty.turnovermanagement.databinding.FragmentOrdersBinding;
 import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
+import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 import com.liberty.turnovermanagement.orders.model.Order;
+import com.liberty.turnovermanagement.orders.model.OrderWithDetails;
 
 import java.util.ArrayList;
 
@@ -34,7 +36,7 @@ public class OrdersFragment extends Fragment {
     private ActivityResultLauncher<Intent> detailsOrderLauncher;
     private ArrayAdapter<Order> adapter;
     private OrdersViewModel viewModel;
-    private FragmentProductsBinding binding;
+    private FragmentOrdersBinding binding;
     private View emptyStateLayout;
 
     @Override
@@ -66,7 +68,7 @@ public class OrdersFragment extends Fragment {
     private void openOrderDetailsActivity(Order order) {
         Intent intent = new Intent(requireContext(), OrderDetailsActivity.class);
         if (order != null) {
-            intent.putExtra("order", order);
+            intent.putExtra("order", viewModel.getFullOrder(order.getId()));
         }
         detailsOrderLauncher.launch(intent);
     }
@@ -76,7 +78,7 @@ public class OrdersFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(OrdersViewModel.class);
 
-        binding = FragmentProductsBinding.inflate(inflater, container, false);
+        binding = FragmentOrdersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);

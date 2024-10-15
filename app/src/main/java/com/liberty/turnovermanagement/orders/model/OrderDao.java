@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.orders;
+package com.liberty.turnovermanagement.orders.model;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -36,5 +36,5 @@ public interface OrderDao {
 
     @Transaction
     @Query("SELECT * FROM orders WHERE id = :orderId")
-    OrderWithDetails getOrderWithDetailsById(int orderId);
+    OrderWithDetails getOrderWithDetailsById(long orderId);
 }

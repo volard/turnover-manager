@@ -6,10 +6,24 @@
     android:padding="16dp">
 
     <EditText
-        android:id="@+id/editTextName"
+        android:id="@+id/editTextCity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Product Name"
+        android:hint="City"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextStreet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Street"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/editTextHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Home"
         android:inputType="text" />
 
     <EditText
@@ -19,17 +33,58 @@
         android:hint="Amount"
         android:inputType="number" />
 
-    <EditText
-        android:id="@+id/editTextPrice"
+<!--    Date and time picker-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Date and Time:"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/btnDateTimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pick Date and Time"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/tvSelectedDateTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selected: Not set"
+        android:layout_marginBottom="16dp"/>
+
+<!--    products spinner-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Product:"
+        android:layout_marginBottom="8dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerProducts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Price"
-        android:inputType="numberDecimal" />
+        android:layout_marginBottom="16dp"/>
+
+<!--    customer spinner -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Customer:"
+        android:layout_marginBottom="8dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerCustomers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
 
     <TextView
         android:id="@+id/labelDeleted"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:text="Product deleted" />
 
     <Button

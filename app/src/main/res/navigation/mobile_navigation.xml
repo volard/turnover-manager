@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/navigation_orders"
-        android:name="com.liberty.turnovermanagement.orders.OrdersFragment"
+        android:name="com.liberty.turnovermanagement.orders.list.OrdersFragment"
         android:label="@string/title_orders"
         tools:layout="@layout/fragment_orders" />
 
