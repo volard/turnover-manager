@@ -61,7 +61,7 @@ public class OrdersFragment extends Fragment {
                 });
     }
 
-    private void openAddEditProductActivity(Order order) {
+    private void openOrderDetailsActivity(Order order) {
         Intent intent = new Intent(requireContext(), OrderDetailsActivity.class);
         if (order != null) {
             intent.putExtra("order", order);
@@ -101,40 +101,35 @@ public class OrdersFragment extends Fragment {
             adapter.clear();
             adapter.addAll(items);
             adapter.notifyDataSetChanged();
+
+            if (items.isEmpty()) {
+                emptyStateLayout.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+            } else {
+                emptyStateLayout.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+            }
         });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
             if (order != null) {
-                openAddEditProductActivity(order);
+                openOrderDetailsActivity(order);
             }
         });
 
-        fab.setOnClickListener(view -> {
-            if (canCreateOrder()) {
-                // Open the new order creation screen
-                openNewOrderScreen();
-            } else {
-                showImpossibleToCreateOrderNotification(view);
-            }
+        viewModel.canCreateOrder().observe(getViewLifecycleOwner(), canCreate -> {
+            // Update UI based on whether an order can be created
+            fab.setOnClickListener(view -> {
+                if (canCreate) {
+                    openOrderDetailsActivity(null);
+                } else {
+                    showImpossibleToCreateOrderNotification(view);
+                }
+            });
         });
-
 
         return root;
-    }
-    private boolean canCreateOrder() {
-        // Check if there are any products and customers
-        return viewModel.hasProducts() && viewModel.hasCustomers();
-    }
-
-    private void updateEmptyState() {
-        if (itemList.isEmpty()) {
-            emptyStateLayout.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.GONE);
-        } else {
-            emptyStateLayout.setVisibility(View.GONE);
-            listView.setVisibility(View.VISIBLE);
-        }
     }
 
     private void showImpossibleToCreateOrderNotification(View view) {

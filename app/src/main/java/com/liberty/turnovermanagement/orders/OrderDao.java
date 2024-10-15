@@ -27,6 +27,9 @@ public interface OrderDao {
     @Delete
     void delete(Order order);
 
+    @Query("SELECT EXISTS(SELECT 1 FROM orders LIMIT 1)")
+    boolean hasAny();
+
     @Transaction
     @Query("SELECT * FROM orders")
     List<OrderWithDetails> getOrdersWithDetails();

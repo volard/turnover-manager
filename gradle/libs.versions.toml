@@ -11,20 +11,24 @@ lifecycleViewmodelKtx = "2.8.6"
 navigationFragment    = "2.8.2"
 navigationUi          = "2.8.2"
 room                  = "2.6.1"
+reactivestreams       = "2.8.6"
+livedata              = "2.8.6"
 
 [libraries]
-junit                   = { group = "junit"                      , name = "junit"                  , version.ref = "junit" }
-ext-junit               = { group = "androidx.test.ext"          , name = "junit"                  , version.ref = "junitVersion" }
-espresso-core           = { group = "androidx.test.espresso"     , name = "espresso-core"          , version.ref = "espressoCore" }
-appcompat               = { group = "androidx.appcompat"         , name = "appcompat"              , version.ref = "appcompat" }
-material                = { group = "com.google.android.material", name = "material"               , version.ref = "material" }
-constraintlayout        = { group = "androidx.constraintlayout"  , name = "constraintlayout"       , version.ref = "constraintlayout" }
-lifecycle-livedata-ktx  = { group = "androidx.lifecycle"         , name = "lifecycle-livedata-ktx" , version.ref = "lifecycleLivedataKtx" }
-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle"         , name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-navigation-fragment     = { group = "androidx.navigation"        , name = "navigation-fragment"    , version.ref = "navigationFragment" }
-navigation-ui           = { group = "androidx.navigation"        , name = "navigation-ui"          , version.ref = "navigationUi" }
-room-runtime            = { group = "androidx.room"              , name = "room-runtime"           , version.ref = "room" }
-room-compiler           = { group = "androidx.room"              , name = "room-compiler"          , version.ref = "room" }
+junit                   = { group = "junit"                      , name = "junit"                    , version.ref = "junit" }
+ext-junit               = { group = "androidx.test.ext"          , name = "junit"                    , version.ref = "junitVersion" }
+espresso-core           = { group = "androidx.test.espresso"     , name = "espresso-core"            , version.ref = "espressoCore" }
+appcompat               = { group = "androidx.appcompat"         , name = "appcompat"                , version.ref = "appcompat" }
+material                = { group = "com.google.android.material", name = "material"                 , version.ref = "material" }
+constraintlayout        = { group = "androidx.constraintlayout"  , name = "constraintlayout"         , version.ref = "constraintlayout" }
+lifecycle-livedata      = { group = "androidx.lifecycle"         , name = "lifecycle-livedata"       , version.ref = "livedata" }
+lifecycle-livedata-ktx  = { group = "androidx.lifecycle"         , name = "lifecycle-livedata-ktx"   , version.ref = "lifecycleLivedataKtx" }
+lifecycle-viewmodel-ktx = { group = "androidx.lifecycle"         , name = "lifecycle-viewmodel-ktx"  , version.ref = "lifecycleViewmodelKtx" }
+navigation-fragment     = { group = "androidx.navigation"        , name = "navigation-fragment"      , version.ref = "navigationFragment" }
+navigation-ui           = { group = "androidx.navigation"        , name = "navigation-ui"            , version.ref = "navigationUi" }
+room-runtime            = { group = "androidx.room"              , name = "room-runtime"             , version.ref = "room" }
+room-compiler           = { group = "androidx.room"              , name = "room-compiler"            , version.ref = "room" }
+reactivestreams         = { group = "androidx.lifecycle"         , name = "lifecycle-reactivestreams-ktx", version.ref = "reactivestreams"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

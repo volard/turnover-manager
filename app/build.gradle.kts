@@ -48,6 +48,9 @@ dependencies {
     implementation(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
 
+    implementation(libs.reactivestreams)
+    implementation(libs.lifecycle.livedata)
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

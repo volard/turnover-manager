@@ -14,6 +14,9 @@ public interface ProductDao {
     @Insert
     void insert(Product product);
 
+    @Query("SELECT EXISTS(SELECT 1 FROM products LIMIT 1)")
+    LiveData<Boolean> hasAny();
+
     @Update
     void update(Product product);
 

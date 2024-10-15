@@ -16,6 +16,9 @@ public interface CustomerDao {
     @Insert
     void insert(Customer customer);
 
+    @Query("SELECT EXISTS(SELECT 1 FROM customers LIMIT 1)")
+    LiveData<Boolean> hasAny();
+
     @Update
     void update(Customer customer);
 
