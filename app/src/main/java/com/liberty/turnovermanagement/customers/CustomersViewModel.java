@@ -2,6 +2,9 @@ package com.liberty.turnovermanagement.customers;
 
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -19,7 +22,16 @@ public class CustomersViewModel extends AndroidViewModel {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         customerDao = db.customerDao();
-        customers = customerDao.getAll();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+        boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
+        if (isArchivedVisible){
+            customers = customerDao.getAbsolutelyAll();
+        }
+        else {
+            customers = customerDao.getAll();
+        }
+
     }
 
     public LiveData<List<Customer>> getCustomers() {

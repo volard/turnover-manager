@@ -1,6 +1,8 @@
 package com.liberty.turnovermanagement.orders;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -28,6 +30,8 @@ public class OrdersViewModel extends AndroidViewModel {
         productDao     = db.productDao();
         customerDao    = db.customerDao();
         orders         = orderDao.getAllOrders();
+
+
         canCreateOrder = new MediatorLiveData<>();
         LiveData<Boolean> hasCustomers = customerDao.hasAny();
         LiveData<Boolean> hasProducts = productDao.hasAny();

@@ -1,6 +1,8 @@
 package com.liberty.turnovermanagement.products;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -20,7 +22,15 @@ public class ProductsViewModel extends AndroidViewModel {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         productDao = db.productDao();
-        products = productDao.getAll();
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application);
+        boolean isArchivedVisible = sharedPreferences.getBoolean("isArchivedVisible", false);
+        if (isArchivedVisible){
+            products = productDao.getAbsolutelyAll();
+        }
+        else {
+            products = productDao.getAll();
+        }
     }
 
     public LiveData<List<Product>> getProducts() {
@@ -51,8 +61,6 @@ public class ProductsViewModel extends AndroidViewModel {
             price = Math.round(price * 100.0) / 100.0; // Round to 2 decimal places
             fakeProducts.add(new Product(name, amount, price));
         }
-
-//        products.setValue(fakeProducts);
     }
 
     public void updateProduct(Product updatedProduct) {

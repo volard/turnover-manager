@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.reactivestreams)
     implementation(libs.lifecycle.livedata)
 
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

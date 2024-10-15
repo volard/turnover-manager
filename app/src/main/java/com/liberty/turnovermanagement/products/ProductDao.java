@@ -13,7 +13,7 @@ public interface ProductDao {
     LiveData<List<Product>> getAll();
 
     @Query("SELECT * FROM products")
-    LiveData<List<Customer>> getAbsolutelyAll();
+    LiveData<List<Product>> getAbsolutelyAll();
 
     @Insert
     void insert(Product product);
