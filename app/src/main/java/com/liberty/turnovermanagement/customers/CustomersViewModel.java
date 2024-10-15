@@ -19,7 +19,7 @@ public class CustomersViewModel extends AndroidViewModel {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         customerDao = db.customerDao();
-        customers = customerDao.getAllCustomers();
+        customers = customerDao.getAll();
     }
 
     public LiveData<List<Customer>> getCustomers() {

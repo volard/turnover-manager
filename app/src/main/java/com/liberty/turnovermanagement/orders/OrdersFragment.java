@@ -4,11 +4,13 @@ package com.liberty.turnovermanagement.orders;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -133,10 +135,9 @@ public class OrdersFragment extends Fragment {
     }
 
     private void showImpossibleToCreateOrderNotification(View view) {
-        Snackbar.make(view,
-                        "Impossible to create order: no products or customers created",
-                        Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        Toast toast = Toast.makeText(getContext(), "Impossible to create order: no products or customers created", Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
     }
 
 

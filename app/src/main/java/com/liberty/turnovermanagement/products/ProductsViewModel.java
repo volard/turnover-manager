@@ -20,7 +20,7 @@ public class ProductsViewModel extends AndroidViewModel {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
         productDao = db.productDao();
-        products = productDao.getAllProducts();
+        products = productDao.getAll();
     }
 
     public LiveData<List<Product>> getProducts() {

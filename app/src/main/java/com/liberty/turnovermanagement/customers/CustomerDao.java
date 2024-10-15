@@ -11,12 +11,15 @@ import java.util.List;
 @Dao
 public interface CustomerDao {
     @Query("SELECT * FROM customers WHERE isDeleted = 0")
-    LiveData<List<Customer>> getAllCustomers();
+    LiveData<List<Customer>> getAll();
+
+    @Query("SELECT * FROM customers")
+    LiveData<List<Customer>> getAbsolutelyAll();
 
     @Insert
     void insert(Customer customer);
 
-    @Query("SELECT EXISTS(SELECT 1 FROM customers LIMIT 1)")
+    @Query("SELECT EXISTS(SELECT 1 FROM customers WHERE isDeleted = 0 LIMIT 1)")
     LiveData<Boolean> hasAny();
 
     @Update

@@ -29,14 +29,6 @@ public class OrdersViewModel extends AndroidViewModel {
         customerDao    = db.customerDao();
         orders         = orderDao.getAllOrders();
         canCreateOrder = new MediatorLiveData<>();
-    }
-
-    public LiveData<List<Order>> getOrders() {
-        return orders;
-    }
-
-
-    public LiveData<Boolean> canCreateOrder() {
         LiveData<Boolean> hasCustomers = customerDao.hasAny();
         LiveData<Boolean> hasProducts = productDao.hasAny();
 
@@ -49,6 +41,14 @@ public class OrdersViewModel extends AndroidViewModel {
             Boolean customers = hasCustomers.getValue();
             canCreateOrder.setValue(customers != null && products != null && customers && products);
         });
+    }
+
+    public LiveData<List<Order>> getOrders() {
+        return orders;
+    }
+
+
+    public LiveData<Boolean> canCreateOrder() {
         return canCreateOrder;
     }
 
