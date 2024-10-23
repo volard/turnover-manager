@@ -10,9 +10,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
 
@@ -21,8 +23,14 @@ public class SettingsFragment extends Fragment {
     private SwitchCompat switchTheme;
     private Button btnRegenerateData;
     private CheckBox checkboxOption;
-    SharedPreferences sharedPreferences;
+    private SettingsViewModel viewModel;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,7 +39,6 @@ public class SettingsFragment extends Fragment {
         switchTheme = root.findViewById(R.id.switch_theme);
         btnRegenerateData = root.findViewById(R.id.btn_regenerate_data);
         checkboxOption = root.findViewById(R.id.checkbox_option);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
         setupThemeSwitch();
         setupRegenerateDataButton();
@@ -40,50 +47,37 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
+
     private void setupCheckboxOption() {
-        // Load the saved state of the checkbox
+        viewModel.getIsArchivedVisible().observe(getViewLifecycleOwner(), isChecked -> {
+            checkboxOption.setChecked(isChecked);
+        });
 
-        boolean isChecked = sharedPreferences.getBoolean("isArchivedVisible", false);
-        checkboxOption.setChecked(isChecked);
-
-        checkboxOption.setOnCheckedChangeListener((buttonView, _isChecked) -> {
-            // Save the new state of the checkbox
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("isArchivedVisible", _isChecked);
-            editor.apply();
+        checkboxOption.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            viewModel.setArchivedVisible(isChecked);
         });
     }
 
     private void setupThemeSwitch() {
-        // Get current theme
-        boolean isDarkTheme = sharedPreferences.getBoolean("isDarkTheme", false);
-        switchTheme.setChecked(isDarkTheme);
-
-        switchTheme.setOnCheckedChangeListener((buttonView, _isChecked) -> {
-            if (_isChecked) {
+        viewModel.getIsDarkTheme().observe(getViewLifecycleOwner(), isDarkTheme -> {
+            switchTheme.setChecked(isDarkTheme);
+            if (isDarkTheme) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("isDarkTheme", true);
-                editor.apply();
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean("isDarkTheme", false);
-                editor.apply();
             }
+        });
+
+        switchTheme.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            viewModel.setDarkTheme(isChecked);
         });
     }
 
     private void setupRegenerateDataButton() {
         btnRegenerateData.setOnClickListener(v -> {
-            regenerateTestData();
+            viewModel.regenerateTestData();
             Toast.makeText(getContext(), "Test data regenerated", Toast.LENGTH_SHORT).show();
         });
-    }
-
-    private void regenerateTestData() {
-        // TODO: Implement the logic to regenerate test data for orders, products, and customers
-        // This will depend on how you're storing and managing your data
     }
 }
 

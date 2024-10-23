@@ -27,4 +27,10 @@ public interface ProductDao {
 
     @Query("UPDATE products SET isDeleted = 1 WHERE id = :productId")
     void softDelete(long productId);
+
+    @Query("DELETE FROM products")
+    void deleteAll();
+
+    @Insert
+    List<Long> insertAllAndGetIds(List<Product> products);
 }

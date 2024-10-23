@@ -3,6 +3,7 @@ package com.liberty.turnovermanagement.orders.data;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -46,6 +47,9 @@ public class Order implements Serializable {
         this.street = street;
         this.home = home;
     }
+
+    @Ignore
+    public Order(){}
 
     // Getters
     public long getId() {

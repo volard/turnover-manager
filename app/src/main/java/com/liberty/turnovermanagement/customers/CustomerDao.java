@@ -16,6 +16,12 @@ public interface CustomerDao {
     @Query("SELECT * FROM customers")
     LiveData<List<Customer>> getAbsolutelyAll();
 
+    @Query("DELETE FROM customers")
+    void deleteAll();
+
+    @Insert
+    List<Long> insertAllAndGetIds(List<Customer> customers);
+
     @Insert
     void insert(Customer customer);
 

@@ -20,6 +20,12 @@ public interface OrderDao {
     @Update
     void update(Order order);
 
+    @Query("DELETE FROM orders")
+    void deleteAll();
+
+    @Insert
+    void insertAll(List<Order> orders);
+
     @Delete
     void delete(Order order);
 }

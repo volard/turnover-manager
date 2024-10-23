@@ -35,6 +35,9 @@ public class Customer implements Serializable {
         this(surname, name, middleName, phone, email, false);
     }
 
+    @Ignore
+    public Customer(){}
+
 
     // Getters
     public int getId() {
@@ -64,6 +67,10 @@ public class Customer implements Serializable {
     // Setters
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setDeleted(boolean state){
+        this.isDeleted = state;
     }
 
     public void setSurname(String surname) {

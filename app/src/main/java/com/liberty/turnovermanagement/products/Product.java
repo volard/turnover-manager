@@ -51,6 +51,13 @@ public class Product implements Serializable {
         return isDeleted;
     }
 
+    public void setDeleted(boolean state){
+        this.isDeleted = state;
+    }
+
+    @Ignore
+    public Product(){}
+
     // Setters
     public void setId(long id) {
         this.id = id;
