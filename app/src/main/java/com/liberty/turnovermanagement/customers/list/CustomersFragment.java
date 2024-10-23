@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.customers;
+package com.liberty.turnovermanagement.customers.list;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +18,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
+import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
+import com.liberty.turnovermanagement.customers.CustomersViewModel;
+import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
 
 import java.util.ArrayList;
@@ -27,33 +30,20 @@ public class CustomersFragment extends Fragment {
     private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> customerDetailsActivity;
     private ArrayAdapter<Customer> adapter;
-    private CustomersViewModel viewModel;
+    private CustomerListViewModel viewModel;
     private FragmentProductsBinding binding;
     private View emptyStateLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(CustomerListViewModel.class);
+
         customerDetailsActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        Customer customer = (Customer) data.getSerializableExtra("customer");
-                        boolean isNewProduct = data.getBooleanExtra("isNewCustomer", true);
-                        boolean isDelete = data.getBooleanExtra("delete", false);
-                        if (customer != null) {
-                            if (isDelete) {
-                                viewModel.softDelete(customer);
-                            } else if (isNewProduct) {
-                                viewModel.addNew(customer);
-                            } else {
-                                viewModel.update(customer);
-                            }
-                        }
-                    }
-                }
+                // Customer list will be automatically updated through LiveData
             }
         );
     }
@@ -61,7 +51,7 @@ public class CustomersFragment extends Fragment {
     private void openCustomerDetailsActivity(Customer customer) {
         Intent intent = new Intent(requireContext(), CustomerDetailsActivity.class);
         if (customer != null) {
-            intent.putExtra("customer", customer);
+            intent.putExtra("customerId", customer.getId());
         }
         customerDetailsActivity.launch(intent);
     }
@@ -69,10 +59,10 @@ public class CustomersFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(CustomersViewModel.class);
 
         binding = FragmentProductsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
         listView = root.findViewById(R.id.listView);
 
         emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);

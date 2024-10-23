@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
-import com.liberty.turnovermanagement.customers.Customer;
+import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.orders.list.OrdersViewModel;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;

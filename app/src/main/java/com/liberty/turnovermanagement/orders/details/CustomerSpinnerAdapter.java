@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.liberty.turnovermanagement.customers.Customer;
+import com.liberty.turnovermanagement.customers.data.Customer;
 
 import java.util.List;
 

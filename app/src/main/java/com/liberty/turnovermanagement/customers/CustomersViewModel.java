@@ -9,6 +9,8 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.customers.data.CustomerDao;
 
 import java.util.List;
 

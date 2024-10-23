@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/navigation_customers"
-        android:name="com.liberty.turnovermanagement.customers.CustomersFragment"
+        android:name="com.liberty.turnovermanagement.customers.list.CustomersFragment"
         android:label="@string/title_customers"
         tools:layout="@layout/fragment_customers" />
 

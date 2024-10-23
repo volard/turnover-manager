@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.customers;
+package com.liberty.turnovermanagement.customers.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -19,11 +19,14 @@ public interface CustomerDao {
     @Query("DELETE FROM customers")
     void deleteAll();
 
+    @Query("SELECT * FROM customers WHERE id = :customerId")
+    Customer getCustomerById(int customerId);
+
     @Insert
     List<Long> insertAllAndGetIds(List<Customer> customers);
 
     @Insert
-    void insert(Customer customer);
+    long insert(Customer customer);
 
     @Query("SELECT EXISTS(SELECT 1 FROM customers WHERE isDeleted = 0 LIMIT 1)")
     LiveData<Boolean> hasAny();

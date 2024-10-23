@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.customers;
+package com.liberty.turnovermanagement.customers.data;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
