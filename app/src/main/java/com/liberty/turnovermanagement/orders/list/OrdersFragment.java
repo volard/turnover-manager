@@ -33,7 +33,7 @@ public class OrdersFragment extends Fragment {
     private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> detailsOrderLauncher;
     private ArrayAdapter<Order> adapter;
-    private OrdersViewModel viewModel;
+    private OrderListViewModel viewModel;
     private FragmentOrdersBinding binding;
     private View emptyStateLayout;
 
@@ -43,30 +43,14 @@ public class OrdersFragment extends Fragment {
         detailsOrderLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Order order = (Order) data.getSerializableExtra("order");
-                            boolean isNewProduct = data.getBooleanExtra("isNewOrder", true);
-                            boolean isDelete = data.getBooleanExtra("delete", false);
-                            if (order != null) {
-                                if (isDelete) {
-                                    viewModel.delete(order);
-                                } else if (isNewProduct) {
-                                    viewModel.addNewProduct(order);
-                                } else {
-                                    viewModel.update(order);
-                                }
-                            }
-                        }
-                    }
+
                 });
     }
 
     private void openOrderDetailsActivity(Order order) {
         Intent intent = new Intent(requireContext(), OrderDetailsActivity.class);
         if (order != null) {
-            intent.putExtra("order", order);
+            intent.putExtra("orderId", order.getId());
         }
         detailsOrderLauncher.launch(intent);
     }
@@ -74,7 +58,7 @@ public class OrdersFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(OrdersViewModel.class);
+        viewModel = new ViewModelProvider(this).get(OrderListViewModel.class);
 
         binding = FragmentOrdersBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -113,6 +97,16 @@ public class OrdersFragment extends Fragment {
             }
         });
 
+        viewModel.canCreateOrder().observe(getViewLifecycleOwner(), canCreate -> {
+            fab.setOnClickListener(view -> {
+                if (canCreate) {
+                    openOrderDetailsActivity(null);
+                } else {
+                    showImpossibleToCreateOrderNotification();
+                }
+            });
+        });
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Order order = adapter.getItem(position);
             if (order != null) {
@@ -120,21 +114,10 @@ public class OrdersFragment extends Fragment {
             }
         });
 
-        viewModel.canCreateOrder().observe(getViewLifecycleOwner(), canCreate -> {
-            // Update UI based on whether an order can be created
-            fab.setOnClickListener(view -> {
-                if (canCreate) {
-                    openOrderDetailsActivity(null);
-                } else {
-                    showImpossibleToCreateOrderNotification(view);
-                }
-            });
-        });
-
         return root;
     }
 
-    private void showImpossibleToCreateOrderNotification(View view) {
+    private void showImpossibleToCreateOrderNotification() {
         Toast toast = Toast.makeText(getContext(), "Impossible to create order: no products or customers created", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();

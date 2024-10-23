@@ -1,8 +1,6 @@
 package com.liberty.turnovermanagement.customers.details;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.R;
-import com.liberty.turnovermanagement.customers.CustomersViewModel;
 import com.liberty.turnovermanagement.customers.data.Customer;
 
 public class CustomerDetailsActivity extends AppCompatActivity {

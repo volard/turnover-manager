@@ -7,16 +7,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
-import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
-import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 
 import java.util.List;
 
-public class OrdersViewModel extends AndroidViewModel {
+public class OrderListViewModel extends AndroidViewModel {
     private final OrderDao orderDao;
     private final ProductDao productDao;
     private final CustomerDao customerDao;
@@ -24,15 +22,14 @@ public class OrdersViewModel extends AndroidViewModel {
     private final LiveData<List<Order>> orders;
     private final MediatorLiveData<Boolean> canCreateOrder;
 
-    public OrdersViewModel(Application application) {
+    public OrderListViewModel(Application application) {
         super(application);
 
         AppDatabase db = AppDatabase.getDatabase(application);
-        orderDao       = db.orderDao();
-        productDao     = db.productDao();
-        customerDao    = db.customerDao();
-        orders         = orderDao.getAllOrders();
-
+        orderDao = db.orderDao();
+        productDao = db.productDao();
+        customerDao = db.customerDao();
+        orders = orderDao.getAllOrders();
 
         canCreateOrder = new MediatorLiveData<>();
         LiveData<Boolean> hasCustomers = customerDao.hasAny();
@@ -53,29 +50,8 @@ public class OrdersViewModel extends AndroidViewModel {
         return orders;
     }
 
-
-    public LiveData<List<Product>> getProducts(){
-        return productDao.getAll();
-    }
-
-    public LiveData<List<Customer>> getCustomers(){
-        return customerDao.getAll();
-    }
-
     public LiveData<Boolean> canCreateOrder() {
         return canCreateOrder;
-    }
-
-    public void addNewProduct(Order order) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            orderDao.insert(order);
-        });
-    }
-
-    public void update(Order order) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            orderDao.update(order);
-        });
     }
 
     public void delete(Order order) {
@@ -83,5 +59,4 @@ public class OrdersViewModel extends AndroidViewModel {
             orderDao.delete(order);
         });
     }
-
 }

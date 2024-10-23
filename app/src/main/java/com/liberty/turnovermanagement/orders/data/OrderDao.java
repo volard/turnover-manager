@@ -7,6 +7,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.liberty.turnovermanagement.customers.data.Customer;
+
 import java.util.List;
 
 @Dao
@@ -15,7 +17,10 @@ public interface OrderDao {
     LiveData<List<Order>> getAllOrders();
 
     @Insert
-    void insert(Order order);
+    long insert(Order order);
+
+    @Query("SELECT * FROM orders WHERE id = :orderId")
+    Order getOrderById(long orderId);
 
     @Update
     void update(Order order);

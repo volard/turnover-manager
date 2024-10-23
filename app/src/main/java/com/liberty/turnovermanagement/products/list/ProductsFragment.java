@@ -1,6 +1,5 @@
 package com.liberty.turnovermanagement.products.list;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
 import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
-import com.liberty.turnovermanagement.products.ProductsViewModel;
 import com.liberty.turnovermanagement.products.data.Product;
 
 import java.util.ArrayList;
