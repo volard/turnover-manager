@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.products;
+package com.liberty.turnovermanagement.products.data;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -13,11 +13,14 @@ public interface ProductDao {
     @Query("SELECT * FROM products WHERE isDeleted = 0")
     LiveData<List<Product>> getAll();
 
+    @Query("SELECT * FROM products WHERE id = :productId")
+    Product getProductById(long productId);
+
     @Query("SELECT * FROM products")
     LiveData<List<Product>> getAbsolutelyAll();
 
     @Insert
-    void insert(Product product);
+    Long insert(Product product);
 
     @Query("SELECT EXISTS(SELECT 1 FROM products WHERE isDeleted = 0 LIMIT 1)")
     LiveData<Boolean> hasAny();

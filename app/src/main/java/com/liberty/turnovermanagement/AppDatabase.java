@@ -13,8 +13,8 @@ import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.customers.CustomerDao;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
-import com.liberty.turnovermanagement.products.Product;
-import com.liberty.turnovermanagement.products.ProductDao;
+import com.liberty.turnovermanagement.products.data.Product;
+import com.liberty.turnovermanagement.products.data.ProductDao;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -87,9 +87,9 @@ public abstract class AppDatabase extends RoomDatabase {
             OrderDao orderDao       = orderDao();
 
             // Clear existing data
+            orderDao.deleteAll();
             productDao.deleteAll();
             customerDao.deleteAll();
-            orderDao.deleteAll();
 
             // Generate test products
             List<Product> products = getProducts();

@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.products;
+package com.liberty.turnovermanagement.products.list;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,6 +19,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
+import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
+import com.liberty.turnovermanagement.products.ProductsViewModel;
+import com.liberty.turnovermanagement.products.data.Product;
 
 import java.util.ArrayList;
 
@@ -28,34 +31,20 @@ public class ProductsFragment extends Fragment {
     private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> addEditProductLauncher;
     private ArrayAdapter<Product> adapter;
-    private ProductsViewModel viewModel;
     private FragmentProductsBinding binding;
-
     private View emptyStateLayout;
+    private ProductListViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(ProductListViewModel.class);
+
         addEditProductLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        Product product = (Product) data.getSerializableExtra("product");
-                        boolean isNewProduct = data.getBooleanExtra("isNewProduct", true);
-                        boolean isDelete = data.getBooleanExtra("delete", false);
-                        if (product != null) {
-                            if (isDelete) {
-                                viewModel.softDelete(product);
-                            } else if (isNewProduct) {
-                                viewModel.addNewProduct(product);
-                            } else {
-                                viewModel.updateProduct(product);
-                            }
-                        }
-                    }
-                }
+                // Product list will be automatically updated through LiveData
             }
         );
     }
@@ -63,7 +52,7 @@ public class ProductsFragment extends Fragment {
     private void openAddEditProductActivity(Product product) {
         Intent intent = new Intent(requireContext(), ProductDetailsActivity.class);
         if (product != null) {
-            intent.putExtra("product", product);
+            intent.putExtra("productId", product.getId());
         }
         addEditProductLauncher.launch(intent);
     }
@@ -71,7 +60,6 @@ public class ProductsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
 
         binding = FragmentProductsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();

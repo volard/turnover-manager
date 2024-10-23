@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.liberty.turnovermanagement.products.Product;
+import com.liberty.turnovermanagement.products.data.Product;
 
 import java.util.List;
 

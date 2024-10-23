@@ -20,7 +20,7 @@ import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.orders.list.OrdersViewModel;
 import com.liberty.turnovermanagement.orders.data.Order;
-import com.liberty.turnovermanagement.products.Product;
+import com.liberty.turnovermanagement.products.data.Product;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/navigation_products"
-        android:name="com.liberty.turnovermanagement.products.ProductsFragment"
+        android:name="com.liberty.turnovermanagement.products.list.ProductsFragment"
         android:label="@string/title_products"
         tools:layout="@layout/fragment_products" />
 
