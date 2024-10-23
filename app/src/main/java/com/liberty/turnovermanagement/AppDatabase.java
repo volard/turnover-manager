@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(entities = {Product.class, Customer.class, Order.class}, version = 4, exportSchema = false)
-@TypeConverters({Converters.class})
+@TypeConverters({DateTimeStringConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
     public abstract ProductDao productDao();
     public abstract CustomerDao customerDao();

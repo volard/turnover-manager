@@ -6,7 +6,7 @@ import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.liberty.turnovermanagement.Converters;
+import com.liberty.turnovermanagement.DateTimeStringConverter;
 import com.liberty.turnovermanagement.customers.Customer;
 import com.liberty.turnovermanagement.products.Product;
 
@@ -29,7 +29,7 @@ public class Order implements Serializable {
     public long customerId;
     public long productId;
 
-    @TypeConverters(Converters.class)
+    @TypeConverters(DateTimeStringConverter.class)
     @NonNull
     private LocalDateTime datetime;
     private String city;

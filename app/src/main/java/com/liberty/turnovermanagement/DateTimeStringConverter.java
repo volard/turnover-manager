@@ -5,7 +5,7 @@ import androidx.room.TypeConverter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Converters {
+public class DateTimeStringConverter {
     private final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     @TypeConverter
