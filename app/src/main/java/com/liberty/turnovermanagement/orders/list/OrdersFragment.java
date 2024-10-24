@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
@@ -70,6 +71,7 @@ public class OrdersFragment extends Fragment {
 
         adapter = new OrderAdapter(this::openOrderDetailsActivity);
         binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         viewModel.getOrders().observe(getViewLifecycleOwner(), this::updateOrderList);
 
