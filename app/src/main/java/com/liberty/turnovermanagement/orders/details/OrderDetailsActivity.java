@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 
@@ -32,6 +33,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private EditText editTextCity, editTextStreet, editTextHome, editTextAmount;
     private Button buttonSave, buttonDelete, btnDateTimePicker;
     private TextView tvSelectedDateTime;
+    private TextView customerNameTextView;
+    private TextView customerPhoneTextView;
+    private TextView customerEmailTextView;
     private Product selectedProduct;
     private Customer selectedCustomer;
     private OrderDetailsViewModel viewModel;
@@ -82,6 +86,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_details_order);
 
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
+
         editTextCity       = findViewById(R.id.editTextCity);
         editTextAmount     = findViewById(R.id.editTextAmount);
         editTextStreet     = findViewById(R.id.editTextStreet);
@@ -92,6 +97,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         tvSelectedDateTime = findViewById(R.id.tvSelectedDateTime);
         spinnerProducts    = findViewById(R.id.spinnerProducts);
         spinnerCustomers   = findViewById(R.id.spinnerCustomers);
+        customerNameTextView = findViewById(R.id.customerNameTextView);
+        customerPhoneTextView = findViewById(R.id.customerPhoneTextView);
+        customerEmailTextView = findViewById(R.id.customerEmailTextView);
 
         calendar = Calendar.getInstance();
         btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
@@ -99,10 +107,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         long orderId = getIntent().getLongExtra("orderId", -1);
         if (orderId != -1) {
-            AppDatabase.databaseWriteExecutor.execute(() -> {
-                Order order = AppDatabase.getDatabase(this).orderDao().getOrderById(orderId);
-                runOnUiThread(() -> viewModel.setSelectedOrder(order));
-            });
+            viewModel.loadOrder(orderId);
         }
 
         viewModel.getProducts().observe(this, products -> {
@@ -116,6 +121,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         });
 
         viewModel.getSelectedOrder().observe(this, this::updateUI);
+        viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
 
         buttonSave.setOnClickListener(v -> saveOrder());
         buttonDelete.setOnClickListener(v -> deleteOrder());
@@ -136,8 +142,23 @@ public class OrderDetailsActivity extends AppCompatActivity {
         updateCustomerSpinner(order.getCustomerId());
 
         buttonDelete.setVisibility(View.VISIBLE);
+       // Load customer data
+        viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
 
     }
+    private void updateCustomerUI(Customer customer) {
+        if (customer != null) {
+            customerNameTextView.setText(getString(R.string.customer_name_format,
+                    customer.getSurname(), customer.getName(), customer.getMiddleName()));
+            customerPhoneTextView.setText(getString(R.string.customer_phone_format, customer.getPhone()));
+            customerEmailTextView.setText(getString(R.string.customer_email_format, customer.getEmail()));
+        } else {
+            customerNameTextView.setText(R.string.customer_not_found);
+            customerPhoneTextView.setText("");
+            customerEmailTextView.setText("");
+        }
+    }
+
 
     private void updateProductSpinner(long productId) {
         ProductSpinnerAdapter adapter = (ProductSpinnerAdapter) spinnerProducts.getAdapter();

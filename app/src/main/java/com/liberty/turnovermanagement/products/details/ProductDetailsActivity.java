@@ -18,7 +18,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private EditText editTextName, editTextAmount, editTextPrice;
     private Button buttonSave;
-    private Product existingProduct;
     private Button buttonDelete;
     private TextView labelDeleted;
     private ProductDetailViewModel viewModel;
@@ -49,29 +48,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         viewModel.getSelectedProduct().observe(this, this::updateUI);
 
-        existingProduct = (Product) getIntent().getSerializableExtra("product");
-//        if (existingProduct != null) {
-//            // Pre-fill fields if editing an existing product
-//            editTextName.setText(existingProduct.getName());
-//            editTextAmount.setText(String.valueOf(existingProduct.getAmount()));
-//            editTextPrice.setText(String.valueOf(existingProduct.getPrice()));
-//
-//            if (existingProduct.isDeleted()){
-//                editTextName.setEnabled(false);
-//                editTextAmount.setEnabled(false);
-//                editTextPrice.setEnabled(false);
-//
-//                buttonSave.setVisibility(View.GONE);
-//                labelDeleted.setVisibility(View.VISIBLE);
-//            }
-//            else{
-//                // Show delete button only for existing products
-//                buttonDelete.setVisibility(View.VISIBLE);
-//            }
-//        }
-
         buttonSave.setOnClickListener(v -> saveProduct());
         buttonDelete.setOnClickListener(v -> deleteProduct());
+    }
+
+    private void setupVersionHistory() {
+        viewModel.getProductHistory(productId).observe(this, history -> {
+            // Display the version history, e.g., in a RecyclerView
+            // You'll need to create a new adapter and layout for this
+        });
     }
 
     private void deleteProduct() {

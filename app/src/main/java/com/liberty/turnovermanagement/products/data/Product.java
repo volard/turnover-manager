@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.liberty.turnovermanagement.DateTimeStringConverter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "products")
 public class Product implements Serializable {
@@ -15,6 +19,9 @@ public class Product implements Serializable {
     private int amount;
     private double price;
     private boolean isDeleted;
+    private int version;
+    @TypeConverters(DateTimeStringConverter.class)
+    private LocalDateTime lastUpdated;
 
     // Constructor with all fields
     public Product(String name, int amount, double price, boolean isDeleted) {
@@ -23,6 +30,23 @@ public class Product implements Serializable {
         this.price = price;
         this.isDeleted = isDeleted;
     }
+    // Add getters and setters for version and lastUpdated
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
 
     // Constructor without isDeleted (assuming false by default)
     @Ignore

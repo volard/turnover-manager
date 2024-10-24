@@ -19,7 +19,6 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     private EditText editTextSurName, editTextName, editTextMiddleName, editTextPhone, editTextEmail;
     private Button buttonSave, buttonDelete;
     private TextView labelDeleted;
-    private Customer existingCustomer;
     private CustomerDetailsViewModel viewModel;
     private int customerId = -1;
 
@@ -76,6 +75,13 @@ public class CustomerDetailsActivity extends AppCompatActivity {
                 buttonDelete.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void setupVersionHistory() {
+        viewModel.getCustomerHistory(customerId).observe(this, history -> {
+            // Display the version history, e.g., in a RecyclerView
+            // You'll need to create a new adapter and layout for this
+        });
     }
 
     private void deleteCustomer() {

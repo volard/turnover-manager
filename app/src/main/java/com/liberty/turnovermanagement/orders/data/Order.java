@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -22,13 +23,37 @@ import java.time.LocalDateTime;
                 @ForeignKey(entity = Product.class,
                         parentColumns = "id",
                         childColumns = "productId")
-        })
+        },
+        indices = {
+                @Index("customerId"),
+                @Index("productId")
+
+        }
+)
 public class Order implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private int amount;
     public long customerId;
     public long productId;
+    private long customerVersion;
+    private long productVersion;
+
+    public long getCustomerVersion() {
+        return customerVersion;
+    }
+
+    public void setCustomerVersion(long customerVersion) {
+        this.customerVersion = customerVersion;
+    }
+
+    public long getProductVersion() {
+        return productVersion;
+    }
+
+    public void setProductVersion(long productVersion) {
+        this.productVersion = productVersion;
+    }
 
     @TypeConverters(DateTimeStringConverter.class)
     @NonNull
@@ -49,7 +74,8 @@ public class Order implements Serializable {
     }
 
     @Ignore
-    public Order(){}
+    public Order() {
+    }
 
     // Getters
     public long getId() {
@@ -86,9 +112,13 @@ public class Order implements Serializable {
         this.productId = productId;
     }
 
-    public long getProductId(){ return productId; }
+    public long getProductId() {
+        return productId;
+    }
 
-    public long getCustomerId() { return customerId; }
+    public long getCustomerId() {
+        return customerId;
+    }
 
     public void setAmount(int amount) {
         this.amount = amount;

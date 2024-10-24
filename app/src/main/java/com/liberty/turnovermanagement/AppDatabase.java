@@ -4,17 +4,21 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.room.Dao;
 import androidx.room.Database;
+import androidx.room.Insert;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
+import com.liberty.turnovermanagement.customers.data.CustomerHistory;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
+import com.liberty.turnovermanagement.products.data.ProductHistory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,7 +31,16 @@ import java.util.concurrent.Executors;
  * AppDatabase class represents the main database for the application.
  * It uses Room persistence library and defines the database configuration and serves as the app's main access point to the persisted data.
  */
-@Database(entities = {Product.class, Customer.class, Order.class}, version = 4, exportSchema = false)
+@Database(
+        entities = {
+            Product.class,
+            Customer.class,
+            Order.class,
+            ProductHistory.class,
+            CustomerHistory.class
+        },
+        version = 7,
+        exportSchema = false)
 @TypeConverters({DateTimeStringConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -94,32 +107,39 @@ public abstract class AppDatabase extends RoomDatabase {
             // Generate test products
             List<Product> products = getProducts();
             List<Long> productIds = productDao.insertAllAndGetIds(products);
+            for (int i = 0; i < productIds.size(); i++) {
+                products.get(i).setId(productIds.get(i));
+            }
 
             // Generate test customers
             List<Customer> customers = getCustomers();
             List<Long> customerIds = customerDao.insertAllAndGetIds(customers);
+            for (int i = 0; i < customerIds.size(); i++) {
+                customers.get(i).setId(customerIds.get(i));
+            }
+
 
             // Generate test orders
-            List<Order> orders = getOrders(customerIds, productIds);
+            List<Order> orders = getOrders(customers, products);
             orderDao.insertAll(orders);
         });
     }
 
-    /**
-     * Generates a list of sample orders.
-     * @param customers List of customers to associate with orders
-     * @param products List of products to associate with orders
-     * @return List of generated Order objects
-     */
-    private static @NonNull List<Order> getOrders(List<Long> customerIds, List<Long> productIds) {
+    private static @NonNull List<Order> getOrders(List<Customer> customers, List<Product> products) {
         List<Order> orders = new ArrayList<>();
         Random random = new Random();
         String[] cities = {"New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"};
 
         for (int i = 0; i < 50; i++) {
             Order order = new Order();
-            order.setProductId(productIds.get(random.nextInt(productIds.size())));
-            order.setCustomerId(customerIds.get(random.nextInt(customerIds.size())));
+
+            Product selectedProduct = products.get(random.nextInt(products.size()));
+            Customer selectedCustomer = customers.get(random.nextInt(customers.size()));
+
+            order.setProductId(selectedProduct.getId());
+            order.setCustomerId(selectedCustomer.getId());
+            order.setProductVersion(selectedProduct.getVersion());
+            order.setCustomerVersion(selectedCustomer.getVersion());
             order.setAmount(random.nextInt(10) + 1); // 1 to 10 items
 
             // Generate a random date within the last 90 days
@@ -135,6 +155,7 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return orders;
     }
+
 
     /**
      * Generates a random street name.

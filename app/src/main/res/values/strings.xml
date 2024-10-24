@@ -17,4 +17,8 @@
         <item>en</item>
         <item>ru</item>
     </string-array>
+    <string name="customer_name_format">Name: %1$s %2$s %3$s</string>
+    <string name="customer_phone_format">Phone: %s</string>
+    <string name="customer_email_format">Email: %s</string>
+    <string name="customer_not_found">Customer information not found</string>
 </resources>

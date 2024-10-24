@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
+import com.liberty.turnovermanagement.customers.data.CustomerHistory;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
@@ -24,6 +25,8 @@ public class OrderDetailsViewModel extends AndroidViewModel {
     private final LiveData<List<Product>> products;
     private final LiveData<List<Customer>> customers;
 
+    private final MutableLiveData<Customer> customerForOrder = new MutableLiveData<>();
+
     public OrderDetailsViewModel(Application application) {
         super(application);
         AppDatabase db = AppDatabase.getDatabase(application);
@@ -32,6 +35,54 @@ public class OrderDetailsViewModel extends AndroidViewModel {
         customerDao    = db.customerDao();
         products       = productDao.getAll();
         customers      = customerDao.getAll();
+    }
+
+    public void loadOrder(long orderId) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Order order = orderDao.getOrderById(orderId);
+            selectedOrder.postValue(order);
+        });
+    }
+
+
+   public void loadCustomerForOrder(long customerId, long customerVersion) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Customer customer = getCustomerForOrder(customerId, customerVersion);
+            customerForOrder.postValue(customer);
+        });
+    }
+
+    private Customer getCustomerForOrder(long customerId, long customerVersion) {
+        Customer currentCustomer = customerDao.getCustomerById(customerId);
+
+        if (currentCustomer != null && currentCustomer.getVersion() == customerVersion) {
+            return currentCustomer;
+        } else {
+            CustomerHistory historicalCustomer = customerDao.getCustomerHistoryByIdAndVersion(customerId, customerVersion);
+            if (historicalCustomer != null) {
+                return convertToCustomer(historicalCustomer);
+            }
+        }
+
+        return null; // Customer not found
+    }
+
+
+    private Customer convertToCustomer(CustomerHistory history) {
+        Customer customer = new Customer();
+        customer.setId(history.getCustomerId());
+        customer.setSurname(history.getSurname());
+        customer.setName(history.getName());
+        customer.setMiddleName(history.getMiddleName());
+        customer.setPhone(history.getPhone());
+        customer.setEmail(history.getEmail());
+        customer.setVersion(history.getVersion());
+        // Set other fields as necessary
+        return customer;
+    }
+
+    public LiveData<Customer> getCustomerForOrder() {
+        return customerForOrder;
     }
 
     public void setSelectedOrder(Order order) {
@@ -49,8 +100,6 @@ public class OrderDetailsViewModel extends AndroidViewModel {
     public LiveData<Order> getSelectedOrder() {
         return selectedOrder;
     }
-
-    // In OrderDetailsViewModel.java
 
     public void updateSelectedOrderProduct(Product product) {
         Order currentOrder = selectedOrder.getValue();
@@ -78,6 +127,12 @@ public class OrderDetailsViewModel extends AndroidViewModel {
 
     public void addNewOrder(Order order) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
+            long productVersion = productDao.getProductVersion(order.getProductId());
+            long customerVersion = customerDao.getCustomerVersion(order.getCustomerId());
+
+            order.setProductVersion(productVersion);
+            order.setCustomerVersion(customerVersion);
+
             orderDao.insert(order);
             selectedOrder.postValue(order);
         });

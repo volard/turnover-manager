@@ -4,19 +4,45 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.liberty.turnovermanagement.DateTimeStringConverter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity(tableName = "customers")
 public class Customer implements Serializable {
     @PrimaryKey(autoGenerate = true)
-    private int id;
+    private long id;
     private String surname;
     private String name;
     private String middleName;
     private String phone;
     private String email;
     private boolean isDeleted = false;
+    private long version = 1; // Add this line
+    @TypeConverters(DateTimeStringConverter.class)
+    private LocalDateTime lastUpdated; // Add this line
+
+    // Add getters and setters for version and lastUpdated
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+
     public boolean isDeleted() {
         return isDeleted;
     }
@@ -40,7 +66,7 @@ public class Customer implements Serializable {
 
 
     // Getters
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -65,7 +91,7 @@ public class Customer implements Serializable {
     }
 
     // Setters
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

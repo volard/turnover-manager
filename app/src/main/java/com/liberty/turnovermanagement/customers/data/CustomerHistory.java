@@ -1,0 +1,103 @@
+package com.liberty.turnovermanagement.customers.data;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.liberty.turnovermanagement.DateTimeStringConverter;
+
+import java.time.LocalDateTime;
+
+@Entity(tableName = "customer_history")
+public class CustomerHistory {
+    @PrimaryKey(autoGenerate = true)
+    private long id;
+
+    private long customerId;
+
+    private String surname;
+    private String name;
+    private String middleName;
+    private String phone;
+    private String email;
+
+    @TypeConverters(DateTimeStringConverter.class)
+    private LocalDateTime createdAt;
+
+    private long version;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(long customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    // Getters and setters
+    // ...
+}

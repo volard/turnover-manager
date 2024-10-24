@@ -3,4 +3,6 @@
     <string name="title_orders">Заказы</string>
     <string name="title_products">Продукты</string>
     <string name="title_customers">Клиенты</string>
+    <string name="language_selection">Выберите язык</string>
+    <string name="language_selection_summary">Выберите предпочитаемый язык</string>
 </resources>
