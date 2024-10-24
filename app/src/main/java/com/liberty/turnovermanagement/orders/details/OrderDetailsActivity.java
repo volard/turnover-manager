@@ -14,10 +14,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.data.Customer;
-import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 

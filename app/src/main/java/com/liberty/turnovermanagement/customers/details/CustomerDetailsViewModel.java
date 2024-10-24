@@ -24,9 +24,13 @@ public class CustomerDetailsViewModel extends AndroidViewModel {
         customerDao = db.customerDao();
     }
 
-    public void setSelectedCustomer(Customer customer) {
-        selectedCustomer.setValue(customer);
+    public void loadCustomer(long customerId) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Customer customer= customerDao.getCustomerById(customerId);
+            selectedCustomer.postValue(customer);
+        });
     }
+
 
     public LiveData<Customer> getSelectedCustomer() {
         return selectedCustomer;

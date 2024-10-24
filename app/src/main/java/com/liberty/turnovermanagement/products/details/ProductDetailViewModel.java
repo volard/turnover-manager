@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
@@ -54,6 +55,13 @@ public class ProductDetailViewModel extends AndroidViewModel {
             // Fetch the updated product and post it
             Product updated = productDao.getProductById(updatedProduct.getId());
             selectedProduct.postValue(updated);
+        });
+    }
+
+    public void loadProduct(long productId) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Product product = productDao.getProductById(productId);
+            selectedProduct.postValue(product);
         });
     }
 

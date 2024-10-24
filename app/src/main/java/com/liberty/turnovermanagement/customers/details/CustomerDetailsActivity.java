@@ -20,7 +20,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     private Button buttonSave, buttonDelete;
     private TextView labelDeleted;
     private CustomerDetailsViewModel viewModel;
-    private int customerId = -1;
+    private long customerId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,22 +30,19 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(CustomerDetailsViewModel.class);
 
 
-        editTextName       = findViewById(R.id.editTextName);
-        editTextSurName    = findViewById(R.id.editTextSurName);
+        editTextName = findViewById(R.id.editTextName);
+        editTextSurName = findViewById(R.id.editTextSurName);
         editTextMiddleName = findViewById(R.id.editTextMiddleName);
-        editTextPhone      = findViewById(R.id.editTextPhone);
-        editTextEmail      = findViewById(R.id.editTextEmail);
-        buttonSave         = findViewById(R.id.buttonSave);
-        buttonDelete       = findViewById(R.id.buttonDelete);
-        labelDeleted       = findViewById(R.id.labelDeleted);
+        editTextPhone = findViewById(R.id.editTextPhone);
+        editTextEmail = findViewById(R.id.editTextEmail);
+        buttonSave = findViewById(R.id.buttonSave);
+        buttonDelete = findViewById(R.id.buttonDelete);
+        labelDeleted = findViewById(R.id.labelDeleted);
 
-        customerId = getIntent().getIntExtra("customerId", -1);
+        customerId = getIntent().getLongExtra("customerId", -1);
 
         if (customerId != -1) {
-            AppDatabase.databaseWriteExecutor.execute(() -> {
-                Customer customer = AppDatabase.getDatabase(this).customerDao().getCustomerById(customerId);
-                runOnUiThread(() -> viewModel.setSelectedCustomer(customer));
-            });
+            viewModel.loadCustomer(customerId);
         }
 
         viewModel.getSelectedCustomer().observe(this, this::updateUI);
@@ -56,24 +53,25 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     }
 
     private void updateUI(Customer customer) {
-        if (customer != null) {
-            editTextName.setText(customer.getName());
-            editTextSurName.setText(customer.getSurname());
-            editTextMiddleName.setText(customer.getMiddleName());
-            editTextPhone.setText(customer.getPhone());
-            editTextEmail.setText(customer.getEmail());
+        if (customer == null) {
+            return;
+        }
+        editTextName.setText(customer.getName());
+        editTextSurName.setText(customer.getSurname());
+        editTextMiddleName.setText(customer.getMiddleName());
+        editTextPhone.setText(customer.getPhone());
+        editTextEmail.setText(customer.getEmail());
 
-            if (customer.isDeleted()) {
-                editTextName.setEnabled(false);
-                editTextSurName.setEnabled(false);
-                editTextMiddleName.setEnabled(false);
-                editTextPhone.setEnabled(false);
-                editTextEmail.setEnabled(false);
-                buttonSave.setVisibility(View.GONE);
-                labelDeleted.setVisibility(View.VISIBLE);
-            } else {
-                buttonDelete.setVisibility(View.VISIBLE);
-            }
+        if (customer.isDeleted()) {
+            editTextName.setEnabled(false);
+            editTextSurName.setEnabled(false);
+            editTextMiddleName.setEnabled(false);
+            editTextPhone.setEnabled(false);
+            editTextEmail.setEnabled(false);
+            buttonSave.setVisibility(View.GONE);
+            labelDeleted.setVisibility(View.VISIBLE);
+        } else {
+            buttonDelete.setVisibility(View.VISIBLE);
         }
     }
 
@@ -86,11 +84,12 @@ public class CustomerDetailsActivity extends AppCompatActivity {
 
     private void deleteCustomer() {
         Customer customer = viewModel.getSelectedCustomer().getValue();
-        if (customer != null) {
-            viewModel.softDelete(customer);
-            setResult(Activity.RESULT_OK);
-            finish();
+        if (customer == null) {
+            return;
         }
+        viewModel.softDelete(customer);
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     private void saveCustomer() {

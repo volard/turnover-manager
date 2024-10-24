@@ -1,7 +1,6 @@
 package com.liberty.turnovermanagement.orders.list;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -22,8 +21,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.databinding.FragmentOrdersBinding;
-import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 import com.liberty.turnovermanagement.orders.data.Order;
+import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 
 import java.util.ArrayList;
 

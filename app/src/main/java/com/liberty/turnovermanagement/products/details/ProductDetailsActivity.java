@@ -39,11 +39,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         labelDeleted   = findViewById(R.id.labelDeleted);
 
         if (productId != -1) {
-            AppDatabase.databaseWriteExecutor.execute(() -> {
-                Product product = AppDatabase.getDatabase(this).productDao().getProductById(productId);
-                // LiveData is designed to be updated on the main thread to ensure thread safety and proper UI updates
-                runOnUiThread(() -> viewModel.setSelectedProduct(product));
-            });
+            viewModel.loadProduct(productId);
         }
 
         viewModel.getSelectedProduct().observe(this, this::updateUI);

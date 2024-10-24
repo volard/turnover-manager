@@ -18,8 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
-import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 import com.liberty.turnovermanagement.products.data.Product;
+import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 
 import java.util.ArrayList;
 
