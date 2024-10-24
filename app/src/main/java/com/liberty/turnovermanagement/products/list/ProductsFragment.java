@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -14,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.liberty.turnovermanagement.R;
@@ -22,13 +23,14 @@ import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductsFragment extends Fragment {
 
-    private ListView listView;
+    private RecyclerView recyclerView;
+    private ProductAdapter adapter;
     private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> addEditProductLauncher;
-    private ArrayAdapter<Product> adapter;
     private FragmentProductsBinding binding;
     private View emptyStateLayout;
     private ProductListViewModel viewModel;
@@ -62,42 +64,36 @@ public class ProductsFragment extends Fragment {
         binding = FragmentProductsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        listView = root.findViewById(R.id.listView);
+        recyclerView = root.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         fab = root.findViewById(R.id.fab);
 
         emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
 
-        // Set empty view for ListView
-        listView.setEmptyView(emptyStateLayout);
-
         // Add the empty view to the parent layout
-        ((ViewGroup) listView.getParent()).addView(emptyStateLayout);
+        ((ViewGroup) recyclerView.getParent()).addView(emptyStateLayout);
 
-        adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>()
-        );
-        listView.setAdapter(adapter);
+        // Handle product click
+        adapter = new ProductAdapter(this::openAddEditProductActivity);
+        recyclerView.setAdapter(adapter);
 
-        viewModel.getProducts().observe(this, items -> {
-            adapter.clear();
-            adapter.addAll(items);
-            adapter.notifyDataSetChanged();
-        });
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Product product = adapter.getItem(position);
-            if (product != null) {
-                openAddEditProductActivity(product);
-            }
-        });
+        viewModel.getProducts().observe(getViewLifecycleOwner(), this::updateProductList);
 
         fab.setOnClickListener(v -> openAddEditProductActivity(null));
 
         return root;
     }
-
+    private void updateProductList(List<Product> products) {
+        if (products.isEmpty()) {
+            emptyStateLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            adapter.submitList(products);
+        }
+    }
 
     @Override
     public void onDestroyView() {

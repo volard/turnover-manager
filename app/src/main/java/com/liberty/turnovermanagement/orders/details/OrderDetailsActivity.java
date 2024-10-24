@@ -6,16 +6,13 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 
@@ -28,17 +25,11 @@ import java.util.Locale;
 
 public class OrderDetailsActivity extends AppCompatActivity {
 
-    private EditText editTextCity, editTextStreet, editTextHome, editTextAmount;
-    private Button buttonSave, buttonDelete, btnDateTimePicker;
-    private TextView tvSelectedDateTime;
-    private TextView customerNameTextView;
-    private TextView customerPhoneTextView;
-    private TextView customerEmailTextView;
     private Product selectedProduct;
     private Customer selectedCustomer;
     private OrderDetailsViewModel viewModel;
     private Calendar calendar;
-    private Spinner spinnerProducts, spinnerCustomers;
+    private ActivityDetailsOrderBinding binding;
 
 
     private void showDatePickerDialog() {
@@ -75,32 +66,19 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private void updateSelectedDateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         String formattedDateTime = sdf.format(calendar.getTime());
-        tvSelectedDateTime.setText("Selected: " + formattedDateTime);
+        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_order);
+        binding = ActivityDetailsOrderBinding.inflate(getLayoutInflater());
 
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
 
-        editTextCity       = findViewById(R.id.editTextCity);
-        editTextAmount     = findViewById(R.id.editTextAmount);
-        editTextStreet     = findViewById(R.id.editTextStreet);
-        editTextHome       = findViewById(R.id.editTextHome);
-        buttonSave         = findViewById(R.id.buttonSave);
-        buttonDelete       = findViewById(R.id.buttonDelete);
-        btnDateTimePicker  = findViewById(R.id.btnDateTimePicker);
-        tvSelectedDateTime = findViewById(R.id.tvSelectedDateTime);
-        spinnerProducts    = findViewById(R.id.spinnerProducts);
-        spinnerCustomers   = findViewById(R.id.spinnerCustomers);
-        customerNameTextView = findViewById(R.id.customerNameTextView);
-        customerPhoneTextView = findViewById(R.id.customerPhoneTextView);
-        customerEmailTextView = findViewById(R.id.customerEmailTextView);
-
         calendar = Calendar.getInstance();
-        btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
+        binding.btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
 
 
         long orderId = getIntent().getLongExtra("orderId", -1);
@@ -121,17 +99,17 @@ public class OrderDetailsActivity extends AppCompatActivity {
         viewModel.getSelectedOrder().observe(this, this::updateUI);
         viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
 
-        buttonSave.setOnClickListener(v -> saveOrder());
-        buttonDelete.setOnClickListener(v -> deleteOrder());
+        binding.buttonSave.setOnClickListener(v -> saveOrder());
+        binding.buttonDelete.setOnClickListener(v -> deleteOrder());
     }
 
     private void updateUI(Order order) {
         if (order == null) { return; }
 
-        editTextCity.setText(order.getCity());
-        editTextStreet.setText(order.getStreet());
-        editTextHome.setText(order.getHome());
-        editTextAmount.setText(String.valueOf(order.getAmount()));
+        binding.editTextCity.setText(order.getCity());
+        binding.editTextStreet.setText(order.getStreet());
+        binding.editTextHome.setText(order.getHome());
+        binding.editTextAmount.setText(String.valueOf(order.getAmount()));
         calendar.setTime(java.util.Date.from(order.getDatetime().atZone(ZoneId.systemDefault()).toInstant()));
         updateSelectedDateTime();
 
@@ -139,33 +117,33 @@ public class OrderDetailsActivity extends AppCompatActivity {
         updateProductSpinner(order.getProductId());
         updateCustomerSpinner(order.getCustomerId());
 
-        buttonDelete.setVisibility(View.VISIBLE);
+        binding.buttonDelete.setVisibility(View.VISIBLE);
        // Load customer data
         viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
 
     }
     private void updateCustomerUI(Customer customer) {
         if (customer != null) {
-            customerNameTextView.setText(getString(R.string.customer_name_format,
+            binding.customerNameTextView.setText(getString(R.string.customer_name_format,
                     customer.getSurname(), customer.getName(), customer.getMiddleName()));
-            customerPhoneTextView.setText(getString(R.string.customer_phone_format, customer.getPhone()));
-            customerEmailTextView.setText(getString(R.string.customer_email_format, customer.getEmail()));
+            binding.customerPhoneTextView.setText(getString(R.string.customer_phone_format, customer.getPhone()));
+            binding.customerEmailTextView.setText(getString(R.string.customer_email_format, customer.getEmail()));
         } else {
-            customerNameTextView.setText(R.string.customer_not_found);
-            customerPhoneTextView.setText("");
-            customerEmailTextView.setText("");
+            binding.customerNameTextView.setText(R.string.customer_not_found);
+            binding.customerPhoneTextView.setText("");
+            binding.customerEmailTextView.setText("");
         }
     }
 
 
     private void updateProductSpinner(long productId) {
-        ProductSpinnerAdapter adapter = (ProductSpinnerAdapter) spinnerProducts.getAdapter();
+        ProductSpinnerAdapter adapter = (ProductSpinnerAdapter) binding.spinnerProducts.getAdapter();
         if (adapter == null) { return; }
 
         for (int i = 0; i < adapter.getCount(); i++) {
             Product product = adapter.getItem(i);
             if (product != null && product.getId() == productId) {
-                spinnerProducts.setSelection(i);
+                binding.spinnerProducts.setSelection(i);
                 selectedProduct = product;
                 break;
             }
@@ -174,13 +152,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void updateCustomerSpinner(long customerId) {
-        CustomerSpinnerAdapter adapter = (CustomerSpinnerAdapter) spinnerCustomers.getAdapter();
+        CustomerSpinnerAdapter adapter = (CustomerSpinnerAdapter) binding.spinnerCustomers.getAdapter();
         if (adapter == null) { return; }
 
         for (int i = 0; i < adapter.getCount(); i++) {
             Customer customer = adapter.getItem(i);
             if (customer != null && customer.getId() == customerId) {
-                spinnerCustomers.setSelection(i);
+                binding.spinnerCustomers.setSelection(i);
                 selectedCustomer = customer;
                 break;
             }
@@ -190,9 +168,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     private void setupProductSpinner(List<Product> products) {
         ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
-        spinnerProducts.setAdapter(adapter);
+        binding.spinnerProducts.setAdapter(adapter);
 
-        spinnerProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.spinnerProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Product selectedProduct = (Product) parent.getItemAtPosition(position);
@@ -208,9 +186,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     private void setupCustomerSpinner(List<Customer> customers) {
         CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
-        spinnerCustomers.setAdapter(adapter);
+        binding.spinnerCustomers.setAdapter(adapter);
 
-        spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Customer selectedCustomer = (Customer) parent.getItemAtPosition(position);
@@ -240,10 +218,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
 
         // Update order fields
-        order.setCity(editTextCity.getText().toString());
-        order.setStreet(editTextStreet.getText().toString());
-        order.setHome(editTextHome.getText().toString());
-        order.setAmount(Integer.parseInt(editTextAmount.getText().toString()));
+        order.setCity(binding.editTextCity.getText().toString());
+        order.setStreet(binding.editTextStreet.getText().toString());
+        order.setHome(binding.editTextHome.getText().toString());
+        order.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
         order.setDatetime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
         order.setProductId(selectedProduct.getId());
         order.setCustomerId(selectedCustomer.getId());

@@ -25,13 +25,12 @@ import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OrdersFragment extends Fragment {
 
-    private ListView listView;
-    private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> detailsOrderLauncher;
-    private ArrayAdapter<Order> adapter;
+    private OrderAdapter adapter;
     private OrderListViewModel viewModel;
     private FragmentOrdersBinding binding;
     private View emptyStateLayout;
@@ -60,44 +59,22 @@ public class OrdersFragment extends Fragment {
         viewModel = new ViewModelProvider(this).get(OrderListViewModel.class);
 
         binding = FragmentOrdersBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
         emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
+        return binding.getRoot();
+    }
 
-        listView = root.findViewById(R.id.listView);
-
-        // Set empty view for ListView
-        listView.setEmptyView(emptyStateLayout);
-
-        // Add the empty view to the parent layout
-        ((ViewGroup) listView.getParent()).addView(emptyStateLayout);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
 
-        fab = root.findViewById(R.id.fab);
+        adapter = new OrderAdapter(this::openOrderDetailsActivity);
+        binding.recyclerView.setAdapter(adapter);
 
-        adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>()
-        );
-        listView.setAdapter(adapter);
-
-        viewModel.getOrders().observe(getViewLifecycleOwner(), items -> {
-            adapter.clear();
-            adapter.addAll(items);
-            adapter.notifyDataSetChanged();
-
-            if (items.isEmpty()) {
-                emptyStateLayout.setVisibility(View.VISIBLE);
-                listView.setVisibility(View.GONE);
-            } else {
-                emptyStateLayout.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
-            }
-        });
+        viewModel.getOrders().observe(getViewLifecycleOwner(), this::updateOrderList);
 
         viewModel.canCreateOrder().observe(getViewLifecycleOwner(), canCreate -> {
-            fab.setOnClickListener(view -> {
+            binding.fab.setOnClickListener(_view -> {
                 if (canCreate) {
                     openOrderDetailsActivity(null);
                 } else {
@@ -105,15 +82,17 @@ public class OrdersFragment extends Fragment {
                 }
             });
         });
+    }
 
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Order order = adapter.getItem(position);
-            if (order != null) {
-                openOrderDetailsActivity(order);
-            }
-        });
-
-        return root;
+    private void updateOrderList(List<Order> orders) {
+        if (orders.isEmpty()) {
+            emptyStateLayout.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateLayout.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            adapter.submitList(orders);
+        }
     }
 
     private void showImpossibleToCreateOrderNotification() {

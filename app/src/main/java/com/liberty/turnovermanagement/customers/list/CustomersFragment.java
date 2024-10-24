@@ -22,12 +22,11 @@ import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 import com.liberty.turnovermanagement.databinding.FragmentProductsBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CustomersFragment extends Fragment {
-    private ListView listView;
-    private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> customerDetailsActivity;
-    private ArrayAdapter<Customer> adapter;
+   private CustomerAdapter adapter;
     private CustomerListViewModel viewModel;
     private FragmentProductsBinding binding;
     private View emptyStateLayout;
@@ -55,48 +54,36 @@ public class CustomersFragment extends Fragment {
     }
 
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentProductsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        listView = root.findViewById(R.id.listView);
 
         emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
+        return binding.getRoot();
+    }
 
-        // Set empty view for ListView
-        listView.setEmptyView(emptyStateLayout);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        // Add the empty view to the parent layout
-        ((ViewGroup) listView.getParent()).addView(emptyStateLayout);
+        adapter = new CustomerAdapter(this::openCustomerDetailsActivity);
+        binding.recyclerView.setAdapter(adapter);
 
+        viewModel.getCustomers().observe(getViewLifecycleOwner(), this::updateCustomerList);
 
-        fab = root.findViewById(R.id.fab);
+        binding.fab.setOnClickListener(v -> openCustomerDetailsActivity(null));
 
-        adapter = new ArrayAdapter<>(
-                requireContext(),
-                android.R.layout.simple_list_item_1,
-                new ArrayList<>()
-        );
-        listView.setAdapter(adapter);
-
-        viewModel.getCustomers().observe(getViewLifecycleOwner(), items -> {
-            adapter.clear();
-            adapter.addAll(items);
-            adapter.notifyDataSetChanged();
-        });
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Customer customer = adapter.getItem(position);
-            if (customer != null) {
-                openCustomerDetailsActivity(customer);
-            }
-        });
-
-        fab.setOnClickListener(v -> openCustomerDetailsActivity(null));
-
-        return root;
+    }
+    private void updateCustomerList(List<Customer> customers) {
+        if (customers.isEmpty()) {
+            emptyStateLayout.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.GONE);
+        } else {
+            emptyStateLayout.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            adapter.submitList(customers);
+        }
     }
 
 

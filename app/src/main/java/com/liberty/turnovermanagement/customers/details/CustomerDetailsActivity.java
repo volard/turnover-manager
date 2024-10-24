@@ -22,6 +22,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     private CustomerDetailsViewModel viewModel;
     private long customerId = -1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.products.data.Product;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -126,6 +127,14 @@ public class Customer implements Serializable {
                 "Fullname: " + surname + ' ' + name + " " + middleName +
                 "\nPhone: "  + phone +
                 "\nEmail: " + email + (isDeleted ? "\nDELETED" : "");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return id == customer.id;
     }
 }
 
