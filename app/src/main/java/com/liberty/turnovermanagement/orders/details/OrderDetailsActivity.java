@@ -30,6 +30,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private OrderDetailsViewModel viewModel;
     private Calendar calendar;
     private ActivityDetailsOrderBinding binding;
+    private long orderId = -1;
 
 
     @Override
@@ -44,7 +45,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         binding.btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
 
 
-        long orderId = getIntent().getLongExtra("orderId", -1);
+        orderId = getIntent().getLongExtra("orderId", -1);
         if (orderId != -1) {
             viewModel.loadItem(orderId);
         }
@@ -163,6 +164,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private void setupProductSpinner(List<Product> products) {
         ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
         binding.spinnerProducts.setAdapter(adapter);
+        selectedProduct = products.get(0);
 
         binding.spinnerProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -181,6 +183,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private void setupCustomerSpinner(List<Customer> customers) {
         CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
         binding.spinnerCustomers.setAdapter(adapter);
+        selectedCustomer = customers.get(0);
 
         binding.spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -220,7 +223,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         order.setProductId(selectedProduct.getId());
         order.setCustomerId(selectedCustomer.getId());
 
-        if (order.getId() == 0) {
+        if (orderId == -1) {
             viewModel.addNewItem(order);
         } else {
             viewModel.updateItem(order);

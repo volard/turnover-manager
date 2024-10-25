@@ -83,7 +83,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         product.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
         product.setPrice(Double.parseDouble(binding.editTextPrice.getText().toString()));
 
-        if (productId == 0) {
+        if (productId == -1) {
             viewModel.addNewItem(product);
         } else {
             viewModel.updateItem(product);

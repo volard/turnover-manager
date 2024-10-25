@@ -91,7 +91,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         customer.setPhone(binding.editTextPhone.getText().toString().trim());
         customer.setEmail(binding.editTextEmail.getText().toString().trim());
 
-        if (customerId == 0) {
+        if (customerId == -1) {
             viewModel.addNewItem(customer);
         } else {
             viewModel.updateItem(customer);
