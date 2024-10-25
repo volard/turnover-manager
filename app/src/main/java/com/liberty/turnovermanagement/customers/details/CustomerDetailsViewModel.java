@@ -36,40 +36,58 @@ public class CustomerDetailsViewModel extends AndroidViewModel {
         return selectedCustomer;
     }
 
+
     public void updateCustomer(Customer updatedCustomer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             Customer currentCustomer = customerDao.getCustomerById(updatedCustomer.getId());
 
-            // Create a new history entry
-            CustomerHistory history = new CustomerHistory();
-            history.setCustomerId(updatedCustomer.getId());
-            history.setSurname(updatedCustomer.getSurname());
-            history.setName(updatedCustomer.getName());
-            history.setMiddleName(updatedCustomer.getMiddleName());
-            history.setPhone(updatedCustomer.getPhone());
-            history.setEmail(updatedCustomer.getEmail());
-            history.setCreatedAt(LocalDateTime.now());
-            history.setVersion(updatedCustomer.getVersion() + 1L);
+            if (currentCustomer != null) {
+                // Create a new history entry with the current customer's data
+                CustomerHistory history = new CustomerHistory();
+                history.setCustomerId(currentCustomer.getId());
+                history.setSurname(currentCustomer.getSurname());
+                history.setName(currentCustomer.getName());
+                history.setMiddleName(currentCustomer.getMiddleName());
+                history.setPhone(currentCustomer.getPhone());
+                history.setEmail(currentCustomer.getEmail());
+                history.setCreatedAt(currentCustomer.getLastUpdated());
+                history.setVersion(currentCustomer.getVersion());
 
-             // Update the current product
-            long newVersion = currentCustomer.getVersion() + 1;
-            LocalDateTime now = LocalDateTime.now();
-            customerDao.update(
-                updatedCustomer.getId(),
-                updatedCustomer.getSurname(),
-                updatedCustomer.getName(),
-                updatedCustomer.getMiddleName(),
-                updatedCustomer.getPhone(),
-                updatedCustomer.getEmail(),
-                updatedCustomer.getVersion(),
-                updatedCustomer.getLastUpdated()
-            );
+                // Insert the history entry
+                customerDao.insertHistory(
+                        history.getCustomerId(),
+                        history.getSurname(),
+                        history.getName(),
+                        history.getMiddleName(),
+                        history.getPhone(),
+                        history.getEmail(),
+                        history.getVersion(),
+                        history.getCreatedAt()
+                );
 
-            // Fetch the updated product and post it
-            Customer updated = customerDao.getCustomerById(updatedCustomer.getId());
-            selectedCustomer.postValue(updated);
+                // Update the current customer
+                long newVersion = currentCustomer.getVersion() + 1;
+                LocalDateTime now = LocalDateTime.now();
+                customerDao.update(
+                        updatedCustomer.getId(),
+                        updatedCustomer.getSurname(),
+                        updatedCustomer.getName(),
+                        updatedCustomer.getMiddleName(),
+                        updatedCustomer.getPhone(),
+                        updatedCustomer.getEmail(),
+                        newVersion,
+                        now
+                );
+
+                // Fetch the updated customer and post it
+                Customer updated = customerDao.getCustomerById(updatedCustomer.getId());
+                updated.setVersion(newVersion);
+                updated.setLastUpdated(now);
+                selectedCustomer.postValue(updated);
+            }
         });
     }
+
 
     public void softDelete(Customer customer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {

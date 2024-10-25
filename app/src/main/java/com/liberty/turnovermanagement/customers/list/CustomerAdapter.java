@@ -36,7 +36,7 @@ public class CustomerAdapter extends ListAdapter<Customer, CustomerAdapter.Custo
         holder.bind(getItem(position), listener);
     }
 
-    static class CustomerViewHolder extends RecyclerView.ViewHolder {
+    public static class CustomerViewHolder extends RecyclerView.ViewHolder {
         private final CustomerListItemBinding binding;
 
         CustomerViewHolder(CustomerListItemBinding binding) {

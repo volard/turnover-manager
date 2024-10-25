@@ -27,7 +27,7 @@ public interface CustomerDao {
     void update(long customerId, String surname, String name, String middleName, String phone, String email, long newVersion, LocalDateTime lastUpdated);
 
     @Query("INSERT INTO customer_history (customerId, surname, name, middleName, phone, email, version, createdAt) VALUES (:customerId, :surname, :name, :middleName, :phone, :email, :version, :updatedAt)")
-    void insertHistory(long customerId, String surname, String name, String middleName, String phone, String email, int version, LocalDateTime updatedAt);
+    void insertHistory(long customerId, String surname, String name, String middleName, String phone, String email, long version, LocalDateTime updatedAt);
 
     @Query("SELECT * FROM customer_history WHERE customerId = :customerId AND version = :version")
     CustomerHistory getCustomerHistoryByIdAndVersion(long customerId, long version);

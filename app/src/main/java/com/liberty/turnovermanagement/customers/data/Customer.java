@@ -11,6 +11,7 @@ import com.liberty.turnovermanagement.products.data.Product;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity(tableName = "customers")
 public class Customer implements Serializable {
@@ -129,12 +130,32 @@ public class Customer implements Serializable {
                 "\nEmail: " + email + (isDeleted ? "\nDELETED" : "");
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
         return id == customer.id;
+    }*/
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return id == customer.id &&
+                isDeleted == customer.isDeleted &&
+                Objects.equals(surname, customer.surname) &&
+                Objects.equals(name, customer.name) &&
+                Objects.equals(middleName, customer.middleName) &&
+                Objects.equals(phone, customer.phone) &&
+                Objects.equals(email, customer.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, surname, name, middleName, phone, email, isDeleted);
     }
 }
+
 
