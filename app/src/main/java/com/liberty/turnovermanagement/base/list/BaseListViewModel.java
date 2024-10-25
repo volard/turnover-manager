@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.base.Constants;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public abstract class BaseListViewModel<T> extends AndroidViewModel {
 
     private final SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener =
             (sharedPreferences, key) -> {
-                if ("isArchivedVisible".equals(key)) {
+                if (Constants.IS_ARCHIVED_VISIBLE.equals(key)) {
                     updateItemList();
                 }
             };

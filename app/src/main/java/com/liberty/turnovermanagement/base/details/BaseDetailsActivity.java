@@ -8,11 +8,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
 
+import com.liberty.turnovermanagement.base.Constants;
+
 
 public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, ?>, VB extends ViewBinding> extends AppCompatActivity {
 
     protected VM viewModel;
-    protected long itemId = -1;
+    protected long itemId = Constants.INITIAL_ITEM_ID;
     protected VB binding;
 
     @Override
@@ -23,7 +25,7 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
         viewModel = new ViewModelProvider(this).get(getViewModelClass());
 
-        itemId = getIntent().getLongExtra("itemId", -1);
+        itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.INITIAL_ITEM_ID);
 
         if (itemId != -1) {
             viewModel.loadItem(itemId);
@@ -65,6 +67,5 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
             finishActivity();
         }
     }
-
 }
 
