@@ -27,6 +27,10 @@ public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductL
     private List<Product> productsFull; // For displayed items
     private List<Product> productsFiltered; // For filtering
 
+    public boolean isFilteredDataEmpty(){
+        return productsFiltered.isEmpty();
+    }
+
     public interface OnProductClickListener {
         void onProductClick(Product product);
     }

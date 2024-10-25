@@ -109,14 +109,21 @@ public class ProductsFragment extends Fragment {
         });
     }
 
+    private void showEmptyState() {
+        emptyStateLayout.setVisibility(View.VISIBLE);
+        binding.recyclerView.setVisibility(View.GONE);
+    }
+
+    private void hideEmptyState() {
+        emptyStateLayout.setVisibility(View.GONE);
+        binding.recyclerView.setVisibility(View.VISIBLE);
+    }
 
     private void updateProductList(List<Product> products) {
         if (products.isEmpty()) {
-            emptyStateLayout.setVisibility(View.VISIBLE);
-            binding.recyclerView.setVisibility(View.GONE);
+            showEmptyState();
         } else {
-            emptyStateLayout.setVisibility(View.GONE);
-            binding.recyclerView.setVisibility(View.VISIBLE);
+            hideEmptyState();
             adapter.setProducts(products);
         }
     }

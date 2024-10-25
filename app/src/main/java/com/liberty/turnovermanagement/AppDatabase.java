@@ -31,11 +31,11 @@ import java.util.concurrent.Executors;
  */
 @Database(
         entities = {
-            Product.class,
-            Customer.class,
-            Order.class,
-            ProductHistory.class,
-            CustomerHistory.class
+                Product.class,
+                Customer.class,
+                Order.class,
+                ProductHistory.class,
+                CustomerHistory.class
         },
         version = 8,
         exportSchema = false)
@@ -44,18 +44,21 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Abstract method to get ProductDao
+     *
      * @return ProductDao instance
      */
     public abstract ProductDao productDao();
 
     /**
      * Abstract method to get CustomerDao
+     *
      * @return CustomerDao instance
      */
     public abstract CustomerDao customerDao();
 
     /**
      * Abstract method to get OrderDao
+     *
      * @return OrderDao instance
      */
     public abstract OrderDao orderDao();
@@ -70,6 +73,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Gets the singleton instance of the AppDatabase.
+     *
      * @param context The application context
      * @return The singleton instance of AppDatabase
      */
@@ -85,6 +89,20 @@ public abstract class AppDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
+    }
+
+
+    public void clearAllData() {
+        databaseWriteExecutor.execute(() -> {
+            ProductDao productDao = productDao();
+            CustomerDao customerDao = customerDao();
+            OrderDao orderDao = orderDao();
+
+            // Clear existing data
+            orderDao.deleteAll();
+            productDao.deleteAll();
+            customerDao.deleteAll();
+        });
     }
 
     /**
@@ -157,6 +175,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Generates a random street name.
+     *
      * @return A randomly generated street name
      */
     private static String generateStreetName() {
@@ -167,6 +186,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Generates a random home number.
+     *
      * @return A randomly generated home number as a String
      */
     private static String generateHomeNumber() {
@@ -175,6 +195,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Generates a list of sample products.
+     *
      * @return List of generated Product objects
      */
     private static @NonNull List<Product> getProducts() {
@@ -204,6 +225,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /**
      * Generates a list of sample customers.
+     *
      * @return List of generated Customer objects
      */
     @SuppressLint("DefaultLocale")
