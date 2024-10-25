@@ -39,10 +39,12 @@
     <!-- Add this inside your existing layout file, e.g., activity_order_details.xml -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/customerInfoCard"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardElevation="4dp"
+        android:visibility="gone"
         app:cardCornerRadius="8dp">
 
         <LinearLayout

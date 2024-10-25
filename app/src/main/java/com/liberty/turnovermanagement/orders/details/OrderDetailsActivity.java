@@ -49,15 +49,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
             viewModel.loadOrder(orderId);
         }
 
-        viewModel.getProducts().observe(this, products -> {
-            setupProductSpinner(products);
-            updateProductSpinner(viewModel.getSelectedOrder().getValue().getProductId());
-        });
-
-        viewModel.getCustomers().observe(this, customers -> {
-            setupCustomerSpinner(customers);
-            updateCustomerSpinner(viewModel.getSelectedOrder().getValue().getCustomerId());
-        });
+        viewModel.getProducts().observe(this, this::setupProductSpinner);
+        viewModel.getCustomers().observe(this, this::setupCustomerSpinner);
 
         viewModel.getSelectedOrder().observe(this, this::updateUI);
         viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
@@ -81,6 +74,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         updateCustomerSpinner(order.getCustomerId());
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
+        binding.customerInfoCard.setVisibility(View.VISIBLE);
        // Load customer data
         viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
     }
@@ -149,7 +143,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
                 break;
             }
         }
-
     }
 
     private void updateCustomerSpinner(long customerId) {
