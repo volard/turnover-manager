@@ -25,6 +25,7 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
         viewModel = new ViewModelProvider(this).get(getViewModelClass());
 
+
         itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.INITIAL_ITEM_ID);
 
         if (itemId != -1) {

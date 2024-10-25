@@ -1,6 +1,7 @@
 package com.liberty.turnovermanagement.products.details;
 
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -17,6 +18,11 @@ public class ProductDetailsActivity extends BaseDetailsActivity<Product, Product
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected Class<ProductDetailViewModel> getViewModelClass() {
         return ProductDetailViewModel.class;
     }
@@ -28,20 +34,20 @@ public class ProductDetailsActivity extends BaseDetailsActivity<Product, Product
 
     @Override
     protected void updateUI(Product product) {
-        if (product != null) {
-            binding.editTextName.setText(product.getName());
-            binding.editTextAmount.setText(String.valueOf(product.getAmount()));
-            binding.editTextPrice.setText(String.valueOf(product.getPrice()));
+        if (product == null) { return; }
 
-            if (product.isDeleted()) {
-                binding.editTextName.setEnabled(false);
-                binding.editTextAmount.setEnabled(false);
-                binding.editTextPrice.setEnabled(false);
-                binding.buttonSave.setVisibility(View.GONE);
-                binding.labelDeleted.setVisibility(View.VISIBLE);
-            } else {
-                binding.buttonDelete.setVisibility(View.VISIBLE);
-            }
+        binding.editTextName.setText(product.getName());
+        binding.editTextAmount.setText(String.valueOf(product.getAmount()));
+        binding.editTextPrice.setText(String.valueOf(product.getPrice()));
+
+        if (product.isDeleted()) {
+            binding.editTextName.setEnabled(false);
+            binding.editTextAmount.setEnabled(false);
+            binding.editTextPrice.setEnabled(false);
+            binding.buttonSave.setVisibility(View.GONE);
+            binding.labelDeleted.setVisibility(View.VISIBLE);
+        } else {
+            binding.buttonDelete.setVisibility(View.VISIBLE);
         }
     }
 

@@ -23,6 +23,11 @@ public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, 
     }
 
     @Override
+    protected Class<?> getDetailsActivityClass() {
+        return OrderDetailsActivity.class;
+    }
+
+    @Override
     protected void setupRecyclerView() {
         adapter = new OrderAdapter(this::openDetailsActivity);
         binding.recyclerView.setAdapter(adapter);

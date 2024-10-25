@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.Identifiable;
-import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 import com.liberty.turnovermanagement.databinding.FragmentListBinding;
 
 import java.util.List;
@@ -30,6 +29,11 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     protected View emptyStateLayout;
     protected ActivityResultLauncher<Intent> detailsLauncher;
 
+    protected abstract Class<VM> getViewModelClass();
+    protected abstract Class<?> getDetailsActivityClass();
+    protected abstract void setupRecyclerView();
+    protected abstract void setupObservers();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,23 +44,6 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
                     // Handle result if needed
                 }
         );
-    }
-
-    protected void updateList(List<T> items) {
-        if (items.isEmpty()) {
-            showEmptyState();
-        } else {
-            hideEmptyState();
-            adapter.submitList(items);
-        }
-    }
-
-    protected void openDetailsActivity(T item) {
-        Intent intent = new Intent(requireContext(), CustomerDetailsActivity.class);
-        if (item != null) {
-            intent.putExtra(Constants.ITEM_ID, item.getId());
-        }
-        detailsLauncher.launch(intent);
     }
 
     @Override
@@ -74,9 +61,11 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         binding.fab.setOnClickListener(v -> openDetailsActivity(null));
     }
 
-    protected abstract Class<VM> getViewModelClass();
-    protected abstract void setupRecyclerView();
-    protected abstract void setupObservers();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 
     protected void showEmptyState() {
         emptyStateLayout.setVisibility(View.VISIBLE);
@@ -88,11 +77,22 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    protected void updateList(List<T> items) {
+        if (items.isEmpty()) {
+            showEmptyState();
+        } else {
+            hideEmptyState();
+            adapter.submitList(items);
+        }
     }
+
+    protected void openDetailsActivity(T item) {
+        Intent intent = new Intent(requireContext(), getDetailsActivityClass());
+        if (item != null) {
+            intent.putExtra(Constants.ITEM_ID, item.getId());
+        }
+        detailsLauncher.launch(intent);
+    }
+
 }
 

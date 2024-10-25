@@ -5,12 +5,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.base.list.BaseListFragment;
+import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 
 
 public class CustomersFragment extends BaseListFragment<Customer, CustomerListViewModel, CustomerAdapter.CustomerViewHolder> {
     @Override
     protected Class<CustomerListViewModel> getViewModelClass() {
         return CustomerListViewModel.class;
+    }
+
+    @Override
+    protected Class<?> getDetailsActivityClass() {
+        return CustomerDetailsActivity.class;
     }
 
     @Override
