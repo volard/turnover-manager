@@ -26,10 +26,10 @@ public interface ProductDao {
     LiveData<Boolean> hasAny();
 
     @Query("UPDATE products SET name = :name, amount = :amount, price = :price, version = :newVersion, lastUpdated = :lastUpdated WHERE id = :productId")
-    void update(long productId, String name, int amount, double price, int newVersion, LocalDateTime lastUpdated);
+    void update(long productId, String name, int amount, double price, long newVersion, LocalDateTime lastUpdated);
 
-    @Query("INSERT INTO product_history (productId, name, amount, price, version, updatedAt) VALUES (:productId, :name, :amount, :price, :version, :updatedAt)")
-    void insertHistory(long productId, String name, int amount, double price, int version, LocalDateTime updatedAt);
+    @Query("INSERT INTO product_history (productId, name, amount, price, version, createdAt) VALUES (:productId, :name, :amount, :price, :version, :updatedAt)")
+    void insertHistory(long productId, String name, int amount, double price, long version, LocalDateTime updatedAt);
 
     @Query("SELECT * FROM product_history WHERE productId = :productId ORDER BY version DESC")
     List<ProductHistory> getProductHistory(long productId);

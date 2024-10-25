@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -78,6 +79,20 @@ public class ProductsFragment extends Fragment {
         adapter = new ProductAdapter(this::openAddEditProductActivity);
         recyclerView.setAdapter(adapter);
 
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Handle search query submission (optional)
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Filter the products based on the search query
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
 
         viewModel.getProducts().observe(getViewLifecycleOwner(), this::updateProductList);
 
@@ -92,7 +107,7 @@ public class ProductsFragment extends Fragment {
         } else {
             emptyStateLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            adapter.submitList(products);
+            adapter.updateOriginalProductList(products);
         }
     }
 

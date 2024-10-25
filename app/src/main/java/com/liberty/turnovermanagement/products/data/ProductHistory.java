@@ -24,9 +24,9 @@ public class ProductHistory {
     private String name;
     private int amount;
     private double price;
-    private int version;
+    private long version;
     @TypeConverters(DateTimeStringConverter.class)
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 
     public void setProductId(long id) {
         this.id = id;
@@ -44,12 +44,12 @@ public class ProductHistory {
         this.price = price;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(long version) {
         this.version = version;
     }
 
-    public void setUpdatedAt(LocalDateTime lastUpdated) {
-        this.updatedAt = lastUpdated;
+    public void setCreatedAt(LocalDateTime lastUpdated) {
+        this.createdAt = lastUpdated;
     }
 
     public long getProductId() {
@@ -68,12 +68,12 @@ public class ProductHistory {
         return price;
     }
 
-    public int getVersion() {
+    public long getVersion() {
         return version;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     // Constructors, getters, and setters

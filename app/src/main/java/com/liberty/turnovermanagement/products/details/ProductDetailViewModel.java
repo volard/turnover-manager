@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
-import com.liberty.turnovermanagement.orders.data.Order;
+import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
@@ -37,24 +37,44 @@ public class ProductDetailViewModel extends AndroidViewModel {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             Product currentProduct = productDao.getProductById(updatedProduct.getId());
 
-            // Create a historical entry
-            ProductHistory history = new ProductHistory();
-            history.setProductId(currentProduct.getId());
-            history.setName(currentProduct.getName());
-            history.setAmount(currentProduct.getAmount());
-            history.setPrice(currentProduct.getPrice());
-            history.setVersion(currentProduct.getVersion());
-            history.setUpdatedAt(currentProduct.getLastUpdated());
-            productDao.insertHistory(history.getProductId(), history.getName(), history.getAmount(), history.getPrice(), history.getVersion(), history.getUpdatedAt());
+            if (currentProduct != null) {
+                // Create a new history entry with the current customer's data
+                ProductHistory history = new ProductHistory();
+                history.setProductId(currentProduct.getId());
+                history.setName(currentProduct.getName());
+                history.setAmount(currentProduct.getAmount());
+                history.setPrice(currentProduct.getPrice());
+                history.setCreatedAt(currentProduct.getLastUpdated());
+                history.setVersion(currentProduct.getVersion());
 
-            // Update the current product
-            int newVersion = currentProduct.getVersion() + 1;
-            LocalDateTime now = LocalDateTime.now();
-            productDao.update(updatedProduct.getId(), updatedProduct.getName(), updatedProduct.getAmount(), updatedProduct.getPrice(), newVersion, now);
+                // Insert the history entry
+                productDao.insertHistory(
+                        history.getProductId(),
+                        history.getName(),
+                        history.getAmount(),
+                        history.getPrice(),
+                        history.getVersion(),
+                        history.getCreatedAt()
+                );
 
-            // Fetch the updated product and post it
-            Product updated = productDao.getProductById(updatedProduct.getId());
-            selectedProduct.postValue(updated);
+                // Update the current customer
+                long newVersion = currentProduct.getVersion() + 1;
+                LocalDateTime now = LocalDateTime.now();
+                productDao.update(
+                        updatedProduct.getId(),
+                        updatedProduct.getName(),
+                        updatedProduct.getAmount(),
+                        updatedProduct.getPrice(),
+                        newVersion,
+                        now
+                );
+
+                // Fetch the updated customer and post it
+                Product updated = productDao.getProductById(updatedProduct.getId());
+                updated.setVersion(newVersion);
+                updated.setLastUpdated(now);
+                selectedProduct.postValue(updated);
+            }
         });
     }
 

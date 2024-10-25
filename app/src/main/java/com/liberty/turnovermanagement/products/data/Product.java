@@ -7,9 +7,11 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.customers.data.Customer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity(tableName = "products")
 public class Product implements Serializable {
@@ -19,7 +21,7 @@ public class Product implements Serializable {
     private int amount;
     private double price;
     private boolean isDeleted;
-    private int version;
+    private long version;
     @TypeConverters(DateTimeStringConverter.class)
     private LocalDateTime lastUpdated;
 
@@ -30,12 +32,13 @@ public class Product implements Serializable {
         this.price = price;
         this.isDeleted = isDeleted;
     }
+
     // Add getters and setters for version and lastUpdated
-    public int getVersion() {
+    public long getVersion() {
         return version;
     }
 
-    public void setVersion(int version) {
+    public void setVersion(long version) {
         this.version = version;
     }
 
@@ -75,12 +78,13 @@ public class Product implements Serializable {
         return isDeleted;
     }
 
-    public void setDeleted(boolean state){
+    public void setDeleted(boolean state) {
         this.isDeleted = state;
     }
 
     @Ignore
-    public Product(){}
+    public Product() {
+    }
 
     // Setters
     public void setId(long id) {
@@ -103,14 +107,31 @@ public class Product implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return  "[ " + id + " ]\n" + "Name: " + name + "\nAmount: " + amount + "\nPrice: " + price + " ₽" + (isDeleted ? "\nDELETED" : "");
+        return "[ " + id + " ]\n" + "Name: " + name + "\nAmount: " + amount + "\nPrice: " + price + " ₽" + (isDeleted ? "\nDELETED" : "");
     }
 
+    //    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Product product = (Product) o;
+//        return id == product.id;
+//    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id == product.id;
+        return id == product.id &&
+                isDeleted == product.isDeleted &&
+                Objects.equals(name, product.name) &&
+                Objects.equals(amount, product.amount) &&
+                Objects.equals(price, product.price);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, amount, price, isDeleted);
+    }
+
 }
