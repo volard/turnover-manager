@@ -3,15 +3,10 @@ package com.liberty.turnovermanagement.customers.details;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.liberty.turnovermanagement.AppDatabase;
-import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
 

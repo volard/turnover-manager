@@ -5,23 +5,16 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.CustomerListItemBinding;
+import com.liberty.turnovermanagement.ui.BaseAdapter;
 
-public class CustomerAdapter extends ListAdapter<Customer, CustomerAdapter.CustomerViewHolder> {
+public class CustomerAdapter extends BaseAdapter<Customer, CustomerAdapter.CustomerViewHolder> {
 
-    private final OnCustomerClickListener listener;
-
-    public interface OnCustomerClickListener {
-        void onCustomerClick(Customer customer);
-    }
-
-    public CustomerAdapter(OnCustomerClickListener listener) {
-        super(new CustomerDiffCallback());
-        this.listener = listener;
+    public CustomerAdapter(OnItemClickListener<Customer> listener) {
+        super(new CustomerDiffCallback(), listener);
     }
 
     @NonNull
@@ -36,6 +29,12 @@ public class CustomerAdapter extends ListAdapter<Customer, CustomerAdapter.Custo
         holder.bind(getItem(position), listener);
     }
 
+    @Override
+    protected boolean isItemFiltered(Customer customer, String filterPattern) {
+        return (customer.getName() + customer.getMiddleName() + customer.getSurname()
+                + customer.getPhone() + customer.getEmail()).toLowerCase().contains(filterPattern);
+    }
+
     public static class CustomerViewHolder extends RecyclerView.ViewHolder {
         private final CustomerListItemBinding binding;
 
@@ -44,13 +43,13 @@ public class CustomerAdapter extends ListAdapter<Customer, CustomerAdapter.Custo
             this.binding = binding;
         }
 
-        void bind(final Customer customer, final OnCustomerClickListener listener) {
+        void bind(final Customer customer, final OnItemClickListener<Customer> listener) {
             String fullName = customer.getSurname() + " " + customer.getName() + " " + customer.getMiddleName();
             binding.textViewName.setText(fullName);
             binding.textViewPhone.setText(customer.getPhone());
             binding.textViewEmail.setText(customer.getEmail());
 
-            itemView.setOnClickListener(v -> listener.onCustomerClick(customer));
+            itemView.setOnClickListener(v -> listener.onItemClick(customer));
         }
     }
 

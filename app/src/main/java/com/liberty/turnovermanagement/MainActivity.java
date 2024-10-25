@@ -10,11 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.liberty.turnovermanagement.customers.list.CustomersFragment;
 import com.liberty.turnovermanagement.databinding.ActivityMainBinding;
 import com.liberty.turnovermanagement.orders.list.OrdersFragment;

@@ -5,25 +5,18 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liberty.turnovermanagement.databinding.OrderListItemBinding;
 import com.liberty.turnovermanagement.orders.data.Order;
+import com.liberty.turnovermanagement.ui.BaseAdapter;
 
 import java.time.format.DateTimeFormatter;
 
-public class OrderAdapter extends ListAdapter<Order, OrderAdapter.OrderViewHolder> {
+public class OrderAdapter extends BaseAdapter<Order, OrderAdapter.OrderViewHolder> {
 
-    private final OnOrderClickListener listener;
-
-    public interface OnOrderClickListener {
-        void onOrderClick(Order order);
-    }
-
-    public OrderAdapter(OnOrderClickListener listener) {
-        super(new OrderDiffCallback());
-        this.listener = listener;
+    public OrderAdapter(OnItemClickListener<Order> listener) {
+        super(new OrderDiffCallback(), listener);
     }
 
     @NonNull
@@ -38,6 +31,12 @@ public class OrderAdapter extends ListAdapter<Order, OrderAdapter.OrderViewHolde
         holder.bind(getItem(position), listener);
     }
 
+    @Override
+    protected boolean isItemFiltered(Order order, String filterPattern) {
+        return (order.getCity() + order.getStreet() + order.getHome() + order.getDatetime())
+                .toLowerCase().contains(filterPattern);
+    }
+
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
         private final OrderListItemBinding binding;
 
@@ -46,13 +45,13 @@ public class OrderAdapter extends ListAdapter<Order, OrderAdapter.OrderViewHolde
             this.binding = binding;
         }
 
-        void bind(final Order order, final OnOrderClickListener listener) {
+        void bind(final Order order, final OnItemClickListener<Order> listener) {
             binding.textViewOrderId.setText(String.format("Order #%d", order.getId()));
             binding.textViewDateTime.setText(order.getDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             binding.textViewAmount.setText(String.format("Amount: %d", order.getAmount()));
             binding.textViewAddress.setText(String.format("%s, %s %s", order.getCity(), order.getStreet(), order.getHome()));
 
-            itemView.setOnClickListener(v -> listener.onOrderClick(order));
+            itemView.setOnClickListener(v -> listener.onItemClick(order));
         }
     }
 
