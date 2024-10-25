@@ -29,10 +29,10 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         customerId = getIntent().getLongExtra("customerId", -1);
 
         if (customerId != -1) {
-            viewModel.loadCustomer(customerId);
+            viewModel.loadItem(customerId);
         }
 
-        viewModel.getSelectedCustomer().observe(this, this::updateUI);
+        viewModel.getSelectedItem().observe(this, this::updateUI);
 
 
         binding.buttonSave.setOnClickListener(v -> saveCustomer());
@@ -63,14 +63,14 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     }
 
     private void setupVersionHistory() {
-        viewModel.getCustomerHistory(customerId).observe(this, history -> {
+        viewModel.getItemHistory(customerId).observe(this, history -> {
             // Display the version history, e.g., in a RecyclerView
             // You'll need to create a new adapter and layout for this
         });
     }
 
     private void deleteCustomer() {
-        Customer customer = viewModel.getSelectedCustomer().getValue();
+        Customer customer = viewModel.getSelectedItem().getValue();
         if (customer == null) {
             return;
         }
@@ -80,7 +80,7 @@ public class CustomerDetailsActivity extends AppCompatActivity {
     }
 
     private void saveCustomer() {
-        Customer customer = viewModel.getSelectedCustomer().getValue();
+        Customer customer = viewModel.getSelectedItem().getValue();
         if (customer == null) {
             customer = new Customer();
         }
@@ -91,10 +91,10 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         customer.setPhone(binding.editTextPhone.getText().toString().trim());
         customer.setEmail(binding.editTextEmail.getText().toString().trim());
 
-        if (customerId == -1) {
-            viewModel.addNewCustomer(customer);
+        if (customerId == 0) {
+            viewModel.addNewItem(customer);
         } else {
-            viewModel.updateCustomer(customer);
+            viewModel.updateItem(customer);
         }
 
         setResult(Activity.RESULT_OK);

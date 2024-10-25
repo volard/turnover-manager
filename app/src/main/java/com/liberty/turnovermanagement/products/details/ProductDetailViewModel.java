@@ -2,7 +2,6 @@ package com.liberty.turnovermanagement.products.details;
 
 import android.app.Application;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,34 +9,33 @@ import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
+import com.liberty.turnovermanagement.ui.BaseDetailsViewModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ProductDetailViewModel extends AndroidViewModel {
+public class ProductDetailViewModel extends BaseDetailsViewModel<Product, ProductHistory> {
     private final ProductDao productDao;
-    private final MutableLiveData<Product> selectedProduct = new MutableLiveData<>();
 
     public ProductDetailViewModel(Application application) {
         super(application);
-        AppDatabase db = AppDatabase.getDatabase(application);
         productDao = db.productDao();
     }
 
-    public void setSelectedProduct(Product product) {
-        selectedProduct.postValue(product);
-    }
-
-    public LiveData<Product> getSelectedProduct() {
-        return selectedProduct;
-    }
-
-    public void updateProduct(Product updatedProduct) {
+    @Override
+    public void loadItem(long itemId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Product currentProduct = productDao.getProductById(updatedProduct.getId());
+            Product product = productDao.getProductById(itemId);
+            selectedItem.postValue(product);
+        });
+    }
+
+    @Override
+    public void updateItem(Product product) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Product currentProduct = productDao.getProductById(product.getId());
 
             if (currentProduct != null) {
-                // Create a new history entry with the current customer's data
                 ProductHistory history = new ProductHistory();
                 history.setProductId(currentProduct.getId());
                 history.setName(currentProduct.getName());
@@ -46,7 +44,6 @@ public class ProductDetailViewModel extends AndroidViewModel {
                 history.setCreatedAt(currentProduct.getLastUpdated());
                 history.setVersion(currentProduct.getVersion());
 
-                // Insert the history entry
                 productDao.insertHistory(
                         history.getProductId(),
                         history.getName(),
@@ -56,57 +53,50 @@ public class ProductDetailViewModel extends AndroidViewModel {
                         history.getCreatedAt()
                 );
 
-                // Update the current customer
                 long newVersion = currentProduct.getVersion() + 1;
                 LocalDateTime now = LocalDateTime.now();
                 productDao.update(
-                        updatedProduct.getId(),
-                        updatedProduct.getName(),
-                        updatedProduct.getAmount(),
-                        updatedProduct.getPrice(),
+                        product.getId(),
+                        product.getName(),
+                        product.getAmount(),
+                        product.getPrice(),
                         newVersion,
                         now
                 );
 
-                // Fetch the updated customer and post it
-                Product updated = productDao.getProductById(updatedProduct.getId());
+                Product updated = productDao.getProductById(product.getId());
                 updated.setVersion(newVersion);
                 updated.setLastUpdated(now);
-                selectedProduct.postValue(updated);
+                selectedItem.postValue(updated);
             }
         });
     }
 
-    public void loadProduct(long productId) {
+    @Override
+    public void softDelete(Product product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Product product = productDao.getProductById(productId);
-            selectedProduct.postValue(product);
+            productDao.softDelete(product.getId());
+            product.setDeleted(true);
+            selectedItem.postValue(product);
         });
     }
 
-    public LiveData<List<ProductHistory>> getProductHistory(long productId) {
+    @Override
+    public LiveData<List<ProductHistory>> getItemHistory(long itemId) {
         MutableLiveData<List<ProductHistory>> history = new MutableLiveData<>();
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<ProductHistory> productHistory = productDao.getProductHistory(productId);
+            List<ProductHistory> productHistory = productDao.getProductHistory(itemId);
             history.postValue(productHistory);
         });
         return history;
     }
 
-    public void softDelete(Product product) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            productDao.softDelete(product.getId());
-            product.setDeleted(true);
-            selectedProduct.postValue(product);
-        });
-    }
-
-    public void addNewProduct(Product product) {
+    @Override
+    public void addNewItem(Product product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             long id = productDao.insert(product);
             product.setId(id);
-            selectedProduct.postValue(product);
+            selectedItem.postValue(product);
         });
     }
 }
-

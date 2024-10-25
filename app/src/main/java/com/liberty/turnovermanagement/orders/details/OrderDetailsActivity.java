@@ -46,13 +46,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         long orderId = getIntent().getLongExtra("orderId", -1);
         if (orderId != -1) {
-            viewModel.loadOrder(orderId);
+            viewModel.loadItem(orderId);
         }
 
         viewModel.getProducts().observe(this, this::setupProductSpinner);
         viewModel.getCustomers().observe(this, this::setupCustomerSpinner);
 
-        viewModel.getSelectedOrder().observe(this, this::updateUI);
+        viewModel.getSelectedItem().observe(this, this::updateUI);
         viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
 
         binding.buttonSave.setOnClickListener(v -> saveOrder());
@@ -197,16 +197,16 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void deleteOrder() {
-        Order order = viewModel.getSelectedOrder().getValue();
+        Order order = viewModel.getSelectedItem().getValue();
         if (order != null) {
-            viewModel.deleteOrder(order);
+            viewModel.softDelete(order);
             setResult(Activity.RESULT_OK);
             finish();
         }
     }
 
     private void saveOrder() {
-        Order order = viewModel.getSelectedOrder().getValue();
+        Order order = viewModel.getSelectedItem().getValue();
         if (order == null) {
             order = new Order();
         }
@@ -221,9 +221,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         order.setCustomerId(selectedCustomer.getId());
 
         if (order.getId() == 0) {
-            viewModel.addNewOrder(order);
+            viewModel.addNewItem(order);
         } else {
-            viewModel.updateOrder(order);
+            viewModel.updateItem(order);
         }
 
         setResult(Activity.RESULT_OK);

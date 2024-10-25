@@ -14,38 +14,73 @@ import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
+import com.liberty.turnovermanagement.ui.BaseDetailsViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDetailsViewModel extends AndroidViewModel {
+public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
     private final OrderDao orderDao;
     private final ProductDao productDao;
     private final CustomerDao customerDao;
-    private final MutableLiveData<Order> selectedOrder = new MutableLiveData<>();
     private final LiveData<List<Product>> products;
     private final LiveData<List<Customer>> customers;
-
     private final MutableLiveData<Customer> customerForOrder = new MutableLiveData<>();
 
     public OrderDetailsViewModel(Application application) {
         super(application);
-        AppDatabase db = AppDatabase.getDatabase(application);
-        orderDao       = db.orderDao();
-        productDao     = db.productDao();
-        customerDao    = db.customerDao();
-        products       = productDao.getAll();
-        customers      = customerDao.getAll();
+        orderDao = db.orderDao();
+        productDao = db.productDao();
+        customerDao = db.customerDao();
+        products = productDao.getAll();
+        customers = customerDao.getAll();
     }
 
-    public void loadOrder(long orderId) {
+    @Override
+    public void loadItem(long itemId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Order order = orderDao.getOrderById(orderId);
-            selectedOrder.postValue(order);
+            Order order = orderDao.getOrderById(itemId);
+            selectedItem.postValue(order);
         });
     }
 
+    @Override
+    public void updateItem(Order order) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            orderDao.update(order);
+            selectedItem.postValue(order);
+        });
+    }
 
-   public void loadCustomerForOrder(long customerId, long customerVersion) {
+    @Override
+    public void softDelete(Order order) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            orderDao.delete(order);
+        });
+    }
+
+    @Override
+    public LiveData<List<Void>> getItemHistory(long itemId) {
+        // Orders don't have history in the current implementation
+        return new MutableLiveData<>(new ArrayList<>());
+    }
+
+    @Override
+    public void addNewItem(Order order) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            long productVersion = productDao.getProductVersion(order.getProductId());
+            long customerVersion = customerDao.getCustomerVersion(order.getCustomerId());
+
+            order.setProductVersion(productVersion);
+            order.setCustomerVersion(customerVersion);
+
+            long id = orderDao.insert(order);
+            order.setId(id);
+            selectedItem.postValue(order);
+        });
+    }
+
+    public void loadCustomerForOrder(long customerId, long customerVersion) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             Customer customer = getCustomerForOrder(customerId, customerVersion);
             customerForOrder.postValue(customer);
@@ -64,9 +99,8 @@ public class OrderDetailsViewModel extends AndroidViewModel {
             }
         }
 
-        return null; // Customer not found
+        return null;
     }
-
 
     private Customer convertToCustomer(CustomerHistory history) {
         Customer customer = new Customer();
@@ -77,16 +111,11 @@ public class OrderDetailsViewModel extends AndroidViewModel {
         customer.setPhone(history.getPhone());
         customer.setEmail(history.getEmail());
         customer.setVersion(history.getVersion());
-        // Set other fields as necessary
         return customer;
     }
 
     public LiveData<Customer> getCustomerForOrder() {
         return customerForOrder;
-    }
-
-    public void setSelectedOrder(Order order) {
-        selectedOrder.setValue(order);
     }
 
     public LiveData<List<Product>> getProducts() {
@@ -97,50 +126,19 @@ public class OrderDetailsViewModel extends AndroidViewModel {
         return customers;
     }
 
-    public LiveData<Order> getSelectedOrder() {
-        return selectedOrder;
-    }
-
     public void updateSelectedOrderProduct(Product product) {
-        Order currentOrder = selectedOrder.getValue();
+        Order currentOrder = selectedItem.getValue();
         if (currentOrder != null) {
             currentOrder.setProductId(product.getId());
-            selectedOrder.setValue(currentOrder);
+            selectedItem.setValue(currentOrder);
         }
     }
 
     public void updateSelectedOrderCustomer(Customer customer) {
-        Order currentOrder = selectedOrder.getValue();
+        Order currentOrder = selectedItem.getValue();
         if (currentOrder != null) {
             currentOrder.setCustomerId(customer.getId());
-            selectedOrder.setValue(currentOrder);
+            selectedItem.setValue(currentOrder);
         }
-    }
-
-
-    public void updateOrder(Order updatedOrder) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            orderDao.update(updatedOrder);
-            selectedOrder.postValue(updatedOrder);
-        });
-    }
-
-    public void addNewOrder(Order order) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            long productVersion = productDao.getProductVersion(order.getProductId());
-            long customerVersion = customerDao.getCustomerVersion(order.getCustomerId());
-
-            order.setProductVersion(productVersion);
-            order.setCustomerVersion(customerVersion);
-
-            orderDao.insert(order);
-            selectedOrder.postValue(order);
-        });
-    }
-
-    public void deleteOrder(Order order) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            orderDao.delete(order);
-        });
     }
 }

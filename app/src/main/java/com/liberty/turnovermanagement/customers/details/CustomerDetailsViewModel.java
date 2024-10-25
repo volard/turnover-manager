@@ -10,39 +10,33 @@ import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
+import com.liberty.turnovermanagement.ui.BaseDetailsViewModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class CustomerDetailsViewModel extends AndroidViewModel {
+public class CustomerDetailsViewModel extends BaseDetailsViewModel<Customer, CustomerHistory> {
     private final CustomerDao customerDao;
-    private final MutableLiveData<Customer> selectedCustomer = new MutableLiveData<>();
 
     public CustomerDetailsViewModel(Application application) {
         super(application);
-        AppDatabase db = AppDatabase.getDatabase(application);
         customerDao = db.customerDao();
     }
 
-    public void loadCustomer(long customerId) {
+    @Override
+    public void loadItem(long itemId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Customer customer= customerDao.getCustomerById(customerId);
-            selectedCustomer.postValue(customer);
+            Customer customer = customerDao.getCustomerById(itemId);
+            selectedItem.postValue(customer);
         });
     }
 
-
-    public LiveData<Customer> getSelectedCustomer() {
-        return selectedCustomer;
-    }
-
-
-    public void updateCustomer(Customer updatedCustomer) {
+    @Override
+    public void updateItem(Customer customer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Customer currentCustomer = customerDao.getCustomerById(updatedCustomer.getId());
+            Customer currentCustomer = customerDao.getCustomerById(customer.getId());
 
             if (currentCustomer != null) {
-                // Create a new history entry with the current customer's data
                 CustomerHistory history = new CustomerHistory();
                 history.setCustomerId(currentCustomer.getId());
                 history.setSurname(currentCustomer.getSurname());
@@ -53,7 +47,6 @@ public class CustomerDetailsViewModel extends AndroidViewModel {
                 history.setCreatedAt(currentCustomer.getLastUpdated());
                 history.setVersion(currentCustomer.getVersion());
 
-                // Insert the history entry
                 customerDao.insertHistory(
                         history.getCustomerId(),
                         history.getSurname(),
@@ -65,53 +58,52 @@ public class CustomerDetailsViewModel extends AndroidViewModel {
                         history.getCreatedAt()
                 );
 
-                // Update the current customer
                 long newVersion = currentCustomer.getVersion() + 1;
                 LocalDateTime now = LocalDateTime.now();
                 customerDao.update(
-                        updatedCustomer.getId(),
-                        updatedCustomer.getSurname(),
-                        updatedCustomer.getName(),
-                        updatedCustomer.getMiddleName(),
-                        updatedCustomer.getPhone(),
-                        updatedCustomer.getEmail(),
+                        customer.getId(),
+                        customer.getSurname(),
+                        customer.getName(),
+                        customer.getMiddleName(),
+                        customer.getPhone(),
+                        customer.getEmail(),
                         newVersion,
                         now
                 );
 
-                // Fetch the updated customer and post it
-                Customer updated = customerDao.getCustomerById(updatedCustomer.getId());
+                Customer updated = customerDao.getCustomerById(customer.getId());
                 updated.setVersion(newVersion);
                 updated.setLastUpdated(now);
-                selectedCustomer.postValue(updated);
+                selectedItem.postValue(updated);
             }
         });
     }
 
-
+    @Override
     public void softDelete(Customer customer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             customerDao.softDelete(customer.getId());
             customer.setDeleted(true);
-            selectedCustomer.postValue(customer);
+            selectedItem.postValue(customer);
         });
     }
 
-
-    public LiveData<List<CustomerHistory>> getCustomerHistory(long customerId) {
+    @Override
+    public LiveData<List<CustomerHistory>> getItemHistory(long itemId) {
         MutableLiveData<List<CustomerHistory>> history = new MutableLiveData<>();
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<CustomerHistory> customerHistory = customerDao.getCustomerHistory(customerId);
+            List<CustomerHistory> customerHistory = customerDao.getCustomerHistory(itemId);
             history.postValue(customerHistory);
         });
         return history;
     }
 
-    public void addNewCustomer(Customer customer) {
+    @Override
+    public void addNewItem(Customer customer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             long id = customerDao.insert(customer);
-            customer.setId((int) id);
-            selectedCustomer.postValue(customer);
+            customer.setId(id);
+            selectedItem.postValue(customer);
         });
     }
 }

@@ -28,24 +28,24 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
         if (productId != -1) {
-            viewModel.loadProduct(productId);
+            viewModel.loadItem(productId);
         }
 
-        viewModel.getSelectedProduct().observe(this, this::updateUI);
+        viewModel.getSelectedItem().observe(this, this::updateUI);
 
         binding.buttonSave.setOnClickListener(v -> saveProduct());
         binding.buttonDelete.setOnClickListener(v -> deleteProduct());
     }
 
     private void setupVersionHistory() {
-        viewModel.getProductHistory(productId).observe(this, history -> {
+        viewModel.getItemHistory(productId).observe(this, history -> {
             // Display the version history, e.g., in a RecyclerView
             // You'll need to create a new adapter and layout for this
         });
     }
 
     private void deleteProduct() {
-        Product product = viewModel.getSelectedProduct().getValue();
+        Product product = viewModel.getSelectedItem().getValue();
         if (product != null) {
             viewModel.softDelete(product);
             setResult(Activity.RESULT_OK);
@@ -73,7 +73,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     }
 
     private void saveProduct() {
-        Product product = viewModel.getSelectedProduct().getValue();
+        Product product = viewModel.getSelectedItem().getValue();
         if (product == null) {
             product = new Product();
         }
@@ -83,10 +83,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
         product.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
         product.setPrice(Double.parseDouble(binding.editTextPrice.getText().toString()));
 
-        if (productId == -1) {
-            viewModel.addNewProduct(product);
+        if (productId == 0) {
+            viewModel.addNewItem(product);
         } else {
-            viewModel.updateProduct(product);
+            viewModel.updateItem(product);
         }
 
         setResult(Activity.RESULT_OK);
