@@ -28,9 +28,7 @@ import java.util.List;
 
 public class ProductsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
     private ProductAdapter adapter;
-    private FloatingActionButton fab;
     private ActivityResultLauncher<Intent> addEditProductLauncher;
     private FragmentProductsBinding binding;
     private View emptyStateLayout;
@@ -64,50 +62,62 @@ public class ProductsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentProductsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        recyclerView = root.findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        fab = root.findViewById(R.id.fab);
 
         emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
 
+        return binding.getRoot();
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         // Add the empty view to the parent layout
-        ((ViewGroup) recyclerView.getParent()).addView(emptyStateLayout);
+        ((ViewGroup) binding.recyclerView.getParent()).addView(emptyStateLayout);
 
         // Handle product click
         adapter = new ProductAdapter(this::openAddEditProductActivity);
-        recyclerView.setAdapter(adapter);
+        binding.recyclerView.setAdapter(adapter);
 
+        setupSearchView();
+
+
+        viewModel.getProducts().observe(getViewLifecycleOwner(), this::updateProductList);
+
+        binding.fab.setOnClickListener(v -> openAddEditProductActivity(null));
+    }
+
+    private void setupSearchView() {
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                // Handle search query submission (optional)
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // Filter the products based on the search query
                 adapter.getFilter().filter(newText);
                 return true;
             }
         });
 
-        viewModel.getProducts().observe(getViewLifecycleOwner(), this::updateProductList);
-
-        fab.setOnClickListener(v -> openAddEditProductActivity(null));
-
-        return root;
+        binding.searchView.setOnCloseListener(() -> {
+            adapter.getFilter().filter("");
+            return false;
+        });
     }
+
+
     private void updateProductList(List<Product> products) {
         if (products.isEmpty()) {
             emptyStateLayout.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.GONE);
         } else {
             emptyStateLayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            adapter.updateOriginalProductList(products);
+            binding.recyclerView.setVisibility(View.VISIBLE);
+            adapter.setProducts(products);
         }
     }
 

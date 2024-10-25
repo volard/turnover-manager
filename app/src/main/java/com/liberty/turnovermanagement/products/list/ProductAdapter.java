@@ -24,8 +24,8 @@ import java.util.List;
  */
 public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductListItemViewHolder> implements Filterable {
     private final OnProductClickListener listener;
-    private List<Product> productList; // For displayed items
-    private List<Product> originalProductList; // For filtering
+    private List<Product> productsFull; // For displayed items
+    private List<Product> productsFiltered; // For filtering
 
     public interface OnProductClickListener {
         void onProductClick(Product product);
@@ -39,10 +39,11 @@ public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductL
                 String charString = constraint.toString();
                 List<Product> filteredList = new ArrayList<>();
                 if (charString.isEmpty()) {
-                    filteredList.addAll(originalProductList); // Assuming you have an originalProductList
+                    filteredList.addAll(productsFull); // Assuming you have an originalProductList
                 } else {
-                    for (Product product : originalProductList) {
-                        if (product.getName().toLowerCase().contains(charString.toLowerCase())) {
+                   String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (Product product : productsFull) {
+                        if (product.getName().toLowerCase().contains(filterPattern)) {
                             filteredList.add(product);
                         }
                     }
@@ -55,9 +56,8 @@ public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductL
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                productList.clear(); // Assuming you have a productList for the current displayed items
-                productList.addAll((List<Product>) results.values);
-                notifyDataSetChanged();
+              productsFiltered = (List<Product>) results.values;
+                submitList(productsFiltered);
             }
         };
     }
@@ -65,13 +65,14 @@ public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductL
     public ProductAdapter(OnProductClickListener listener) {
         super(new ProductDiffCallback());
         this.listener = listener;
-        this.productList = new ArrayList<>();
-        this.originalProductList = new ArrayList<>();
+        this.productsFull = new ArrayList<>();
+        this.productsFiltered = new ArrayList<>();
     }
 
-    public void updateOriginalProductList(List<Product> products) {
-        originalProductList = new ArrayList<>(products);
-        submitList(products);
+    public void setProducts(List<Product> products) {
+        productsFull = new ArrayList<>(products);
+        productsFiltered = new ArrayList<>(products);
+        submitList(productsFiltered);
     }
 
 
