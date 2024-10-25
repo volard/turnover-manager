@@ -3,7 +3,6 @@ package com.liberty.turnovermanagement.products.list;
 import android.content.Intent;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 import com.liberty.turnovermanagement.ui.BaseListFragment;
@@ -24,7 +23,7 @@ public class ProductsFragment extends BaseListFragment<Product, ProductListViewM
 
     @Override
     protected void setupObservers() {
-        viewModel.getProducts().observe(getViewLifecycleOwner(), this::updateList);
+        viewModel.getItems().observe(getViewLifecycleOwner(), this::updateList);
     }
 
     @Override

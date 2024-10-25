@@ -10,7 +10,7 @@
         android:id="@+id/navigation_orders"
         android:name="com.liberty.turnovermanagement.orders.list.OrdersFragment"
         android:label="@string/title_orders"
-        tools:layout="@layout/fragment_orders" />
+        tools:layout="@layout/fragment_list" />
 
     <fragment
         android:id="@+id/navigation_products"
@@ -22,7 +22,7 @@
         android:id="@+id/navigation_customers"
         android:name="com.liberty.turnovermanagement.customers.list.CustomersFragment"
         android:label="@string/title_customers"
-        tools:layout="@layout/fragment_customers" />
+        tools:layout="@layout/fragment_list" />
 
     <fragment
         android:id="@+id/navigation_settings"

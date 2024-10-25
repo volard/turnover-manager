@@ -2,7 +2,6 @@ package com.liberty.turnovermanagement.orders.list;
 
 import android.app.Application;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
@@ -11,43 +10,38 @@ import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.ProductDao;
+import com.liberty.turnovermanagement.ui.BaseListViewModel;
 
-import java.util.List;
 
-public class OrderListViewModel extends AndroidViewModel {
+public class OrderListViewModel extends BaseListViewModel<Order> {
     private final OrderDao orderDao;
     private final ProductDao productDao;
     private final CustomerDao customerDao;
-
-    private final LiveData<List<Order>> orders;
     private final MediatorLiveData<Boolean> canCreateOrder;
 
     public OrderListViewModel(Application application) {
         super(application);
-
-        AppDatabase db = AppDatabase.getDatabase(application);
         orderDao = db.orderDao();
         productDao = db.productDao();
         customerDao = db.customerDao();
-        orders = orderDao.getAllOrders();
 
         canCreateOrder = new MediatorLiveData<>();
         LiveData<Boolean> hasCustomers = customerDao.hasAny();
         LiveData<Boolean> hasProducts = productDao.hasAny();
 
-        canCreateOrder.addSource(hasCustomers, customers -> {
-            Boolean products = hasProducts.getValue();
-            canCreateOrder.setValue(customers != null && products != null && customers && products);
-        });
+        canCreateOrder.addSource(hasCustomers, customers -> updateCanCreateOrder(customers, hasProducts.getValue()));
+        canCreateOrder.addSource(hasProducts, products -> updateCanCreateOrder(hasCustomers.getValue(), products));
 
-        canCreateOrder.addSource(hasProducts, products -> {
-            Boolean customers = hasCustomers.getValue();
-            canCreateOrder.setValue(customers != null && products != null && customers && products);
-        });
+        updateItemList();
     }
 
-    public LiveData<List<Order>> getOrders() {
-        return orders;
+    @Override
+    protected void updateItemList() {
+        items = orderDao.getAllOrders();
+    }
+
+    private void updateCanCreateOrder(Boolean customers, Boolean products) {
+        canCreateOrder.setValue(customers != null && products != null && customers && products);
     }
 
     public LiveData<Boolean> canCreateOrder() {
@@ -55,8 +49,7 @@ public class OrderListViewModel extends AndroidViewModel {
     }
 
     public void delete(Order order) {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            orderDao.delete(order);
-        });
+        AppDatabase.databaseWriteExecutor.execute(() -> orderDao.delete(order));
     }
 }
+

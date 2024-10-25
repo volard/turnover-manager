@@ -31,7 +31,7 @@ public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, 
 
     @Override
     protected void setupObservers() {
-        viewModel.getOrders().observe(getViewLifecycleOwner(), this::updateList);
+        viewModel.getItems().observe(getViewLifecycleOwner(), this::updateList);
         viewModel.canCreateOrder().observe(getViewLifecycleOwner(), this::updateFabVisibility);
     }
 

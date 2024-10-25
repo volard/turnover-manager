@@ -26,7 +26,7 @@ public class CustomersFragment extends BaseListFragment<Customer, CustomerListVi
 
     @Override
     protected void setupObservers() {
-        viewModel.getCustomers().observe(getViewLifecycleOwner(), this::updateList);
+        viewModel.getItems().observe(getViewLifecycleOwner(), this::updateList);
     }
 
     @Override
