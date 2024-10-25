@@ -13,32 +13,23 @@ import androidx.lifecycle.ViewModelProvider;
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
 
 public class CustomerDetailsActivity extends AppCompatActivity {
 
-    private EditText editTextSurName, editTextName, editTextMiddleName, editTextPhone, editTextEmail;
-    private Button buttonSave, buttonDelete;
-    private TextView labelDeleted;
     private CustomerDetailsViewModel viewModel;
     private long customerId = -1;
+    private ActivityDetailsCustomerBinding binding;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details_customer);
+        binding = ActivityDetailsCustomerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(CustomerDetailsViewModel.class);
 
-
-        editTextName = findViewById(R.id.editTextName);
-        editTextSurName = findViewById(R.id.editTextSurName);
-        editTextMiddleName = findViewById(R.id.editTextMiddleName);
-        editTextPhone = findViewById(R.id.editTextPhone);
-        editTextEmail = findViewById(R.id.editTextEmail);
-        buttonSave = findViewById(R.id.buttonSave);
-        buttonDelete = findViewById(R.id.buttonDelete);
-        labelDeleted = findViewById(R.id.labelDeleted);
 
         customerId = getIntent().getLongExtra("customerId", -1);
 
@@ -49,30 +40,30 @@ public class CustomerDetailsActivity extends AppCompatActivity {
         viewModel.getSelectedCustomer().observe(this, this::updateUI);
 
 
-        buttonSave.setOnClickListener(v -> saveCustomer());
-        buttonDelete.setOnClickListener(v -> deleteCustomer());
+        binding.buttonSave.setOnClickListener(v -> saveCustomer());
+        binding.buttonDelete.setOnClickListener(v -> deleteCustomer());
     }
 
     private void updateUI(Customer customer) {
         if (customer == null) {
             return;
         }
-        editTextName.setText(customer.getName());
-        editTextSurName.setText(customer.getSurname());
-        editTextMiddleName.setText(customer.getMiddleName());
-        editTextPhone.setText(customer.getPhone());
-        editTextEmail.setText(customer.getEmail());
+        binding.editTextName.setText(customer.getName());
+        binding.editTextSurName.setText(customer.getSurname());
+        binding.editTextMiddleName.setText(customer.getMiddleName());
+        binding.editTextPhone.setText(customer.getPhone());
+        binding.editTextEmail.setText(customer.getEmail());
 
         if (customer.isDeleted()) {
-            editTextName.setEnabled(false);
-            editTextSurName.setEnabled(false);
-            editTextMiddleName.setEnabled(false);
-            editTextPhone.setEnabled(false);
-            editTextEmail.setEnabled(false);
-            buttonSave.setVisibility(View.GONE);
-            labelDeleted.setVisibility(View.VISIBLE);
+            binding.editTextName.setEnabled(false);
+            binding.editTextSurName.setEnabled(false);
+            binding.editTextMiddleName.setEnabled(false);
+            binding.editTextPhone.setEnabled(false);
+            binding.editTextEmail.setEnabled(false);
+            binding.buttonSave.setVisibility(View.GONE);
+            binding.labelDeleted.setVisibility(View.VISIBLE);
         } else {
-            buttonDelete.setVisibility(View.VISIBLE);
+            binding.buttonDelete.setVisibility(View.VISIBLE);
         }
     }
 
@@ -99,11 +90,11 @@ public class CustomerDetailsActivity extends AppCompatActivity {
             customer = new Customer();
         }
 
-        customer.setName(editTextName.getText().toString().trim());
-        customer.setSurname(editTextSurName.getText().toString().trim());
-        customer.setMiddleName(editTextMiddleName.getText().toString().trim());
-        customer.setPhone(editTextPhone.getText().toString().trim());
-        customer.setEmail(editTextEmail.getText().toString().trim());
+        customer.setName(binding.editTextName.getText().toString().trim());
+        customer.setSurname(binding.editTextSurName.getText().toString().trim());
+        customer.setMiddleName(binding.editTextMiddleName.getText().toString().trim());
+        customer.setPhone(binding.editTextPhone.getText().toString().trim());
+        customer.setEmail(binding.editTextEmail.getText().toString().trim());
 
         if (customerId == -1) {
             viewModel.addNewCustomer(customer);

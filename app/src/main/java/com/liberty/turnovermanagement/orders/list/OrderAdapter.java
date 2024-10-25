@@ -38,7 +38,7 @@ public class OrderAdapter extends ListAdapter<Order, OrderAdapter.OrderViewHolde
         holder.bind(getItem(position), listener);
     }
 
-    static class OrderViewHolder extends RecyclerView.ViewHolder {
+    public static class OrderViewHolder extends RecyclerView.ViewHolder {
         private final OrderListItemBinding binding;
 
         OrderViewHolder(OrderListItemBinding binding) {

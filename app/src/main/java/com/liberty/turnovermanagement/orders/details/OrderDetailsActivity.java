@@ -32,48 +32,11 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private ActivityDetailsOrderBinding binding;
 
 
-    private void showDatePickerDialog() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    showTimePickerDialog();
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-        datePickerDialog.show();
-    }
-
-    private void showTimePickerDialog() {
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                this,
-                (view, hourOfDay, minute) -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    calendar.set(Calendar.MINUTE, minute);
-                    updateSelectedDateTime();
-                },
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                false
-        );
-        timePickerDialog.show();
-    }
-
-    private void updateSelectedDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        String formattedDateTime = sdf.format(calendar.getTime());
-        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details_order);
         binding = ActivityDetailsOrderBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
 
@@ -120,8 +83,46 @@ public class OrderDetailsActivity extends AppCompatActivity {
         binding.buttonDelete.setVisibility(View.VISIBLE);
        // Load customer data
         viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
-
     }
+
+
+    private void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    showTimePickerDialog();
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    private void showTimePickerDialog() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
+                this,
+                (view, hourOfDay, minute) -> {
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
+                    updateSelectedDateTime();
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                false
+        );
+        timePickerDialog.show();
+    }
+
+    private void updateSelectedDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        String formattedDateTime = sdf.format(calendar.getTime());
+        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
+    }
+
     private void updateCustomerUI(Customer customer) {
         if (customer != null) {
             binding.customerNameTextView.setText(getString(R.string.customer_name_format,

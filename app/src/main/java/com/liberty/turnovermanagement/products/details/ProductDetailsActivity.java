@@ -12,31 +12,25 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.R;
+import com.liberty.turnovermanagement.databinding.ActivityDetailsProductBinding;
 import com.liberty.turnovermanagement.products.data.Product;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    private EditText editTextName, editTextAmount, editTextPrice;
-    private Button buttonSave;
-    private Button buttonDelete;
-    private TextView labelDeleted;
+
+    private ActivityDetailsProductBinding binding;
     private ProductDetailViewModel viewModel;
     private long productId = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details_product);
+        binding = ActivityDetailsProductBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(ProductDetailViewModel.class);
         productId = getIntent().getLongExtra("productId", -1);
 
-        editTextName   = findViewById(R.id.editTextName);
-        editTextAmount = findViewById(R.id.editTextAmount);
-        editTextPrice  = findViewById(R.id.editTextPrice);
-        buttonSave     = findViewById(R.id.buttonSave);
-        buttonDelete   = findViewById(R.id.buttonDelete);
-        labelDeleted   = findViewById(R.id.labelDeleted);
 
         if (productId != -1) {
             viewModel.loadProduct(productId);
@@ -44,8 +38,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         viewModel.getSelectedProduct().observe(this, this::updateUI);
 
-        buttonSave.setOnClickListener(v -> saveProduct());
-        buttonDelete.setOnClickListener(v -> deleteProduct());
+        binding.buttonSave.setOnClickListener(v -> saveProduct());
+        binding.buttonDelete.setOnClickListener(v -> deleteProduct());
     }
 
     private void setupVersionHistory() {
@@ -66,19 +60,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void updateUI(Product product) {
         if (product != null) {
-            editTextName.setText(product.getName());
-            editTextAmount.setText(String.valueOf(product.getAmount()));
-            editTextPrice.setText(String.valueOf(product.getPrice()));
+            binding.editTextName.setText(product.getName());
+            binding.editTextAmount.setText(String.valueOf(product.getAmount()));
+            binding.editTextPrice.setText(String.valueOf(product.getPrice()));
 
             if (product.isDeleted()) {
                 // Disable editing for deleted products
-                editTextName.setEnabled(false);
-                editTextAmount.setEnabled(false);
-                editTextPrice.setEnabled(false);
-                buttonSave.setVisibility(View.GONE);
-                labelDeleted.setVisibility(View.VISIBLE);
+                binding.editTextName.setEnabled(false);
+                binding.editTextAmount.setEnabled(false);
+                binding.editTextPrice.setEnabled(false);
+                binding.buttonSave.setVisibility(View.GONE);
+                binding.labelDeleted.setVisibility(View.VISIBLE);
             } else {
-                buttonDelete.setVisibility(View.VISIBLE);
+                binding.buttonDelete.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -90,9 +84,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
 
         // Update product fields from UI elements
-        product.setName(editTextName.getText().toString());
-        product.setAmount(Integer.parseInt(editTextAmount.getText().toString()));
-        product.setPrice(Double.parseDouble(editTextPrice.getText().toString()));
+        product.setName(binding.editTextName.getText().toString());
+        product.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
+        product.setPrice(Double.parseDouble(binding.editTextPrice.getText().toString()));
 
         if (productId == -1) {
             viewModel.addNewProduct(product);
