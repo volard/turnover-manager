@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.CustomerListItemBinding;
-import com.liberty.turnovermanagement.ui.BaseAdapter;
+import com.liberty.turnovermanagement.base.list.BaseAdapter;
 
 public class CustomerAdapter extends BaseAdapter<Customer, CustomerAdapter.CustomerViewHolder> {
 

@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.ui;
+package com.liberty.turnovermanagement.base.details;
 
 import android.app.Application;
 

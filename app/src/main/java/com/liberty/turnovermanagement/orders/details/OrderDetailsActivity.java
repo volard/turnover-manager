@@ -1,20 +1,18 @@
 package com.liberty.turnovermanagement.orders.details;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
+import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -23,44 +21,35 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class OrderDetailsActivity extends AppCompatActivity {
+public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetailsViewModel, ActivityDetailsOrderBinding> {
 
     private Product selectedProduct;
     private Customer selectedCustomer;
-    private OrderDetailsViewModel viewModel;
     private Calendar calendar;
-    private ActivityDetailsOrderBinding binding;
-    private long orderId = -1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityDetailsOrderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
 
         calendar = Calendar.getInstance();
         binding.btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
-
-
-        orderId = getIntent().getLongExtra("orderId", -1);
-        if (orderId != -1) {
-            viewModel.loadItem(orderId);
-        }
-
-        viewModel.getProducts().observe(this, this::setupProductSpinner);
-        viewModel.getCustomers().observe(this, this::setupCustomerSpinner);
-
-        viewModel.getSelectedItem().observe(this, this::updateUI);
-        viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
-
-        binding.buttonSave.setOnClickListener(v -> saveOrder());
-        binding.buttonDelete.setOnClickListener(v -> deleteOrder());
     }
 
-    private void updateUI(Order order) {
+    @Override
+    protected ActivityDetailsOrderBinding inflateBinding(LayoutInflater inflater) {
+        return ActivityDetailsOrderBinding.inflate(inflater);
+    }
+
+    @Override
+    protected Class<OrderDetailsViewModel> getViewModelClass() {
+        return OrderDetailsViewModel.class;
+    }
+
+
+    @Override
+    protected void updateUI(Order order) {
         if (order == null) { return; }
 
         binding.editTextCity.setText(order.getCity());
@@ -71,13 +60,19 @@ public class OrderDetailsActivity extends AppCompatActivity {
         updateSelectedDateTime();
 
         // Update spinners
-        updateProductSpinner(order.getProductId());
-        updateCustomerSpinner(order.getCustomerId());
+//        updateProductSpinner(order.getProductId());
+//        updateCustomerSpinner(order.getCustomerId());
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
         binding.customerInfoCard.setVisibility(View.VISIBLE);
        // Load customer data
         viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
+    }
+
+    @Override
+    protected void setupButtons() {
+        binding.buttonSave.setOnClickListener(v -> saveOrUpdateItem());
+        binding.buttonDelete.setOnClickListener(v -> deleteItem());
     }
 
 
@@ -132,7 +127,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
 
-    private void updateProductSpinner(long productId) {
+    /*private void updateProductSpinner(long productId) {
         ProductSpinnerAdapter adapter = (ProductSpinnerAdapter) binding.spinnerProducts.getAdapter();
         if (adapter == null) { return; }
 
@@ -158,7 +153,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
                 break;
             }
         }
-    }
+    }*/
 
 
     private void setupProductSpinner(List<Product> products) {
@@ -199,16 +194,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteOrder() {
-        Order order = viewModel.getSelectedItem().getValue();
-        if (order != null) {
-            viewModel.softDelete(order);
-            setResult(Activity.RESULT_OK);
-            finish();
-        }
-    }
 
-    private void saveOrder() {
+    @Override
+    protected Order getItemToSaveOrUpdate() {
         Order order = viewModel.getSelectedItem().getValue();
         if (order == null) {
             order = new Order();
@@ -223,14 +211,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         order.setProductId(selectedProduct.getId());
         order.setCustomerId(selectedCustomer.getId());
 
-        if (orderId == -1) {
-            viewModel.addNewItem(order);
-        } else {
-            viewModel.updateItem(order);
-        }
-
-        setResult(Activity.RESULT_OK);
-        finish();
+        return order;
     }
 
 }

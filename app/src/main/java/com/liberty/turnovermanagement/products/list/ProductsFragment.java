@@ -1,13 +1,9 @@
 package com.liberty.turnovermanagement.products.list;
 
-import android.content.Intent;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.liberty.turnovermanagement.products.data.Product;
-import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
-import com.liberty.turnovermanagement.ui.BaseListFragment;
+import com.liberty.turnovermanagement.base.list.BaseListFragment;
 
-import java.util.List;
 public class ProductsFragment extends BaseListFragment<Product, ProductListViewModel, ProductAdapter.ProductViewHolder> {
     @Override
     protected Class<ProductListViewModel> getViewModelClass() {
@@ -24,29 +20,5 @@ public class ProductsFragment extends BaseListFragment<Product, ProductListViewM
     @Override
     protected void setupObservers() {
         viewModel.getItems().observe(getViewLifecycleOwner(), this::updateList);
-    }
-
-    @Override
-    protected void setupFab() {
-        binding.fab.setOnClickListener(v -> openDetailsActivity(null));
-    }
-
-    @Override
-    protected void updateList(List<Product> products) {
-        if (products.isEmpty()) {
-            showEmptyState();
-        } else {
-            hideEmptyState();
-            adapter.submitList(products);
-        }
-    }
-
-    @Override
-    protected void openDetailsActivity(Product product) {
-        Intent intent = new Intent(requireContext(), ProductDetailsActivity.class);
-        if (product != null) {
-            intent.putExtra("productId", product.getId());
-        }
-        startActivity(intent);
     }
 }

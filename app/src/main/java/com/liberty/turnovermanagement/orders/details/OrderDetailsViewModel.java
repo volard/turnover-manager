@@ -2,7 +2,6 @@ package com.liberty.turnovermanagement.orders.details;
 
 import android.app.Application;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -14,7 +13,7 @@ import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
-import com.liberty.turnovermanagement.ui.BaseDetailsViewModel;
+import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.base.Identifiable;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.products.data.Product;
 
@@ -30,7 +31,7 @@ import java.time.LocalDateTime;
 
         }
 )
-public class Order implements Serializable {
+public class Order implements Serializable, Identifiable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private int amount;

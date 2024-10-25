@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.ui;
+package com.liberty.turnovermanagement.base.list;
 
 import android.app.Application;
 import android.content.SharedPreferences;

@@ -2,7 +2,6 @@ package com.liberty.turnovermanagement.customers.details;
 
 import android.app.Application;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -10,7 +9,7 @@ import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
-import com.liberty.turnovermanagement.ui.BaseDetailsViewModel;
+import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -10,7 +10,7 @@ import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.ProductDao;
-import com.liberty.turnovermanagement.ui.BaseListViewModel;
+import com.liberty.turnovermanagement.base.list.BaseListViewModel;
 
 
 public class OrderListViewModel extends BaseListViewModel<Order> {

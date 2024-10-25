@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.ui;
+package com.liberty.turnovermanagement.base.list;
 
 import android.widget.Filter;
 import android.widget.Filterable;

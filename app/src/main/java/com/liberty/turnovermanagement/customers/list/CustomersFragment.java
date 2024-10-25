@@ -1,14 +1,10 @@
 package com.liberty.turnovermanagement.customers.list;
 
-import android.content.Intent;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.liberty.turnovermanagement.customers.data.Customer;
-import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
-import com.liberty.turnovermanagement.ui.BaseListFragment;
 
-import java.util.List;
+import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.base.list.BaseListFragment;
 
 
 public class CustomersFragment extends BaseListFragment<Customer, CustomerListViewModel, CustomerAdapter.CustomerViewHolder> {
@@ -27,29 +23,5 @@ public class CustomersFragment extends BaseListFragment<Customer, CustomerListVi
     @Override
     protected void setupObservers() {
         viewModel.getItems().observe(getViewLifecycleOwner(), this::updateList);
-    }
-
-    @Override
-    protected void setupFab() {
-        binding.fab.setOnClickListener(v -> openDetailsActivity(null));
-    }
-
-    @Override
-    protected void openDetailsActivity(Customer customer) {
-        Intent intent = new Intent(requireContext(), CustomerDetailsActivity.class);
-        if (customer != null) {
-            intent.putExtra("customerId", customer.getId());
-        }
-        detailsLauncher.launch(intent);
-    }
-
-    @Override
-    protected void updateList(List<Customer> customers) {
-        if (customers.isEmpty()) {
-            showEmptyState();
-        } else {
-            hideEmptyState();
-            adapter.submitList(customers);
-        }
     }
 }

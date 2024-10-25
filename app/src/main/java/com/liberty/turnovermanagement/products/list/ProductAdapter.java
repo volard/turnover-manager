@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.liberty.turnovermanagement.databinding.ProductListItemBinding;
 import com.liberty.turnovermanagement.products.data.Product;
-import com.liberty.turnovermanagement.ui.BaseAdapter;
+import com.liberty.turnovermanagement.base.list.BaseAdapter;
 
 /**
  * Creating ViewHolder objects to hold the views for each item.

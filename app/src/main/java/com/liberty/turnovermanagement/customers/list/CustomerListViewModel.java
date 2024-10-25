@@ -3,9 +3,7 @@ package com.liberty.turnovermanagement.customers.list;
 import android.app.Application;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
-import com.liberty.turnovermanagement.ui.BaseListViewModel;
-
-import java.util.List;
+import com.liberty.turnovermanagement.base.list.BaseListViewModel;
 
 public class CustomerListViewModel extends BaseListViewModel<Customer> {
     private final CustomerDao customerDao;

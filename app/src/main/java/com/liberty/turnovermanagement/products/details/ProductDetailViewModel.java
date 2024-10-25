@@ -9,7 +9,7 @@ import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
-import com.liberty.turnovermanagement.ui.BaseDetailsViewModel;
+import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 
 import java.time.LocalDateTime;
 import java.util.List;

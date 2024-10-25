@@ -1,66 +1,39 @@
 package com.liberty.turnovermanagement.products.details;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.liberty.turnovermanagement.databinding.ActivityDetailsProductBinding;
 import com.liberty.turnovermanagement.products.data.Product;
+import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 
-public class ProductDetailsActivity extends AppCompatActivity {
-
-
-    private ActivityDetailsProductBinding binding;
-    private ProductDetailViewModel viewModel;
-    private long productId = -1;
+public class ProductDetailsActivity extends BaseDetailsActivity<Product, ProductDetailViewModel, ActivityDetailsProductBinding> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityDetailsProductBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        viewModel = new ViewModelProvider(this).get(ProductDetailViewModel.class);
-        productId = getIntent().getLongExtra("productId", -1);
-
-
-        if (productId != -1) {
-            viewModel.loadItem(productId);
-        }
-
-        viewModel.getSelectedItem().observe(this, this::updateUI);
-
-        binding.buttonSave.setOnClickListener(v -> saveProduct());
-        binding.buttonDelete.setOnClickListener(v -> deleteProduct());
+    protected void setupButtons() {
+        binding.buttonSave.setOnClickListener(v -> saveOrUpdateItem());
+        binding.buttonDelete.setOnClickListener(v -> deleteItem());
     }
 
-    private void setupVersionHistory() {
-        viewModel.getItemHistory(productId).observe(this, history -> {
-            // Display the version history, e.g., in a RecyclerView
-            // You'll need to create a new adapter and layout for this
-        });
+    @Override
+    protected Class<ProductDetailViewModel> getViewModelClass() {
+        return ProductDetailViewModel.class;
     }
 
-    private void deleteProduct() {
-        Product product = viewModel.getSelectedItem().getValue();
-        if (product != null) {
-            viewModel.softDelete(product);
-            setResult(Activity.RESULT_OK);
-            finish();
-        }
+    @Override
+    protected ActivityDetailsProductBinding inflateBinding(LayoutInflater inflater) {
+       return ActivityDetailsProductBinding.inflate(inflater);
     }
 
-    private void updateUI(Product product) {
+    @Override
+    protected void updateUI(Product product) {
         if (product != null) {
             binding.editTextName.setText(product.getName());
             binding.editTextAmount.setText(String.valueOf(product.getAmount()));
             binding.editTextPrice.setText(String.valueOf(product.getPrice()));
 
             if (product.isDeleted()) {
-                // Disable editing for deleted products
                 binding.editTextName.setEnabled(false);
                 binding.editTextAmount.setEnabled(false);
                 binding.editTextPrice.setEnabled(false);
@@ -72,25 +45,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void saveProduct() {
+    @Override
+    protected Product getItemToSaveOrUpdate() {
         Product product = viewModel.getSelectedItem().getValue();
         if (product == null) {
             product = new Product();
         }
 
-        // Update product fields from UI elements
         product.setName(binding.editTextName.getText().toString());
         product.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
         product.setPrice(Double.parseDouble(binding.editTextPrice.getText().toString()));
 
-        if (productId == -1) {
-            viewModel.addNewItem(product);
-        } else {
-            viewModel.updateItem(product);
-        }
-
-        setResult(Activity.RESULT_OK);
-        finish();
+        return product;
     }
 }
-

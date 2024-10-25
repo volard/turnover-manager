@@ -1,4 +1,4 @@
-package com.liberty.turnovermanagement.ui;
+package com.liberty.turnovermanagement.base.list;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,17 +11,19 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.liberty.turnovermanagement.R;
+import com.liberty.turnovermanagement.base.Constants;
+import com.liberty.turnovermanagement.base.Identifiable;
+import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 import com.liberty.turnovermanagement.databinding.FragmentListBinding;
 
 import java.util.List;
 
-public abstract class BaseListFragment<T, VM extends ViewModel, VH extends RecyclerView.ViewHolder> extends Fragment {
+public abstract class BaseListFragment<T extends Identifiable, VM extends BaseListViewModel<T>, VH extends RecyclerView.ViewHolder> extends Fragment {
     protected VM viewModel;
     protected BaseAdapter<T, VH> adapter;
     protected FragmentListBinding binding;
@@ -40,6 +42,23 @@ public abstract class BaseListFragment<T, VM extends ViewModel, VH extends Recyc
         );
     }
 
+    protected void updateList(List<T> items) {
+        if (items.isEmpty()) {
+            showEmptyState();
+        } else {
+            hideEmptyState();
+            adapter.submitList(items);
+        }
+    }
+
+    protected void openDetailsActivity(T item) {
+        Intent intent = new Intent(requireContext(), CustomerDetailsActivity.class);
+        if (item != null) {
+            intent.putExtra(Constants.ITEM_ID, item.getId());
+        }
+        detailsLauncher.launch(intent);
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentListBinding.inflate(inflater, container, false);
@@ -52,15 +71,12 @@ public abstract class BaseListFragment<T, VM extends ViewModel, VH extends Recyc
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
         setupObservers();
-        setupFab();
+        binding.fab.setOnClickListener(v -> openDetailsActivity(null));
     }
 
     protected abstract Class<VM> getViewModelClass();
     protected abstract void setupRecyclerView();
     protected abstract void setupObservers();
-    protected abstract void setupFab();
-    protected abstract void openDetailsActivity(T item);
-    protected abstract void updateList(List<T> items);
 
     protected void showEmptyState() {
         emptyStateLayout.setVisibility(View.VISIBLE);
