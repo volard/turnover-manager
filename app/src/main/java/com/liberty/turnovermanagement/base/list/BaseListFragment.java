@@ -31,6 +31,7 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
 
     protected abstract Class<VM> getViewModelClass();
     protected abstract Class<?> getDetailsActivityClass();
+    protected abstract Class<?> getCreateActivityClass();
     protected abstract void setupRecyclerView();
     protected abstract void setupObservers();
 
@@ -58,7 +59,7 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
         setupObservers();
-        binding.fab.setOnClickListener(v -> openDetailsActivity(null));
+        binding.fab.setOnClickListener(v -> openCreateActivity());
     }
 
     @Override
@@ -86,12 +87,20 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         }
     }
 
-    protected void openDetailsActivity(T item) {
-        Intent intent = new Intent(requireContext(), getDetailsActivityClass());
+    private void sendItemToActivity(T item, Class<?> activityClass){
+        Intent intent = new Intent(requireContext(), activityClass);
         if (item != null) {
             intent.putExtra(Constants.ITEM_ID, item.getId());
         }
         detailsLauncher.launch(intent);
+    }
+
+    protected void openCreateActivity() {
+        sendItemToActivity(null, getCreateActivityClass());
+    }
+
+    protected void openDetailsActivity(T item) {
+        sendItemToActivity(item, getDetailsActivityClass());
     }
 
 }

@@ -1,21 +1,11 @@
 package com.liberty.turnovermanagement.orders.list;
 
-
-import android.content.Intent;
-
 import android.view.View;
-
-import android.widget.Toast;
-
-
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-
+import com.liberty.turnovermanagement.orders.create_update_details.OrderEditActivity;
 import com.liberty.turnovermanagement.orders.data.Order;
-import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 import com.liberty.turnovermanagement.base.list.BaseListFragment;
 
-import java.util.List;
 public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, OrderAdapter.OrderViewHolder> {
     @Override
     protected Class<OrderListViewModel> getViewModelClass() {
@@ -24,7 +14,12 @@ public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, 
 
     @Override
     protected Class<?> getDetailsActivityClass() {
-        return OrderDetailsActivity.class;
+        return OrderEditActivity.class;
+    }
+
+    @Override
+    protected Class<?> getCreateActivityClass(){
+       return OrderEditActivity.class;
     }
 
     @Override

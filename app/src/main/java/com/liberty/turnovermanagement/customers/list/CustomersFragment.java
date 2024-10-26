@@ -20,6 +20,11 @@ public class CustomersFragment extends BaseListFragment<Customer, CustomerListVi
     }
 
     @Override
+    protected Class<?> getCreateActivityClass() {
+        return CustomerDetailsActivity.class;
+    }
+
+    @Override
     protected void setupRecyclerView() {
         adapter = new CustomerAdapter(this::openDetailsActivity);
         binding.recyclerView.setAdapter(adapter);

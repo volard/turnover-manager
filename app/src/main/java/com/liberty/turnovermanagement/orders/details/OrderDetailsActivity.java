@@ -149,7 +149,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateSelectedDateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
         String formattedDateTime = sdf.format(calendar.getTime());

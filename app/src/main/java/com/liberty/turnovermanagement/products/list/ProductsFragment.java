@@ -17,6 +17,11 @@ public class ProductsFragment extends BaseListFragment<Product, ProductListViewM
     }
 
     @Override
+    protected Class<?> getCreateActivityClass() {
+        return ProductDetailsActivity.class;
+    }
+
+    @Override
     protected void setupRecyclerView() {
         adapter = new ProductAdapter(this::openDetailsActivity);
         binding.recyclerView.setAdapter(adapter);
