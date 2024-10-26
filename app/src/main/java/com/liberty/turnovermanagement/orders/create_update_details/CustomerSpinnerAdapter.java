@@ -1,4 +1,5 @@
-package com.liberty.turnovermanagement.orders.details;
+package com.liberty.turnovermanagement.orders.create_update_details;
+
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,15 +8,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.liberty.turnovermanagement.products.data.Product;
+import com.liberty.turnovermanagement.customers.data.Customer;
 
 import java.util.List;
 
-public class ProductSpinnerAdapter extends ArrayAdapter<Product> {
+public class CustomerSpinnerAdapter extends ArrayAdapter<Customer> {
     private final LayoutInflater layoutInflater;
 
-    public ProductSpinnerAdapter(Context context, List<Product> products) {
-        super(context, 0, products);
+    public CustomerSpinnerAdapter(Context context, List<Customer> customers) {
+        super(context, 0, customers);
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -43,11 +44,17 @@ public class ProductSpinnerAdapter extends ArrayAdapter<Product> {
         }
 
         TextView textView = convertView.findViewById(android.R.id.text1);
-        Product product = getItem(position);
+        Customer customer = getItem(position);
 
-        if (product != null) {
+        if (customer != null) {
             // Customize this to display the information you want
-            String displayText = product.getId() + " - " + product.getName();
+            String displayText = String.format(
+                    "%d - %s %s %s",
+                    customer.getId(),
+                    customer.getSurname(),
+                    customer.getName(),
+                    customer.getMiddleName()
+            );
             textView.setText(displayText);
         }
 

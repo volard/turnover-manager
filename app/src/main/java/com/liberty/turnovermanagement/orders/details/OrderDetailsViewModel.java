@@ -14,6 +14,7 @@ import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
+import com.liberty.turnovermanagement.products.data.ProductHistory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,8 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
     private final CustomerDao customerDao;
     private final LiveData<List<Product>> products;
     private final LiveData<List<Customer>> customers;
-    private final MutableLiveData<Customer> customerForOrder = new MutableLiveData<>();
+    private final MutableLiveData<Customer> customerForOrder;
+    private final MutableLiveData<Product> productForOrder;
 
     public OrderDetailsViewModel(Application application) {
         super(application);
@@ -33,7 +35,36 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
         customerDao = db.customerDao();
         products = productDao.getAll();
         customers = customerDao.getAll();
+        customerForOrder = new MutableLiveData<>();
+        productForOrder = new MutableLiveData<>();
     }
+
+    public LiveData<Product> getProductForOrder() {
+        return productForOrder;
+    }
+
+    public void loadProductForOrder(long productId, long productVersion) {
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            Product product = getProductForOrder(productId, productVersion);
+            productForOrder.postValue(product);
+        });
+    }
+    private Product getProductForOrder(long productId, long productVersion) {
+        Product currentProduct = productDao.getProductById(productId);
+
+        if (currentProduct != null && currentProduct.getVersion() == productVersion) {
+            return currentProduct;
+        } else {
+            ProductHistory historicalProduct = productDao.getProductByIdAndVersion(productId, productVersion);
+            if (historicalProduct != null) {
+                return historicalProduct.getProduct();
+            }
+        }
+
+        return null;
+    }
+
+
 
     @Override
     public void loadItem(long itemId) {
@@ -94,24 +125,13 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
         } else {
             CustomerHistory historicalCustomer = customerDao.getCustomerHistoryByIdAndVersion(customerId, customerVersion);
             if (historicalCustomer != null) {
-                return convertToCustomer(historicalCustomer);
+                return historicalCustomer.getCustomer();
             }
         }
 
         return null;
     }
 
-    private Customer convertToCustomer(CustomerHistory history) {
-        Customer customer = new Customer();
-        customer.setId(history.getCustomerId());
-        customer.setSurname(history.getSurname());
-        customer.setName(history.getName());
-        customer.setMiddleName(history.getMiddleName());
-        customer.setPhone(history.getPhone());
-        customer.setEmail(history.getEmail());
-        customer.setVersion(history.getVersion());
-        return customer;
-    }
 
     public LiveData<Customer> getCustomerForOrder() {
         return customerForOrder;
@@ -125,19 +145,4 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
         return customers;
     }
 
-    public void updateSelectedOrderProduct(Product product) {
-        Order currentOrder = selectedItem.getValue();
-        if (currentOrder != null) {
-            currentOrder.setProductId(product.getId());
-            selectedItem.setValue(currentOrder);
-        }
-    }
-
-    public void updateSelectedOrderCustomer(Customer customer) {
-        Order currentOrder = selectedItem.getValue();
-        if (currentOrder != null) {
-            currentOrder.setCustomerId(customer.getId());
-            selectedItem.setValue(currentOrder);
-        }
-    }
 }

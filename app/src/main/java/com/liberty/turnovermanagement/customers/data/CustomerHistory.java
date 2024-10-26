@@ -1,6 +1,7 @@
 package com.liberty.turnovermanagement.customers.data;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -25,6 +26,19 @@ public class CustomerHistory {
     private LocalDateTime createdAt;
 
     private long version;
+
+    @Ignore
+    public Customer getCustomer() {
+
+        Customer customer = new Customer();
+        customer.setId(this.getCustomerId());
+        customer.setSurname(this.getSurname());
+        customer.setName(this.getName());
+        customer.setMiddleName(this.getMiddleName());
+        customer.setPhone(this.getPhone());
+        customer.setEmail(this.getEmail());
+        customer.setVersion(this.getVersion());
+        return customer;    }
 
     public long getId() {
         return id;
@@ -97,7 +111,4 @@ public class CustomerHistory {
     public void setVersion(long version) {
         this.version = version;
     }
-
-    // Getters and setters
-    // ...
 }

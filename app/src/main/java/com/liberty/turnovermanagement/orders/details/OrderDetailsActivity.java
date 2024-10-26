@@ -1,18 +1,25 @@
 package com.liberty.turnovermanagement.orders.details;
 
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.liberty.turnovermanagement.R;
+import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
+import com.liberty.turnovermanagement.orders.create_update_details.CustomerSpinnerAdapter;
+import com.liberty.turnovermanagement.orders.create_update_details.ProductSpinnerAdapter;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
+import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -24,7 +31,9 @@ import java.util.Locale;
 public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetailsViewModel, ActivityDetailsOrderBinding> {
 
     private Product selectedProduct;
+
     private Customer selectedCustomer;
+
     private Calendar calendar;
 
 
@@ -35,6 +44,43 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
 
         calendar = Calendar.getInstance();
         binding.btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
+
+
+        viewModel.getProducts().observe(this, this::setupProductSpinner);
+        viewModel.getCustomers().observe(this, this::setupCustomerSpinner);
+
+        viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
+        viewModel.getProductForOrder().observe(this, this::updateProductUI);
+
+        setupCardClickListeners();
+    }
+
+    private void setupCardClickListeners() {
+        binding.customerInfoCard.setOnClickListener(v -> {
+            Order currentOrder = viewModel.getSelectedItem().getValue();
+            if (currentOrder != null) {
+                openCustomerDetails(currentOrder.getCustomerId());
+            }
+        });
+
+        binding.productInfoCard.setOnClickListener(v -> {
+            Order currentOrder = viewModel.getSelectedItem().getValue();
+            if (currentOrder != null) {
+                openProductDetails(currentOrder.getProductId());
+            }
+        });
+    }
+
+    private void openCustomerDetails(long customerId) {
+        Intent intent = new Intent(this, CustomerDetailsActivity.class);
+        intent.putExtra(Constants.ITEM_ID, customerId);
+        startActivity(intent);
+    }
+
+    private void openProductDetails(long productId) {
+        Intent intent = new Intent(this, ProductDetailsActivity.class);
+        intent.putExtra(Constants.ITEM_ID, productId);
+        startActivity(intent);
     }
 
     @Override
@@ -59,14 +105,13 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         calendar.setTime(java.util.Date.from(order.getDatetime().atZone(ZoneId.systemDefault()).toInstant()));
         updateSelectedDateTime();
 
-        // Update spinners
-//        updateProductSpinner(order.getProductId());
-//        updateCustomerSpinner(order.getCustomerId());
-
         binding.buttonDelete.setVisibility(View.VISIBLE);
+
         binding.customerInfoCard.setVisibility(View.VISIBLE);
-       // Load customer data
         viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
+
+        binding.productInfoCard.setVisibility(View.VISIBLE);
+        viewModel.loadProductForOrder(order.getProductId(), order.getProductVersion());
     }
 
     @Override
@@ -75,6 +120,17 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         binding.buttonDelete.setOnClickListener(v -> deleteItem());
     }
 
+    private void updateProductUI(Product product) {
+        if (product != null) {
+            binding.productNameTextView.setText(getString(R.string.product_name_format, product.getName()));
+            binding.productAmountTextView.setText(getString(R.string.product_amount_format, product.getAmount()));
+            binding.productPriceTextView.setText(getString(R.string.product_price_format, product.getPrice()));
+        } else {
+            binding.productNameTextView.setText(R.string.product_not_found);
+            binding.productAmountTextView.setText("");
+            binding.productPriceTextView.setText("");
+        }
+    }
 
     private void showDatePickerDialog() {
         DatePickerDialog datePickerDialog = new DatePickerDialog(
@@ -126,46 +182,15 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         }
     }
 
-
-    /*private void updateProductSpinner(long productId) {
-        ProductSpinnerAdapter adapter = (ProductSpinnerAdapter) binding.spinnerProducts.getAdapter();
-        if (adapter == null) { return; }
-
-        for (int i = 0; i < adapter.getCount(); i++) {
-            Product product = adapter.getItem(i);
-            if (product != null && product.getId() == productId) {
-                binding.spinnerProducts.setSelection(i);
-                selectedProduct = product;
-                break;
-            }
-        }
-    }
-
-    private void updateCustomerSpinner(long customerId) {
-        CustomerSpinnerAdapter adapter = (CustomerSpinnerAdapter) binding.spinnerCustomers.getAdapter();
-        if (adapter == null) { return; }
-
-        for (int i = 0; i < adapter.getCount(); i++) {
-            Customer customer = adapter.getItem(i);
-            if (customer != null && customer.getId() == customerId) {
-                binding.spinnerCustomers.setSelection(i);
-                selectedCustomer = customer;
-                break;
-            }
-        }
-    }*/
-
-
     private void setupProductSpinner(List<Product> products) {
         ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
         binding.spinnerProducts.setAdapter(adapter);
-        selectedProduct = products.get(0);
+
 
         binding.spinnerProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Product selectedProduct = (Product) parent.getItemAtPosition(position);
-                viewModel.updateSelectedOrderProduct(selectedProduct);
+                selectedProduct = (Product) parent.getItemAtPosition(position);
             }
 
             @Override
@@ -178,13 +203,11 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
     private void setupCustomerSpinner(List<Customer> customers) {
         CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
         binding.spinnerCustomers.setAdapter(adapter);
-        selectedCustomer = customers.get(0);
 
         binding.spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Customer selectedCustomer = (Customer) parent.getItemAtPosition(position);
-                viewModel.updateSelectedOrderCustomer(selectedCustomer);
+                selectedCustomer = (Customer) parent.getItemAtPosition(position);
             }
 
             @Override
@@ -208,11 +231,17 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         order.setHome(binding.editTextHome.getText().toString());
         order.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
         order.setDatetime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
-        order.setProductId(selectedProduct.getId());
-        order.setCustomerId(selectedCustomer.getId());
+
+        if (selectedProduct.getId() != order.productId || selectedProduct.getId() == Constants.UNINITIALIZED_INDICATOR){
+            order.setProductId(selectedProduct.getId());
+        }
+        if (selectedCustomer.getId() != order.customerId || selectedCustomer.getId() == Constants.UNINITIALIZED_INDICATOR){
+            order.setCustomerId(selectedCustomer.getId());
+        }
 
         return order;
     }
+
 
 }
 

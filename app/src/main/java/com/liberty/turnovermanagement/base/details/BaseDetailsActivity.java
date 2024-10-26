@@ -14,8 +14,14 @@ import com.liberty.turnovermanagement.base.Constants;
 public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, ?>, VB extends ViewBinding> extends AppCompatActivity {
 
     protected VM viewModel;
-    protected long itemId = Constants.INITIAL_ITEM_ID;
+    protected long itemId = Constants.UNINITIALIZED_INDICATOR;
     protected VB binding;
+
+    protected abstract VB inflateBinding(LayoutInflater inflater);
+    protected abstract Class<VM> getViewModelClass();
+    protected abstract void updateUI(T item);
+    protected abstract T getItemToSaveOrUpdate();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +32,7 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
         viewModel = new ViewModelProvider(this).get(getViewModelClass());
 
 
-        itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.INITIAL_ITEM_ID);
+        itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.UNINITIALIZED_INDICATOR);
 
         if (itemId != -1) {
             viewModel.loadItem(itemId);
@@ -36,11 +42,6 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
         setupButtons();
     }
-
-    protected abstract VB inflateBinding(LayoutInflater inflater);
-    protected abstract Class<VM> getViewModelClass();
-    protected abstract void updateUI(T item);
-    protected abstract T getItemToSaveOrUpdate();
 
     protected void saveOrUpdateItem(){
         T item = getItemToSaveOrUpdate();

@@ -21,4 +21,8 @@
     <string name="customer_phone_format">Phone: %s</string>
     <string name="customer_email_format">Email: %s</string>
     <string name="customer_not_found">Customer information not found</string>
+    <string name="product_name_format">Name: %s</string>
+    <string name="product_amount_format">Amount: %d</string>
+    <string name="product_price_format">Price: $%.2f</string>
+    <string name="product_not_found">Product info not found</string>
 </resources>

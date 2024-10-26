@@ -1,6 +1,7 @@
 package com.liberty.turnovermanagement.products.data;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
@@ -30,6 +31,18 @@ public class ProductHistory {
 
     public void setProductId(long id) {
         this.id = id;
+    }
+
+    @Ignore
+    public Product getProduct(){
+        Product product = new Product();
+        product.setId(this.getId());
+        product.setName(this.getName());
+        product.setAmount(this.getAmount());
+        product.setPrice(this.getPrice());
+        product.setLastUpdated(this.getCreatedAt());
+        product.setVersion(this.getVersion());
+        return product;
     }
 
     public void setName(String name) {

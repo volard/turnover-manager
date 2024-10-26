@@ -35,8 +35,8 @@ public class Order implements Serializable, Identifiable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private int amount;
-    public long customerId;
-    public long productId;
+    public long customerId = -1;
+    public long productId = -1;
     private long customerVersion;
     private long productVersion;
 

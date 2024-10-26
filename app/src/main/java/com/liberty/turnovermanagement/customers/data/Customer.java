@@ -44,7 +44,6 @@ public class Customer implements Serializable, Identifiable {
         this.lastUpdated = lastUpdated;
     }
 
-
     public boolean isDeleted() {
         return isDeleted;
     }
