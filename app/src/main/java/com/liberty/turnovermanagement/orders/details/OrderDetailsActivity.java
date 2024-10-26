@@ -1,58 +1,78 @@
 package com.liberty.turnovermanagement.orders.details;
 
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
-import com.liberty.turnovermanagement.orders.create_update_details.CustomerSpinnerAdapter;
-import com.liberty.turnovermanagement.orders.create_update_details.ProductSpinnerAdapter;
+import com.liberty.turnovermanagement.orders.create_update_details.OrderEditActivity;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
-public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetailsViewModel, ActivityDetailsOrderBinding> {
-
-    private Product selectedProduct;
-
-    private Customer selectedCustomer;
+public class OrderDetailsActivity extends AppCompatActivity {
 
     private Calendar calendar;
-
+    private ActivityDetailsOrderBinding binding;
+    protected OrderDetailsViewModel viewModel;
+    protected long itemId = Constants.UNINITIALIZED_INDICATOR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityDetailsOrderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
+
         calendar = Calendar.getInstance();
-        binding.btnDateTimePicker.setOnClickListener(v -> showDatePickerDialog());
 
-
-        viewModel.getProducts().observe(this, this::setupProductSpinner);
-        viewModel.getCustomers().observe(this, this::setupCustomerSpinner);
+        itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.UNINITIALIZED_INDICATOR);
+        viewModel.loadItem(itemId);
+        viewModel.getSelectedItem().observe(this, this::updateUI);
 
         viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
         viewModel.getProductForOrder().observe(this, this::updateProductUI);
 
+        binding.buttonEdit.setOnClickListener(v -> openEditActivity());
+        binding.buttonDelete.setOnClickListener(v -> deleteItem());
+
         setupCardClickListeners();
+    }
+
+
+    private void openEditActivity() {
+        Order currentOrder = viewModel.getSelectedItem().getValue();
+        if (currentOrder != null) {
+            Intent intent = new Intent(this, OrderEditActivity.class);
+            intent.putExtra(Constants.ITEM_ID, currentOrder.getId());
+            startActivity(intent);
+        }
+    }
+
+    private void deleteItem() {
+        Order item = viewModel.getSelectedItem().getValue();
+        if (item != null) {
+            viewModel.softDelete(item);
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
     }
 
     private void setupCardClickListeners() {
@@ -83,18 +103,7 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         startActivity(intent);
     }
 
-    @Override
-    protected ActivityDetailsOrderBinding inflateBinding(LayoutInflater inflater) {
-        return ActivityDetailsOrderBinding.inflate(inflater);
-    }
 
-    @Override
-    protected Class<OrderDetailsViewModel> getViewModelClass() {
-        return OrderDetailsViewModel.class;
-    }
-
-
-    @Override
     protected void updateUI(Order order) {
         if (order == null) { return; }
 
@@ -114,12 +123,6 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         viewModel.loadProductForOrder(order.getProductId(), order.getProductVersion());
     }
 
-    @Override
-    protected void setupButtons() {
-        binding.buttonSave.setOnClickListener(v -> saveOrUpdateItem());
-        binding.buttonDelete.setOnClickListener(v -> deleteItem());
-    }
-
     private void updateProductUI(Product product) {
         if (product != null) {
             binding.productNameTextView.setText(getString(R.string.product_name_format, product.getName()));
@@ -132,42 +135,6 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         }
     }
 
-    private void showDatePickerDialog() {
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, year, month, dayOfMonth) -> {
-                    calendar.set(Calendar.YEAR, year);
-                    calendar.set(Calendar.MONTH, month);
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    showTimePickerDialog();
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-        );
-        datePickerDialog.show();
-    }
-
-    private void showTimePickerDialog() {
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                this,
-                (view, hourOfDay, minute) -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                    calendar.set(Calendar.MINUTE, minute);
-                    updateSelectedDateTime();
-                },
-                calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                false
-        );
-        timePickerDialog.show();
-    }
-
-    private void updateSelectedDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        String formattedDateTime = sdf.format(calendar.getTime());
-        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
-    }
 
     private void updateCustomerUI(Customer customer) {
         if (customer != null) {
@@ -182,66 +149,12 @@ public class OrderDetailsActivity extends BaseDetailsActivity<Order, OrderDetail
         }
     }
 
-    private void setupProductSpinner(List<Product> products) {
-        ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
-        binding.spinnerProducts.setAdapter(adapter);
 
-
-        binding.spinnerProducts.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedProduct = (Product) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
+    private void updateSelectedDateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+        String formattedDateTime = sdf.format(calendar.getTime());
+        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
     }
-
-    private void setupCustomerSpinner(List<Customer> customers) {
-        CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
-        binding.spinnerCustomers.setAdapter(adapter);
-
-        binding.spinnerCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCustomer = (Customer) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
-            }
-        });
-    }
-
-
-    @Override
-    protected Order getItemToSaveOrUpdate() {
-        Order order = viewModel.getSelectedItem().getValue();
-        if (order == null) {
-            order = new Order();
-        }
-
-        // Update order fields
-        order.setCity(binding.editTextCity.getText().toString());
-        order.setStreet(binding.editTextStreet.getText().toString());
-        order.setHome(binding.editTextHome.getText().toString());
-        order.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
-        order.setDatetime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
-
-        if (selectedProduct.getId() != order.productId || selectedProduct.getId() == Constants.UNINITIALIZED_INDICATOR){
-            order.setProductId(selectedProduct.getId());
-        }
-        if (selectedCustomer.getId() != order.customerId || selectedCustomer.getId() == Constants.UNINITIALIZED_INDICATOR){
-            order.setCustomerId(selectedCustomer.getId());
-        }
-
-        return order;
-    }
-
 
 }
 

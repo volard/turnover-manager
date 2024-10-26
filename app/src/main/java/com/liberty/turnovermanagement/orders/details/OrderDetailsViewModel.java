@@ -25,8 +25,8 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
     private final CustomerDao customerDao;
     private final LiveData<List<Product>> products;
     private final LiveData<List<Customer>> customers;
-    private final MutableLiveData<Customer> customerForOrder;
-    private final MutableLiveData<Product> productForOrder;
+    private final MutableLiveData<Customer> customerForOrder= new MutableLiveData<>();
+    private final MutableLiveData<Product> productForOrder = new MutableLiveData<>();
 
     public OrderDetailsViewModel(Application application) {
         super(application);
@@ -35,8 +35,6 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
         customerDao = db.customerDao();
         products = productDao.getAll();
         customers = customerDao.getAll();
-        customerForOrder = new MutableLiveData<>();
-        productForOrder = new MutableLiveData<>();
     }
 
     public LiveData<Product> getProductForOrder() {
@@ -49,6 +47,7 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
             productForOrder.postValue(product);
         });
     }
+
     private Product getProductForOrder(long productId, long productVersion) {
         Product currentProduct = productDao.getProductById(productId);
 

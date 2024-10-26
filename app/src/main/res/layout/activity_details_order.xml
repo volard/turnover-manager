@@ -135,21 +135,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!--    Date and time picker-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Select Date and Time:" />
-
-        <Button
-            android:id="@+id/btnDateTimePicker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Pick Date and Time" />
-
         <TextView
             android:id="@+id/tvSelectedDateTime"
             android:layout_width="wrap_content"
@@ -157,44 +142,19 @@
             android:layout_marginBottom="16dp"
             android:text="Selected: Not set" />
 
-        <!--    products spinner-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Select Product:" />
-
-        <Spinner
-            android:id="@+id/spinnerProducts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
-
-        <!--    customer spinner -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Select Customer:" />
-
-        <Spinner
-            android:id="@+id/spinnerCustomers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
 
         <TextView
             android:id="@+id/labelDeleted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Product deleted"
+            android:text="Item deleted"
             android:visibility="gone" />
 
         <Button
-            android:id="@+id/buttonSave"
+            android:id="@+id/buttonEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Product" />
+            android:text="Edit" />
 
         <Button
             android:id="@+id/buttonDelete"

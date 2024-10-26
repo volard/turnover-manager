@@ -24,6 +24,7 @@
         <activity android:name=".products.details.ProductDetailsActivity" />
         <activity android:name=".customers.details.CustomerDetailsActivity" />
         <activity android:name=".orders.details.OrderDetailsActivity" />
+        <activity android:name=".orders.create_update_details.OrderEditActivity" />
 
     </application>
 

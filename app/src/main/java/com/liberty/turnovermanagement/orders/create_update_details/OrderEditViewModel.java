@@ -53,7 +53,9 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
 
     @Override
     public void softDelete(Order order) {
-        // Implement if needed
+        AppDatabase.databaseWriteExecutor.execute(() -> {
+            orderDao.delete(order);
+        });
     }
 
     @Override
@@ -64,8 +66,14 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
 
 
     @Override
-    public void addNewItem(Order item) {
+    public void addNewItem(Order order) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
+            long productVersion = productDao.getProductVersion(order.getProductId());
+            long customerVersion = customerDao.getCustomerVersion(order.getCustomerId());
+
+            order.setProductVersion(productVersion);
+            order.setCustomerVersion(customerVersion);
+
             long id = orderDao.insert(order);
             order.setId(id);
             selectedItem.postValue(order);
@@ -74,14 +82,14 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
 
     public void loadProductsForSpinner() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Product> productList = productDao.getAllNonDeletedProducts();
+            List<Product> productList = productDao.getAll().getValue();
             products.postValue(productList);
         });
     }
 
     public void loadCustomersForSpinner() {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Customer> customerList = customerDao.getAllNonDeletedCustomers();
+            List<Customer> customerList = customerDao.getAll().getValue();
             customers.postValue(customerList);
         });
     }
