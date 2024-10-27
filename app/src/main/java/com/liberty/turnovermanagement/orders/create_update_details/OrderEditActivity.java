@@ -13,6 +13,7 @@ import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
+import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
 import com.liberty.turnovermanagement.databinding.ActivityEditOrderBinding;
 import com.liberty.turnovermanagement.orders.data.Order;
@@ -28,10 +29,6 @@ import java.util.Locale;
 
 public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewModel, ActivityEditOrderBinding> {
 
-    private Spinner productSpinner;
-    private Spinner productVersionSpinner;
-    private Spinner customerSpinner;
-    private Spinner customerVersionSpinner;
     private Calendar calendar;
 
     @Override
@@ -39,8 +36,28 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         super.onCreate(savedInstanceState);
         calendar = Calendar.getInstance();
 
+   /*     viewModel.getProducts().observe(this, products -> {
+            setupProductSpinner(products);
+            updateProductSpinner(viewModel.getSelectedOrder().getValue().getProductId());
+        });
+
+        viewModel.getCustomers().observe(this, customers -> {
+            setupCustomerSpinner(customers);
+            updateCustomerSpinner(viewModel.getSelectedOrder().getValue().getCustomerId());
+        });*/
+
+
+
         setupSpinners();
         setupObservers();
+    }
+
+
+    private void setupObservers() {
+        viewModel.getProducts().observe(this, this::updateProductSpinner);
+        viewModel.getProductVersions().observe(this, this::updateProductVersionSpinner);
+        viewModel.getCustomers().observe(this, this::updateCustomerSpinner);
+        viewModel.getCustomerVersions().observe(this, this::updateCustomerVersionSpinner);
     }
 
     @Override
@@ -73,9 +90,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         calendar.setTime(java.util.Date.from(order.getDatetime().atZone(ZoneId.systemDefault()).toInstant()));
         updateSelectedDateTime();
 
-        // Show delete button for existing orders
-        binding.buttonDelete.setVisibility(View.VISIBLE);
-
         // Update product spinner
         updateProductSpinner(order.getProductId());
 
@@ -101,7 +115,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
                     }
                 }
                 if (selectedPosition != -1) {
-                    productSpinner.setSelection(selectedPosition);
+                    binding.productSpinner.setSelection(selectedPosition);
                 }
             }
         });
@@ -118,7 +132,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
                     }
                 }
                 if (selectedPosition != -1) {
-                    customerSpinner.setSelection(selectedPosition);
+                    binding.customerSpinner.setSelection(selectedPosition);
                 }
             }
         });
@@ -147,28 +161,28 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         order.setDatetime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
 
         // Get selected product from spinner
-        Product selectedProduct = (Product) productSpinner.getSelectedItem();
+        Product selectedProduct = (Product) binding.productSpinner.getSelectedItem();
         if (selectedProduct != null) {
             order.setProductId(selectedProduct.getId());
         }
 
         // Get selected customer from spinner
-        Customer selectedCustomer = (Customer) customerSpinner.getSelectedItem();
+        Customer selectedCustomer = (Customer) binding.customerSpinner.getSelectedItem();
         if (selectedCustomer != null) {
             order.setCustomerId(selectedCustomer.getId());
         }
 
         // Handle product version if available
-        if (productVersionSpinner.getVisibility() == View.VISIBLE) {
-            ProductHistory selectedProductVersion = (ProductHistory) productVersionSpinner.getSelectedItem();
+        if (binding.productVersionSpinner.getVisibility() == View.VISIBLE) {
+            ProductHistory selectedProductVersion = (ProductHistory) binding.productVersionSpinner.getSelectedItem();
             if (selectedProductVersion != null) {
                 order.setProductVersion(selectedProductVersion.getVersion());
             }
         }
 
         // Handle customer version if available
-        if (customerVersionSpinner.getVisibility() == View.VISIBLE) {
-            CustomerHistory selectedCustomerVersion = (CustomerHistory) customerVersionSpinner.getSelectedItem();
+        if (binding.customerVersionSpinner.getVisibility() == View.VISIBLE) {
+            CustomerHistory selectedCustomerVersion = (CustomerHistory) binding.customerVersionSpinner.getSelectedItem();
             if (selectedCustomerVersion != null) {
                 order.setCustomerVersion(selectedCustomerVersion.getVersion());
             }
@@ -179,12 +193,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
 
 
     private void setupSpinners() {
-        productSpinner = findViewById(R.id.product_spinner);
-        productVersionSpinner = findViewById(R.id.product_version_spinner);
-        customerSpinner = findViewById(R.id.customer_spinner);
-        customerVersionSpinner = findViewById(R.id.customer_version_spinner);
-
-        productSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.productSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Product selectedProduct = (Product) parent.getItemAtPosition(position);
@@ -195,7 +204,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        customerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.customerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Customer selectedCustomer = (Customer) parent.getItemAtPosition(position);
@@ -207,44 +216,45 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         });
     }
 
-    private void setupObservers() {
-        viewModel.getProducts().observe(this, this::updateProductSpinner);
-        viewModel.getProductVersions().observe(this, this::updateProductVersionSpinner);
-        viewModel.getCustomers().observe(this, this::updateCustomerSpinner);
-        viewModel.getCustomerVersions().observe(this, this::updateCustomerVersionSpinner);
-    }
+
 
     private void updateProductSpinner(List<Product> products) {
-        ArrayAdapter<Product> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, products);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        productSpinner.setAdapter(adapter);
+//        ArrayAdapter<Product> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, products);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        binding.productSpinner.setAdapter(adapter);
+
+        ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
+        binding.productSpinner.setAdapter(adapter);
     }
 
     private void updateProductVersionSpinner(List<ProductHistory> productVersions) {
         if (productVersions.isEmpty()) {
-            productVersionSpinner.setVisibility(View.GONE);
+            binding.productVersionSpinner.setVisibility(View.GONE);
         } else {
-            productVersionSpinner.setVisibility(View.VISIBLE);
+            binding.productVersionSpinner.setVisibility(View.VISIBLE);
             ArrayAdapter<ProductHistory> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, productVersions);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            productVersionSpinner.setAdapter(adapter);
+            binding.productVersionSpinner.setAdapter(adapter);
         }
     }
 
     private void updateCustomerSpinner(List<Customer> customers) {
-        ArrayAdapter<Customer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customers);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        customerSpinner.setAdapter(adapter);
+//        ArrayAdapter<Customer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customers);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        binding.customerSpinner.setAdapter(adapter);
+
+        CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
+        binding.customerSpinner.setAdapter(adapter);
     }
 
     private void updateCustomerVersionSpinner(List<CustomerHistory> customerVersions) {
         if (customerVersions.isEmpty()) {
-            customerVersionSpinner.setVisibility(View.GONE);
+            binding.customerVersionSpinner.setVisibility(View.GONE);
         } else {
-            customerVersionSpinner.setVisibility(View.VISIBLE);
+            binding.customerVersionSpinner.setVisibility(View.VISIBLE);
             ArrayAdapter<CustomerHistory> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customerVersions);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            customerVersionSpinner.setAdapter(adapter);
+            binding.customerVersionSpinner.setAdapter(adapter);
         }
     }
 }

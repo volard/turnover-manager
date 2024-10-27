@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.liberty.turnovermanagement.orders.create_update_details.OrderEditActivity;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.base.list.BaseListFragment;
+import com.liberty.turnovermanagement.orders.details.OrderDetailsActivity;
 
 public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, OrderAdapter.OrderViewHolder> {
     @Override
@@ -14,7 +15,7 @@ public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, 
 
     @Override
     protected Class<?> getDetailsActivityClass() {
-        return OrderEditActivity.class;
+        return OrderDetailsActivity.class;
     }
 
     @Override

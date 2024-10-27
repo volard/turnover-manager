@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:queryHint="Search products" />
+        app:queryHint="Search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

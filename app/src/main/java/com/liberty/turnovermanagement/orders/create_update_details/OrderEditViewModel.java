@@ -23,9 +23,9 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
     private final CustomerDao customerDao;
     private final OrderDao orderDao;
 
-    private final MutableLiveData<List<Product>> products = new MutableLiveData<>();
+    private final LiveData<List<Product>> products;
     private final MutableLiveData<List<ProductHistory>> productVersions = new MutableLiveData<>();
-    private final MutableLiveData<List<Customer>> customers = new MutableLiveData<>();
+    private final LiveData<List<Customer>> customers;
     private final MutableLiveData<List<CustomerHistory>> customerVersions = new MutableLiveData<>();
 
     public OrderEditViewModel(Application application) {
@@ -33,6 +33,8 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
         productDao = db.productDao();
         customerDao = db.customerDao();
         orderDao = db.orderDao();
+        products = productDao.getAll();
+        customers = customerDao.getAll();
     }
 
     @Override
@@ -80,20 +82,20 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
         });
     }
 
-    public void loadProductsForSpinner() {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Product> productList = productDao.getAll().getValue();
-            products.postValue(productList);
-        });
-    }
-
-    public void loadCustomersForSpinner() {
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<Customer> customerList = customerDao.getAll().getValue();
-            customers.postValue(customerList);
-        });
-    }
-
+//    public void loadProductsForSpinner() {
+//        AppDatabase.databaseWriteExecutor.execute(() -> {
+//            List<Product> productList = productDao.getAll().getValue();
+//            products.postValue(productList);
+//        });
+//    }
+//
+//    public void loadCustomersForSpinner() {
+//        AppDatabase.databaseWriteExecutor.execute(() -> {
+//            List<Customer> customerList = customerDao.getAll().getValue();
+//            customers.postValue(customerList);
+//        });
+//    }
+//
     public void loadProductVersions(long productId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             List<ProductHistory> versions = productDao.getProductHistory(productId);
