@@ -107,9 +107,13 @@ public class OrderDetailsActivity extends AppCompatActivity {
     protected void updateUI(Order order) {
         if (order == null) { return; }
 
-        binding.editTextCity.setText(order.getCity());
-        binding.editTextStreet.setText(order.getStreet());
-        binding.editTextHome.setText(order.getHome());
+        // Update address info card
+        binding.cityTextView.setText("City: " + order.getCity());
+        binding.streetTextView.setText("Street: " + order.getStreet());
+        binding.homeTextView.setText("Home: " + order.getHome());
+
+        // Make the address info card visible
+        binding.addressInfoCard.setVisibility(View.VISIBLE);
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
         calendar.setTime(java.util.Date.from(order.getDatetime().atZone(ZoneId.systemDefault()).toInstant()));
         updateSelectedDateTime();

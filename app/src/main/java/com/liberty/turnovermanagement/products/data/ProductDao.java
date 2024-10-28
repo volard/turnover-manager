@@ -12,6 +12,7 @@ import java.util.List;
 
 @Dao
 public interface ProductDao {
+
     @Query("SELECT * FROM products WHERE isDeleted = 0")
     LiveData<List<Product>> getAll();
 

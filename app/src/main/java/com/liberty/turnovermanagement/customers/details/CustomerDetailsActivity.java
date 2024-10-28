@@ -57,13 +57,58 @@ public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, Custo
             customer = new Customer();
         }
 
-        customer.setName(binding.editTextName.getText().toString().trim());
-        customer.setSurname(binding.editTextSurName.getText().toString().trim());
-        customer.setMiddleName(binding.editTextMiddleName.getText().toString().trim());
-        customer.setPhone(binding.editTextPhone.getText().toString().trim());
-        customer.setEmail(binding.editTextEmail.getText().toString().trim());
+        String surname = binding.editTextSurName.getText().toString().trim();
+        String name = binding.editTextName.getText().toString().trim();
+        String middleName = binding.editTextMiddleName.getText().toString().trim();
+        String phone = binding.editTextPhone.getText().toString().trim();
+        String email = binding.editTextEmail.getText().toString().trim();
 
-       return customer;
+        // Validation checks
+        if (surname.isEmpty()) {
+            binding.editTextSurName.setError("Surname cannot be empty");
+            return null;
+        }
+
+        if (name.isEmpty()) {
+            binding.editTextName.setError("Name cannot be empty");
+            return null;
+        }
+
+        if (phone.isEmpty()) {
+            binding.editTextPhone.setError("Phone number cannot be empty");
+            return null;
+        } else if (!isValidPhoneNumber(phone)) {
+            binding.editTextPhone.setError("Invalid phone number format");
+            return null;
+        }
+
+        if (!email.isEmpty() && !isValidEmail(email)) {
+            binding.editTextEmail.setError("Invalid email format");
+            return null;
+        }
+
+        // If all validations pass, set the values
+        customer.setSurname(surname);
+        customer.setName(name);
+        customer.setMiddleName(middleName);
+        customer.setPhone(phone);
+        customer.setEmail(email);
+
+        return customer;
+    }
+
+    // Helper method to validate phone number format
+    private boolean isValidPhoneNumber(String phone) {
+        // This is a simple regex for phone number validation
+        // You might want to adjust it based on your specific requirements
+        String phoneRegex = "^\\+?[0-9]{10,14}$";
+        return phone.matches(phoneRegex);
+    }
+
+    // Helper method to validate email format
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        return email.matches(emailRegex);
     }
 
 }

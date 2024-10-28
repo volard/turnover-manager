@@ -3,28 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editTextName"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="Product Name"
-        android:inputType="text" />
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <EditText
-        android:id="@+id/editTextAmount"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="Amount"
-        android:inputType="number" />
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-    <EditText
-        android:id="@+id/editTextPrice"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="Price"
-        android:inputType="numberDecimal" />
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/labelDeleted"
@@ -33,18 +60,28 @@
         android:text="Product deleted"
         android:visibility="gone"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Product" />
+        android:layout_marginTop="24dp"
+        android:text="Save"
+        android:textSize="16sp"
+        android:padding="12dp"
+        app:cornerRadius="8dp"
+        style="@style/Widget.Material3.Button.Icon" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Delete"
-        android:backgroundTint="#FF0000"
-        android:visibility="gone" />
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:cornerRadius="8dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
 
 </LinearLayout>

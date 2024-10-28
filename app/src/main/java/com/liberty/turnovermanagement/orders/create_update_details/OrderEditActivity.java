@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.R;
@@ -24,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,7 +47,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             setupCustomerSpinner(customers);
             updateCustomerSpinner(viewModel.getSelectedOrder().getValue().getCustomerId());
         });*/
-
 
 
         setupSpinners();
@@ -153,24 +154,71 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             order = new Order();
         }
 
-        // Update order fields
-        order.setCity(binding.editTextCity.getText().toString().trim());
-        order.setStreet(binding.editTextStreet.getText().toString().trim());
-        order.setHome(binding.editTextHome.getText().toString().trim());
-        order.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString().trim()));
+        // Validate city
+        String city = binding.editTextCity.getText().toString().trim();
+        if (city.isEmpty()) {
+            binding.editTextCity.setError("City cannot be empty");
+            return null;
+        }
+        order.setCity(city);
+
+        // Validate street
+        String street = binding.editTextStreet.getText().toString().trim();
+        if (street.isEmpty()) {
+            binding.editTextStreet.setError("Street cannot be empty");
+            return null;
+        }
+        order.setStreet(street);
+
+        // Validate home
+        String home = binding.editTextHome.getText().toString().trim();
+        if (home.isEmpty()) {
+            binding.editTextHome.setError("Home cannot be empty");
+            return null;
+        }
+        order.setHome(home);
+
+        // Validate amount
+        String amountStr = binding.editTextAmount.getText().toString().trim();
+        if (amountStr.isEmpty()) {
+            binding.editTextAmount.setError("Amount cannot be empty");
+            return null;
+        }
+        try {
+            int amount = Integer.parseInt(amountStr);
+            if (amount <= 0) {
+                binding.editTextAmount.setError("Amount must be a positive integer");
+                return null;
+            }
+            order.setAmount(amount);
+        } catch (NumberFormatException e) {
+            binding.editTextAmount.setError("Invalid amount");
+            return null;
+        }
+
+        // Validate date and time
+        if (calendar.getTime().before(new Date())) {
+            // You might want to show an error message here
+            Toast.makeText(this, "Order date cannot be in the past", Toast.LENGTH_SHORT).show();
+            return null;
+        }
         order.setDatetime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
 
-        // Get selected product from spinner
+        // Validate product selection
         Product selectedProduct = (Product) binding.productSpinner.getSelectedItem();
-        if (selectedProduct != null) {
-            order.setProductId(selectedProduct.getId());
+        if (selectedProduct == null) {
+            Toast.makeText(this, "Please select a product", Toast.LENGTH_SHORT).show();
+            return null;
         }
+        order.setProductId(selectedProduct.getId());
 
-        // Get selected customer from spinner
+        // Validate customer selection
         Customer selectedCustomer = (Customer) binding.customerSpinner.getSelectedItem();
-        if (selectedCustomer != null) {
-            order.setCustomerId(selectedCustomer.getId());
+        if (selectedCustomer == null) {
+            Toast.makeText(this, "Please select a customer", Toast.LENGTH_SHORT).show();
+            return null;
         }
+        order.setCustomerId(selectedCustomer.getId());
 
         // Handle product version if available
         if (binding.productVersionSpinner.getVisibility() == View.VISIBLE) {
@@ -201,7 +249,8 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         binding.customerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -212,10 +261,10 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
-
 
 
     private void updateProductSpinner(List<Product> products) {

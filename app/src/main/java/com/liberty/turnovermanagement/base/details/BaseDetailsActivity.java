@@ -46,7 +46,11 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
     protected void saveOrUpdateItem(){
         T item = getItemToSaveOrUpdate();
 
-        if (itemId == -1) {
+        if (item == null) {
+            return;
+        }
+
+        if (itemId == Constants.UNINITIALIZED_INDICATOR) {
             viewModel.addNewItem(item);
         } else {
             viewModel.updateItem(item);
@@ -54,6 +58,7 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
         finishActivity();
     }
+
 
     protected abstract void setupButtons();
 

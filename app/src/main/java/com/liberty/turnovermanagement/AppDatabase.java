@@ -120,140 +120,161 @@ public abstract class AppDatabase extends RoomDatabase {
             productDao.deleteAll();
             customerDao.deleteAll();
 
-            // Generate test products
-            List<Product> products = getProducts();
+            // Generate test data
+            List<Product> products = generateProducts();
+            List<Customer> customers = generateCustomers();
             List<Long> productIds = productDao.insertAllAndGetIds(products);
-            for (int i = 0; i < productIds.size(); i++) {
-                products.get(i).setId(productIds.get(i));
-            }
-
-            // Generate test customers
-            List<Customer> customers = getCustomers();
             List<Long> customerIds = customerDao.insertAllAndGetIds(customers);
-            for (int i = 0; i < customerIds.size(); i++) {
-                customers.get(i).setId(customerIds.get(i));
+            for (Customer customer:
+                 customers) {
+                customer.setId(customerIds.get(customers.indexOf(customer)));
+            }
+            for (Product product:
+                    products) {
+                product.setId(productIds.get(products.indexOf(product)));
             }
 
 
-            // Generate test orders
-            List<Order> orders = getOrders(customers, products);
+            List<Order> orders = generateOrders(products, customers);
+
+            // Insert test data
             orderDao.insertAll(orders);
+
+            // Generate and insert history data
+            generateAndInsertHistory(productDao, customerDao, products, customers);
         });
     }
 
-    private static @NonNull List<Order> getOrders(List<Customer> customers, List<Product> products) {
-        List<Order> orders = new ArrayList<>();
-        Random random = new Random();
-        String[] cities = {"New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Philadelphia", "San Antonio", "San Diego", "Dallas", "San Jose"};
-
-        for (int i = 0; i < 50; i++) {
-            Order order = new Order();
-
-            Product selectedProduct = products.get(random.nextInt(products.size()));
-            Customer selectedCustomer = customers.get(random.nextInt(customers.size()));
-
-            order.setProductId(selectedProduct.getId());
-            order.setCustomerId(selectedCustomer.getId());
-            order.setProductVersion(selectedProduct.getVersion());
-            order.setCustomerVersion(selectedCustomer.getVersion());
-            order.setAmount(random.nextInt(10) + 1); // 1 to 10 items
-
-            // Generate a random date within the last 90 days
-            LocalDateTime orderDate = LocalDateTime.now().minusDays(random.nextInt(90));
-            order.setDatetime(orderDate);
-
-            String city = cities[random.nextInt(cities.length)];
-            order.setCity(city);
-            order.setStreet(generateStreetName());
-            order.setHome(generateHomeNumber());
-
-            orders.add(order);
+    private String transliterate(String message) {
+        char[] abcCyr = {' ','а','б','в','г','д','е','ё', 'ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х', 'ц','ч', 'ш','щ','ъ','ы','ь','э', 'ю','я'};
+        String[] abcLat = {" ","a","b","v","g","d","e","e","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","h","ts","ch","sh","sch", "","y", "","e","yu","ya"};
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < message.length(); i++) {
+            for (int x = 0; x < abcCyr.length; x++) {
+                if (message.charAt(i) == abcCyr[x]) {
+                    builder.append(abcLat[x]);
+                }
+            }
         }
-        return orders;
+        return builder.toString();
     }
 
 
-    /**
-     * Generates a random street name.
-     *
-     * @return A randomly generated street name
-     */
-    private static String generateStreetName() {
-        String[] streetTypes = {"St", "Ave", "Blvd", "Ln", "Rd", "Way", "Pl"};
-        String[] streetNames = {"Main", "Oak", "Pine", "Maple", "Cedar", "Elm", "Washington", "Park", "Lake", "Hill"};
-        return streetNames[new Random().nextInt(streetNames.length)] + " " + streetTypes[new Random().nextInt(streetTypes.length)];
-    }
-
-    /**
-     * Generates a random home number.
-     *
-     * @return A randomly generated home number as a String
-     */
-    private static String generateHomeNumber() {
-        return String.valueOf(new Random().nextInt(9999) + 1);
-    }
-
-    /**
-     * Generates a list of sample products.
-     *
-     * @return List of generated Product objects
-     */
-    private static @NonNull List<Product> getProducts() {
+    private List<Product> generateProducts() {
+        // Generate test products
         List<Product> products = new ArrayList<>();
-        String[] productNames = {
-                "Laptop", "Smartphone", "Tablet", "Desktop PC", "Wireless Earbuds",
-                "Smart Watch", "Gaming Console", "4K TV", "Digital Camera", "Bluetooth Speaker",
-                "Wireless Router", "External Hard Drive", "Printer", "Graphic Card", "Keyboard",
-                "Mouse", "Monitor", "Headphones", "Webcam", "Microphone",
-                "Power Bank", "USB Flash Drive", "SSD", "RAM", "CPU Cooler",
-                "Smartwatch", "Fitness Tracker", "VR Headset", "Drone", "E-reader"
-        };
-
+        String[] productNames = {"Ноутбук", "Смартфон", "Планшет", "Наушники", "Умные часы"};
         Random random = new Random();
-
-        for (String name : productNames) {
+        for (int i = 0; i < 5; i++) {
             Product product = new Product();
-            product.setName(name);
-            product.setAmount(random.nextInt(100) + 1); // Random amount between 1 and 100
-            product.setPrice(50 + (1950 * random.nextDouble())); // Random price between 50 and 2000
-            product.setPrice(Math.round(product.getPrice() * 100.0) / 100.0); // Round to 2 decimal places
+            product.setName(productNames[i]);
+            product.setAmount(random.nextInt(50) + 1);
+            product.setPrice((random.nextDouble() * 50000) + 5000); // Prices in rubles
             product.setDeleted(false);
+            product.setLastUpdated(LocalDateTime.now());
+            product.setVersion(2);
             products.add(product);
         }
+
         return products;
     }
 
-    /**
-     * Generates a list of sample customers.
-     *
-     * @return List of generated Customer objects
-     */
-    @SuppressLint("DefaultLocale")
-    private static @NonNull List<Customer> getCustomers() {
+    private List<Customer> generateCustomers() {
         List<Customer> customers = new ArrayList<>();
-        String[] firstNames = {"John", "Jane", "Mike", "Emily", "David", "Sarah", "Chris", "Laura", "Alex", "Emma",
-                "Daniel", "Olivia", "James", "Sophia", "William", "Ava", "Michael", "Isabella", "Robert", "Mia"};
-        String[] lastNames = {"Doe", "Smith", "Johnson", "Brown", "Wilson", "Taylor", "Anderson", "Thomas", "Jackson", "White",
-                "Harris", "Martin", "Thompson", "Garcia", "Martinez", "Robinson", "Clark", "Rodriguez", "Lewis", "Lee"};
-        String[] middleNames = {"A.", "B.", "C.", "D.", "E.", "F.", "G.", "H.", "I.", "J."};
-        String[] domains = {"gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "example.com"};
+        String[] firstNames = {"Иван", "Мария", "Алексей", "Екатерина", "Дмитрий"};
+        String[] lastNames = {"Иванов", "Петрова", "Сидоров", "Смирнова", "Кузнецов"};
+        String[] middleNames = {"Александрович", "Сергеевна", "Николаевич", "Андреевна", "Владимирович"};
 
         Random random = new Random();
-
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 5; i++) {
             Customer customer = new Customer();
-            String firstName = firstNames[random.nextInt(firstNames.length)];
-            String lastName = lastNames[random.nextInt(lastNames.length)];
-
-            customer.setName(firstName);
-            customer.setSurname(lastName);
-            customer.setMiddleName(middleNames[random.nextInt(middleNames.length)]);
-            customer.setPhone(String.format("%03d-%03d-%04d", random.nextInt(1000), random.nextInt(1000), random.nextInt(10000)));
-            customer.setEmail(firstName.toLowerCase() + "." + lastName.toLowerCase() + "@" + domains[random.nextInt(domains.length)]);
+            customer.setSurname(lastNames[i]);
+            customer.setName(firstNames[i]);
+            customer.setMiddleName(middleNames[i]);
+            customer.setPhone("+7" + (900 + random.nextInt(100)) + random.nextInt(99999999));
+            customer.setEmail(transliterate(firstNames[i].toLowerCase()) + "." + transliterate(lastNames[i].toLowerCase()) + "@mail.ru");
             customer.setDeleted(false);
+            customer.setLastUpdated(LocalDateTime.now());
             customers.add(customer);
         }
+
         return customers;
     }
+
+    private List<Order> generateOrders(List<Product> products, List<Customer> customers) {
+        // Generate test orders
+        List<Order> orders = new ArrayList<>();
+        String[] cities = {"Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань"};
+        String[] streets = {"Ленина", "Пушкина", "Гагарина", "Советская", "Мира"};
+
+        Random random = new Random();
+        for (int i = 0; i < 10; i++) {
+            Order order = new Order();
+            order.setProductId(products.get(random.nextInt(products.size()-1)).getId());
+            order.setCustomerId(customers.get(random.nextInt(customers.size()-1)).getId());
+            order.setAmount(random.nextInt(5) + 1);
+            order.setDatetime(LocalDateTime.now().minusDays(random.nextInt(30)));
+            order.setCity(cities[random.nextInt(cities.length)]);
+            order.setStreet("ул. " + streets[random.nextInt(streets.length)]);
+            order.setHome("д. " + (random.nextInt(100) + 1));
+            orders.add(order);
+        }
+
+        return orders;
+    }
+
+    private void generateAndInsertHistory(ProductDao productDao, CustomerDao customerDao,
+                                          List<Product> products, List<Customer> customers) {
+        Random random = new Random();
+
+        // Generate product history
+        for (Product product : products) {
+            if (random.nextBoolean()) {
+                ProductHistory history = new ProductHistory();
+                history.setProductId(product.getId());
+                history.setName(product.getName() + " (Old)");
+                history.setAmount(product.getAmount() - random.nextInt(10));
+                history.setPrice(product.getPrice() * 0.9);
+                history.setVersion(product.getVersion() - 1);
+                history.setCreatedAt(product.getLastUpdated().minusDays(random.nextInt(30)));
+
+                productDao.insertHistory(
+                        history.getProductId(),
+                        history.getName(),
+                        history.getAmount(),
+                        history.getPrice(),
+                        history.getVersion(),
+                        history.getCreatedAt()
+                );
+            }
+        }
+
+        // Generate customer history
+        for (Customer customer : customers) {
+            if (random.nextBoolean()) {
+                CustomerHistory history = new CustomerHistory();
+                history.setCustomerId(customer.getId());
+                history.setSurname(customer.getSurname());
+                history.setName(customer.getName());
+                history.setMiddleName(customer.getMiddleName());
+                history.setPhone("000-000-" + random.nextInt(10000));
+                history.setEmail("old." + customer.getEmail());
+                history.setVersion(customer.getVersion() - 1);
+                history.setCreatedAt(customer.getLastUpdated().minusDays(random.nextInt(30)));
+
+                customerDao.insertHistory(
+                        history.getCustomerId(),
+                        history.getSurname(),
+                        history.getName(),
+                        history.getMiddleName(),
+                        history.getPhone(),
+                        history.getEmail(),
+                        history.getVersion(),
+                        history.getCreatedAt()
+                );
+            }
+        }
+    }
+
 }
 

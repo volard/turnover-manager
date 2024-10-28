@@ -54,14 +54,49 @@ public class ProductDetailsActivity extends BaseDetailsActivity<Product, Product
     @Override
     protected Product getItemToSaveOrUpdate() {
         Product product = viewModel.getSelectedItem().getValue();
-        if (product == null) {
-            product = new Product();
+    if (product == null) {
+        product = new Product();
+    }
+
+    String name = binding.editTextName.getText().toString().trim();
+    String amountStr = binding.editTextAmount.getText().toString().trim();
+    String priceStr = binding.editTextPrice.getText().toString().trim();
+
+    // Validation checks
+    if (name.isEmpty()) {
+        binding.editTextName.setError("Name cannot be empty");
+        return null;
+    }
+
+    int amount;
+    try {
+        amount = Integer.parseInt(amountStr);
+        if (amount < 0) {
+            binding.editTextAmount.setError("Amount must be a non-negative integer");
+            return null;
         }
+    } catch (NumberFormatException e) {
+        binding.editTextAmount.setError("Invalid amount");
+        return null;
+    }
 
-        product.setName(binding.editTextName.getText().toString());
-        product.setAmount(Integer.parseInt(binding.editTextAmount.getText().toString()));
-        product.setPrice(Double.parseDouble(binding.editTextPrice.getText().toString()));
+    double price;
+    try {
+        price = Double.parseDouble(priceStr);
+        if (price < 0) {
+            binding.editTextPrice.setError("Price must be a non-negative number");
+            return null;
+        }
+    } catch (NumberFormatException e) {
+        binding.editTextPrice.setError("Invalid price");
+        return null;
+    }
 
-        return product;
+    // If all validations pass, set the values
+    product.setName(name);
+    product.setAmount(amount);
+    product.setPrice(price);
+
+    return product;
     }
 }
