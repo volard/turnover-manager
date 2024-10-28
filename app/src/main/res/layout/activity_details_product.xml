@@ -68,7 +68,6 @@
         android:text="Save"
         android:textSize="16sp"
         android:padding="12dp"
-        app:cornerRadius="8dp"
         style="@style/Widget.Material3.Button.Icon" />
 
     <com.google.android.material.button.MaterialButton
@@ -80,7 +79,6 @@
         android:textSize="16sp"
         android:padding="12dp"
         android:visibility="gone"
-        app:cornerRadius="8dp"
         style="@style/Widget.Material3.Button.OutlinedButton" />
 
 
