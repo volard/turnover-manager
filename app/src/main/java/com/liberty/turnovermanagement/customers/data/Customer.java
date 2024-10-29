@@ -23,9 +23,11 @@ public class Customer implements Serializable, Identifiable {
     private String phone;
     private String email;
     private boolean isDeleted = false;
-    private long version = 1; // Add this line
+    private long version = 1;
+
+
     @TypeConverters(DateTimeStringConverter.class)
-    private LocalDateTime lastUpdated; // Add this line
+    private LocalDateTime lastUpdated = LocalDateTime.now();
 
     // Add getters and setters for version and lastUpdated
     public long getVersion() {

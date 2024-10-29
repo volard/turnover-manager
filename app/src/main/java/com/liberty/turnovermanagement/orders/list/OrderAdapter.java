@@ -33,7 +33,7 @@ public class OrderAdapter extends BaseAdapter<Order, OrderAdapter.OrderViewHolde
 
     @Override
     protected boolean isItemFiltered(Order order, String filterPattern) {
-        return (order.getCity() + order.getStreet() + order.getHome() + order.getDatetime())
+        return (order.getCity() + order.getStreet() + order.getHome() + order.getCreatedAt())
                 .toLowerCase().contains(filterPattern);
     }
 
@@ -47,7 +47,7 @@ public class OrderAdapter extends BaseAdapter<Order, OrderAdapter.OrderViewHolde
 
         void bind(final Order order, final OnItemClickListener<Order> listener) {
             binding.textViewOrderId.setText(String.format("Order #%d", order.getId()));
-            binding.textViewDateTime.setText(order.getDatetime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+            binding.textViewDateTime.setText(order.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             binding.textViewAmount.setText(String.format("Amount: %d", order.getAmount()));
             binding.textViewAddress.setText(String.format("%s, %s %s", order.getCity(), order.getStreet(), order.getHome()));
 

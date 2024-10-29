@@ -23,6 +23,9 @@ public interface CustomerDao {
     @Query("SELECT * FROM customers WHERE id = :customerId")
     Customer getCustomerById(long customerId);
 
+    @Query("UPDATE customers SET version = version+1, lastUpdated = :lastUpdated WHERE id = :customerId")
+    void incrementVersion(long customerId, LocalDateTime lastUpdated);
+
     @Query("UPDATE customers SET surname = :surname, name = :name, middleName = :middleName, phone = :phone, email = :email, version = :newVersion, lastUpdated = :lastUpdated WHERE id = :customerId")
     void update(long customerId, String surname, String name, String middleName, String phone, String email, long newVersion, LocalDateTime lastUpdated);
 

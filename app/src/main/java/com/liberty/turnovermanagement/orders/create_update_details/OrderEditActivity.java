@@ -5,17 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.liberty.turnovermanagement.AppDatabase;
-import com.liberty.turnovermanagement.R;
-import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
-import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
-import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
 import com.liberty.turnovermanagement.databinding.ActivityEditOrderBinding;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
@@ -37,17 +31,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         calendar = Calendar.getInstance();
-
-   /*     viewModel.getProducts().observe(this, products -> {
-            setupProductSpinner(products);
-            updateProductSpinner(viewModel.getSelectedOrder().getValue().getProductId());
-        });
-
-        viewModel.getCustomers().observe(this, customers -> {
-            setupCustomerSpinner(customers);
-            updateCustomerSpinner(viewModel.getSelectedOrder().getValue().getCustomerId());
-        });*/
-
 
         setupSpinners();
         setupObservers();
@@ -88,7 +71,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
 
         // Set the date and time
-        calendar.setTime(java.util.Date.from(order.getDatetime().atZone(ZoneId.systemDefault()).toInstant()));
+        calendar.setTime(java.util.Date.from(order.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant()));
         updateSelectedDateTime();
 
         // Update product spinner
@@ -202,7 +185,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             Toast.makeText(this, "Order date cannot be in the past", Toast.LENGTH_SHORT).show();
             return null;
         }
-        order.setDatetime(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
+        order.setCreatedAt(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
 
         // Validate product selection
         Product selectedProduct = (Product) binding.productSpinner.getSelectedItem();

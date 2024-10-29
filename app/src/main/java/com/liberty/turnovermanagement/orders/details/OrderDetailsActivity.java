@@ -4,7 +4,6 @@ package com.liberty.turnovermanagement.orders.details;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
 import com.liberty.turnovermanagement.orders.create_update_details.OrderEditActivity;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
-import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
 
 import java.text.SimpleDateFormat;
@@ -45,6 +43,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.UNINITIALIZED_INDICATOR);
         viewModel.loadItem(itemId);
+
         viewModel.getSelectedItem().observe(this, this::updateUI);
 
         viewModel.getCustomerForOrder().observe(this, this::updateCustomerUI);
@@ -52,8 +51,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         binding.buttonEdit.setOnClickListener(v -> openEditActivity());
         binding.buttonDelete.setOnClickListener(v -> deleteItem());
-
-        setupCardClickListeners();
     }
 
 
@@ -75,33 +72,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setupCardClickListeners() {
-        binding.customerInfoCard.setOnClickListener(v -> {
-            Order currentOrder = viewModel.getSelectedItem().getValue();
-            if (currentOrder != null) {
-                openCustomerDetails(currentOrder.getCustomerId());
-            }
-        });
-
-        binding.productInfoCard.setOnClickListener(v -> {
-            Order currentOrder = viewModel.getSelectedItem().getValue();
-            if (currentOrder != null) {
-                openProductDetails(currentOrder.getProductId());
-            }
-        });
-    }
-
-    private void openCustomerDetails(long customerId) {
-        Intent intent = new Intent(this, CustomerDetailsActivity.class);
-        intent.putExtra(Constants.ITEM_ID, customerId);
-        startActivity(intent);
-    }
-
-    private void openProductDetails(long productId) {
-        Intent intent = new Intent(this, ProductDetailsActivity.class);
-        intent.putExtra(Constants.ITEM_ID, productId);
-        startActivity(intent);
-    }
 
 
     protected void updateUI(Order order) {
@@ -115,16 +85,16 @@ public class OrderDetailsActivity extends AppCompatActivity {
         // Make the address info card visible
         binding.addressInfoCard.setVisibility(View.VISIBLE);
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
-        calendar.setTime(java.util.Date.from(order.getDatetime().atZone(ZoneId.systemDefault()).toInstant()));
+        calendar.setTime(java.util.Date.from(order.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant()));
         updateSelectedDateTime();
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
 
-        binding.customerInfoCard.setVisibility(View.VISIBLE);
         viewModel.loadCustomerForOrder(order.getCustomerId(), order.getCustomerVersion());
+        binding.customerInfoCard.setVisibility(View.VISIBLE);
 
-        binding.productInfoCard.setVisibility(View.VISIBLE);
         viewModel.loadProductForOrder(order.getProductId(), order.getProductVersion());
+        binding.productInfoCard.setVisibility(View.VISIBLE);
     }
 
     private void updateProductUI(Product product) {

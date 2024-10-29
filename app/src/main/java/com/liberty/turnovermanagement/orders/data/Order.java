@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.Identifiable;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.products.data.Product;
@@ -35,10 +36,32 @@ public class Order implements Serializable, Identifiable {
     @PrimaryKey(autoGenerate = true)
     private long id;
     private int amount;
-    public long customerId = -1;
-    public long productId = -1;
+    public long customerId = Constants.UNINITIALIZED_INDICATOR;
+    public long productId = Constants.UNINITIALIZED_INDICATOR;
     private long customerVersion;
     private long productVersion;
+    @TypeConverters(DateTimeStringConverter.class)
+    @NonNull
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private String city;
+    private String street;
+    private String home;
+
+
+    // Constructor with all fields
+    public Order(long productId, int amount, long customerId, @NonNull LocalDateTime createdAt, String city, String street, String home) {
+        this.productId = productId;
+        this.amount = amount;
+        this.customerId = customerId;
+        this.createdAt = createdAt;
+        this.city = city;
+        this.street = street;
+        this.home = home;
+    }
+
+    @Ignore
+    public Order() {
+    }
 
     public long getCustomerVersion() {
         return customerVersion;
@@ -56,28 +79,6 @@ public class Order implements Serializable, Identifiable {
         this.productVersion = productVersion;
     }
 
-    @TypeConverters(DateTimeStringConverter.class)
-    @NonNull
-    private LocalDateTime datetime;
-    private String city;
-    private String street;
-    private String home;
-
-    // Constructor with all fields
-    public Order(long productId, int amount, long customerId, @NonNull LocalDateTime datetime, String city, String street, String home) {
-        this.productId = productId;
-        this.amount = amount;
-        this.customerId = customerId;
-        this.datetime = datetime;
-        this.city = city;
-        this.street = street;
-        this.home = home;
-    }
-
-    @Ignore
-    public Order() {
-    }
-
     // Getters
     public long getId() {
         return id;
@@ -88,8 +89,8 @@ public class Order implements Serializable, Identifiable {
     }
 
     @NonNull
-    public LocalDateTime getDatetime() {
-        return datetime;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public String getCity() {
@@ -129,8 +130,8 @@ public class Order implements Serializable, Identifiable {
         this.customerId = customerId;
     }
 
-    public void setDatetime(@NonNull LocalDateTime datetime) {
-        this.datetime = datetime;
+    public void setCreatedAt(@NonNull LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public void setCity(String city) {
@@ -151,7 +152,7 @@ public class Order implements Serializable, Identifiable {
         return "Order\n" +
                 "id = " + id +
                 "\namount = " + amount +
-                "\ndatetime = " + datetime +
+                "\ndatetime = " + createdAt +
                 "\ncity = '" + city + '\'' +
                 "\nstreet = '" + street + '\'' +
                 "\nhome = '" + home + '\'';

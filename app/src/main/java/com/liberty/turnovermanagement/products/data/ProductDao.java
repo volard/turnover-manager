@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-
-import com.liberty.turnovermanagement.customers.data.CustomerHistory;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +27,9 @@ public interface ProductDao {
 
     @Query("UPDATE products SET name = :name, amount = :amount, price = :price, version = :newVersion, lastUpdated = :lastUpdated WHERE id = :productId")
     void update(long productId, String name, int amount, double price, long newVersion, LocalDateTime lastUpdated);
+
+    @Query("UPDATE products SET version = version+1, lastUpdated = :lastUpdated WHERE id = :productId")
+    void incrementVersion(long productId, LocalDateTime lastUpdated);
 
     @Query("INSERT INTO product_history (productId, name, amount, price, version, createdAt) VALUES (:productId, :name, :amount, :price, :version, :updatedAt)")
     void insertHistory(long productId, String name, int amount, double price, long version, LocalDateTime updatedAt);

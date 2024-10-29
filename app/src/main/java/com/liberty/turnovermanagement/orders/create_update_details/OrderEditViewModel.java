@@ -82,20 +82,7 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
         });
     }
 
-//    public void loadProductsForSpinner() {
-//        AppDatabase.databaseWriteExecutor.execute(() -> {
-//            List<Product> productList = productDao.getAll().getValue();
-//            products.postValue(productList);
-//        });
-//    }
-//
-//    public void loadCustomersForSpinner() {
-//        AppDatabase.databaseWriteExecutor.execute(() -> {
-//            List<Customer> customerList = customerDao.getAll().getValue();
-//            customers.postValue(customerList);
-//        });
-//    }
-//
+
     public void loadProductVersions(long productId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             List<ProductHistory> versions = productDao.getProductHistory(productId);

@@ -1,16 +1,13 @@
 package com.liberty.turnovermanagement.products.details;
 
 import android.app.Application;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
 import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
 import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

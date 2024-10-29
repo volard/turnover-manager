@@ -1,9 +1,7 @@
 package com.liberty.turnovermanagement;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -37,7 +35,7 @@ import java.util.concurrent.Executors;
                 ProductHistory.class,
                 CustomerHistory.class
         },
-        version = 8,
+        version = 9,
         exportSchema = false)
 @TypeConverters({DateTimeStringConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
@@ -171,8 +169,6 @@ public abstract class AppDatabase extends RoomDatabase {
             product.setAmount(random.nextInt(50) + 1);
             product.setPrice((random.nextDouble() * 50000) + 5000); // Prices in rubles
             product.setDeleted(false);
-            product.setLastUpdated(LocalDateTime.now());
-            product.setVersion(2);
             products.add(product);
         }
 
@@ -194,7 +190,6 @@ public abstract class AppDatabase extends RoomDatabase {
             customer.setPhone("+7" + (900 + random.nextInt(100)) + random.nextInt(99999999));
             customer.setEmail(transliterate(firstNames[i].toLowerCase()) + "." + transliterate(lastNames[i].toLowerCase()) + "@mail.ru");
             customer.setDeleted(false);
-            customer.setLastUpdated(LocalDateTime.now());
             customers.add(customer);
         }
 
@@ -210,10 +205,14 @@ public abstract class AppDatabase extends RoomDatabase {
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             Order order = new Order();
-            order.setProductId(products.get(random.nextInt(products.size()-1)).getId());
-            order.setCustomerId(customers.get(random.nextInt(customers.size()-1)).getId());
+            Product product = products.get(random.nextInt(products.size()-1));
+            Customer customer = customers.get(random.nextInt(customers.size()-1));
+            order.setProductId(product.getId());
+            order.setCustomerId(customer.getId());
+            order.setProductVersion(product.getVersion());
+            order.setCustomerVersion(customer.getVersion());
             order.setAmount(random.nextInt(5) + 1);
-            order.setDatetime(LocalDateTime.now().minusDays(random.nextInt(30)));
+            order.setCreatedAt(LocalDateTime.now().minusDays(random.nextInt(30)));
             order.setCity(cities[random.nextInt(cities.length)]);
             order.setStreet("ул. " + streets[random.nextInt(streets.length)]);
             order.setHome("д. " + (random.nextInt(100) + 1));
@@ -235,7 +234,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 history.setName(product.getName() + " (Old)");
                 history.setAmount(product.getAmount() - random.nextInt(10));
                 history.setPrice(product.getPrice() * 0.9);
-                history.setVersion(product.getVersion() - 1);
+                history.setVersion(product.getVersion());
                 history.setCreatedAt(product.getLastUpdated().minusDays(random.nextInt(30)));
 
                 productDao.insertHistory(
@@ -246,6 +245,8 @@ public abstract class AppDatabase extends RoomDatabase {
                         history.getVersion(),
                         history.getCreatedAt()
                 );
+
+                productDao.incrementVersion(product.getId(), LocalDateTime.now());
             }
         }
 
@@ -259,7 +260,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 history.setMiddleName(customer.getMiddleName());
                 history.setPhone("000-000-" + random.nextInt(10000));
                 history.setEmail("old." + customer.getEmail());
-                history.setVersion(customer.getVersion() - 1);
+                history.setVersion(customer.getVersion());
                 history.setCreatedAt(customer.getLastUpdated().minusDays(random.nextInt(30)));
 
                 customerDao.insertHistory(
@@ -272,6 +273,8 @@ public abstract class AppDatabase extends RoomDatabase {
                         history.getVersion(),
                         history.getCreatedAt()
                 );
+
+                customerDao.incrementVersion(customer.getId(), LocalDateTime.now());
             }
         }
     }

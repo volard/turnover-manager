@@ -7,11 +7,14 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.Identifiable;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import kotlin.UNINITIALIZED_VALUE;
 
 @Entity(tableName = "products")
 public class Product implements Serializable, Identifiable {
@@ -21,15 +24,22 @@ public class Product implements Serializable, Identifiable {
     private int amount;
     private double price;
     private boolean isDeleted;
-    private long version;
+
+    // Хранит номер последней версии. Всегда на один больше, чем имеющяяся крайнаяя запись в
+    // product_history
+    private long version = 1;
+
+    // Дата первого изменения = дата создания
     @TypeConverters(DateTimeStringConverter.class)
-    private LocalDateTime lastUpdated;
+    private LocalDateTime lastUpdated = LocalDateTime.now();
 
     // Constructor with all fields
     public Product(String name, int amount, double price, boolean isDeleted) {
         this.name = name;
         this.amount = amount;
         this.price = price;
+
+
         this.isDeleted = isDeleted;
     }
 
