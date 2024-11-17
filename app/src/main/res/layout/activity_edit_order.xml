@@ -118,15 +118,6 @@
             android:layout_marginTop="16dp"
             android:text="Selected Date and Time" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_date_time_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:padding="12dp"
-            style="@style/Widget.Material3.Button.Icon"
-            android:text="Select Date and Time" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSave"

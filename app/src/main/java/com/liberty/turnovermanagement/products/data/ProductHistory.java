@@ -1,11 +1,13 @@
 package com.liberty.turnovermanagement.products.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.base.Constants;
 
 import java.time.LocalDateTime;
 
@@ -89,5 +91,9 @@ public class ProductHistory {
         return createdAt;
     }
 
-    // Constructors, getters, and setters
+    @NonNull
+    @Override
+    public String toString() {
+        return "[ " + createdAt.format(Constants.DATE_TIME_FORMATTER) + " ] - " + name;
+    }
 }

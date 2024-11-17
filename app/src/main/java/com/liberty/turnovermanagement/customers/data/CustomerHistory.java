@@ -1,11 +1,13 @@
 package com.liberty.turnovermanagement.customers.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
+import com.liberty.turnovermanagement.base.Constants;
 
 import java.time.LocalDateTime;
 
@@ -38,7 +40,8 @@ public class CustomerHistory {
         customer.setPhone(this.getPhone());
         customer.setEmail(this.getEmail());
         customer.setVersion(this.getVersion());
-        return customer;    }
+        return customer;
+    }
 
     public long getId() {
         return id;
@@ -110,5 +113,11 @@ public class CustomerHistory {
 
     public void setVersion(long version) {
         this.version = version;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "[ " + createdAt.format(Constants.DATE_TIME_FORMATTER) + " ] - " + surname + " " + name + " " + middleName;
     }
 }

@@ -26,7 +26,6 @@ import java.util.Locale;
 
 public class OrderDetailsActivity extends AppCompatActivity {
 
-    private Calendar calendar;
     private ActivityDetailsOrderBinding binding;
     protected OrderDetailsViewModel viewModel;
     protected long itemId = Constants.UNINITIALIZED_INDICATOR;
@@ -38,8 +37,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(OrderDetailsViewModel.class);
-
-        calendar = Calendar.getInstance();
 
         itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.UNINITIALIZED_INDICATOR);
         viewModel.loadItem(itemId);
@@ -85,8 +82,9 @@ public class OrderDetailsActivity extends AppCompatActivity {
         // Make the address info card visible
         binding.addressInfoCard.setVisibility(View.VISIBLE);
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
-        calendar.setTime(java.util.Date.from(order.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant()));
-        updateSelectedDateTime();
+
+        // Update date time
+        binding.tvSelectedDateTime.setText("Selected: " + order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER) );
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
 
@@ -122,12 +120,5 @@ public class OrderDetailsActivity extends AppCompatActivity {
             binding.customerEmailTextView.setText("");
         }
     }
-
-    private void updateSelectedDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        String formattedDateTime = sdf.format(calendar.getTime());
-        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
-    }
-
 }
 

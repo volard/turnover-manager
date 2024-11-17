@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
@@ -25,12 +26,9 @@ import java.util.Locale;
 
 public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewModel, ActivityEditOrderBinding> {
 
-    private Calendar calendar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        calendar = Calendar.getInstance();
 
         setupSpinners();
         setupObservers();
@@ -69,10 +67,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.editTextStreet.setText(order.getStreet());
         binding.editTextHome.setText(order.getHome());
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
-
-        // Set the date and time
-        calendar.setTime(java.util.Date.from(order.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant()));
-        updateSelectedDateTime();
+        binding.tvSelectedDateTime.setText(order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
 
         // Update product spinner
         updateProductSpinner(order.getProductId());
@@ -120,13 +115,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
                 }
             }
         });
-    }
-
-
-    private void updateSelectedDateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
-        String formattedDateTime = sdf.format(calendar.getTime());
-        binding.tvSelectedDateTime.setText("Selected: " + formattedDateTime);
     }
 
 
@@ -179,13 +167,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             return null;
         }
 
-        // Validate date and time
-        if (calendar.getTime().before(new Date())) {
-            // You might want to show an error message here
-            Toast.makeText(this, "Order date cannot be in the past", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-        order.setCreatedAt(LocalDateTime.ofInstant(calendar.toInstant(), ZoneId.systemDefault()));
 
         // Validate product selection
         Product selectedProduct = (Product) binding.productSpinner.getSelectedItem();
@@ -218,6 +199,9 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
                 order.setCustomerVersion(selectedCustomerVersion.getVersion());
             }
         }
+
+
+        order.setCreatedAt(LocalDateTime.now());
 
         return order;
     }
