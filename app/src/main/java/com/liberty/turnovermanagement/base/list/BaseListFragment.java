@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,27 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         );
     }
 
+    private void setupSearchView() {
+        binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+        binding.searchView.setOnCloseListener(() -> {
+            adapter.getFilter().filter("");
+            return false;
+        });
+    }
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentListBinding.inflate(inflater, container, false);
@@ -59,6 +81,7 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         super.onViewCreated(view, savedInstanceState);
         setupRecyclerView();
         setupObservers();
+        setupSearchView();
         binding.fab.setOnClickListener(v -> openCreateActivity());
     }
 
@@ -83,7 +106,7 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
             showEmptyState();
         } else {
             hideEmptyState();
-            adapter.submitList(items);
+            adapter.setItems(items);
         }
     }
 

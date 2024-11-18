@@ -29,7 +29,5 @@ public abstract class BaseDetailsViewModel<T, H> extends AndroidViewModel {
 
     public abstract void softDelete(T item);
 
-    public abstract LiveData<List<H>> getItemHistory(long itemId);
-
     public abstract void addNewItem(T item);
 }

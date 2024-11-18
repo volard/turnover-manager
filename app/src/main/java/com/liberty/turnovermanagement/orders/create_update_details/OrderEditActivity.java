@@ -35,6 +35,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     }
 
 
+
     private void setupObservers() {
         viewModel.getProducts().observe(this, this::updateProductSpinner);
         viewModel.getProductVersions().observe(this, this::updateProductVersionSpinner);
@@ -86,14 +87,14 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     private void updateProductSpinner(long productId) {
         viewModel.getProducts().observe(this, products -> {
             if (products != null) {
-                int selectedPosition = -1;
+                int selectedPosition = (int)Constants.UNINITIALIZED_INDICATOR;
                 for (int i = 0; i < products.size(); i++) {
                     if (products.get(i).getId() == productId) {
                         selectedPosition = i;
                         break;
                     }
                 }
-                if (selectedPosition != -1) {
+                if (selectedPosition != Constants.UNINITIALIZED_INDICATOR) {
                     binding.productSpinner.setSelection(selectedPosition);
                 }
             }
@@ -103,14 +104,14 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     private void updateCustomerSpinner(long customerId) {
         viewModel.getCustomers().observe(this, customers -> {
             if (customers != null) {
-                int selectedPosition = -1;
+                int selectedPosition = (int)Constants.UNINITIALIZED_INDICATOR;
                 for (int i = 0; i < customers.size(); i++) {
                     if (customers.get(i).getId() == customerId) {
                         selectedPosition = i;
                         break;
                     }
                 }
-                if (selectedPosition != -1) {
+                if (selectedPosition != Constants.UNINITIALIZED_INDICATOR) {
                     binding.customerSpinner.setSelection(selectedPosition);
                 }
             }
@@ -155,6 +156,9 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             binding.editTextAmount.setError("Amount cannot be empty");
             return null;
         }
+
+
+
         try {
             int amount = Integer.parseInt(amountStr);
             if (amount <= 0) {
@@ -184,11 +188,24 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         }
         order.setCustomerId(selectedCustomer.getId());
 
+
+        int enteredAmount = Integer.parseInt(binding.editTextAmount.getText().toString());
+
         // Handle product version if available
         if (binding.productVersionSpinner.getVisibility() == View.VISIBLE) {
             ProductHistory selectedProductVersion = (ProductHistory) binding.productVersionSpinner.getSelectedItem();
             if (selectedProductVersion != null) {
                 order.setProductVersion(selectedProductVersion.getVersion());
+                if (enteredAmount > selectedProductVersion.getAmount()) {
+                    binding.editTextAmount.setError("Amount exceeds available stock");
+                    return null;
+                }
+            }
+            else {
+                if (enteredAmount > selectedProduct.getAmount()) {
+                    binding.editTextAmount.setError("Amount exceeds available stock");
+                    return null;
+                }
             }
         }
 
@@ -212,11 +229,27 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Product selectedProduct = (Product) parent.getItemAtPosition(position);
+                int maxQuantity = selectedProduct.getAmount();
+                binding.tvMaxQuantityHint.setText("Max: " + maxQuantity); // Visual hint for maximum amount
                 viewModel.loadProductVersions(selectedProduct.getId());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        binding.productVersionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
+               ProductHistory productHistory = (ProductHistory) parent.getItemAtPosition(position);
+                int maxQuantity = productHistory.getAmount();
+                binding.tvMaxQuantityHint.setText("Max: " + maxQuantity); // Visual hint for maximum amount
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -235,10 +268,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
 
 
     private void updateProductSpinner(List<Product> products) {
-//        ArrayAdapter<Product> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, products);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        binding.productSpinner.setAdapter(adapter);
-
         ProductSpinnerAdapter adapter = new ProductSpinnerAdapter(this, products);
         binding.productSpinner.setAdapter(adapter);
     }
@@ -248,17 +277,12 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             binding.productVersionSpinner.setVisibility(View.GONE);
         } else {
             binding.productVersionSpinner.setVisibility(View.VISIBLE);
-            ArrayAdapter<ProductHistory> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, productVersions);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ProductHistorySpinnerAdapter adapter = new ProductHistorySpinnerAdapter(this, productVersions);
             binding.productVersionSpinner.setAdapter(adapter);
         }
     }
 
     private void updateCustomerSpinner(List<Customer> customers) {
-//        ArrayAdapter<Customer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customers);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        binding.customerSpinner.setAdapter(adapter);
-
         CustomerSpinnerAdapter adapter = new CustomerSpinnerAdapter(this, customers);
         binding.customerSpinner.setAdapter(adapter);
     }
@@ -268,8 +292,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             binding.customerVersionSpinner.setVisibility(View.GONE);
         } else {
             binding.customerVersionSpinner.setVisibility(View.VISIBLE);
-            ArrayAdapter<CustomerHistory> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, customerVersions);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            CustomerHistorySpinnerAdapter adapter = new CustomerHistorySpinnerAdapter(this, customerVersions);
             binding.customerVersionSpinner.setAdapter(adapter);
         }
     }

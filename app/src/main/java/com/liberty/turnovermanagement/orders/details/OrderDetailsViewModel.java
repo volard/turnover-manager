@@ -88,11 +88,6 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
         });
     }
 
-    @Override
-    public LiveData<List<Void>> getItemHistory(long itemId) {
-        // Orders don't have history in the current implementation
-        return new MutableLiveData<>(new ArrayList<>());
-    }
 
     @Override
     public void addNewItem(Order order) {

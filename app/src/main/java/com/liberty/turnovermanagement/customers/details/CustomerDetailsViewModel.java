@@ -87,15 +87,6 @@ public class CustomerDetailsViewModel extends BaseDetailsViewModel<Customer, Cus
         });
     }
 
-    @Override
-    public LiveData<List<CustomerHistory>> getItemHistory(long itemId) {
-        MutableLiveData<List<CustomerHistory>> history = new MutableLiveData<>();
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<CustomerHistory> customerHistory = customerDao.getCustomerHistory(itemId);
-            history.postValue(customerHistory);
-        });
-        return history;
-    }
 
     @Override
     public void addNewItem(Customer customer) {

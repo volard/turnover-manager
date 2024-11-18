@@ -1,5 +1,6 @@
 package com.liberty.turnovermanagement.products.list;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.base.list.BaseListFragment;

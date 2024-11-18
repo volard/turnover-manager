@@ -79,16 +79,6 @@ public class ProductDetailViewModel extends BaseDetailsViewModel<Product, Produc
     }
 
     @Override
-    public LiveData<List<ProductHistory>> getItemHistory(long itemId) {
-        MutableLiveData<List<ProductHistory>> history = new MutableLiveData<>();
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            List<ProductHistory> productHistory = productDao.getProductHistory(itemId);
-            history.postValue(productHistory);
-        });
-        return history;
-    }
-
-    @Override
     public void addNewItem(Product product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             long id = productDao.insert(product);

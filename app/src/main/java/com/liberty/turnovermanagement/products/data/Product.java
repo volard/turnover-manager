@@ -38,8 +38,6 @@ public class Product implements Serializable, Identifiable {
         this.name = name;
         this.amount = amount;
         this.price = price;
-
-
         this.isDeleted = isDeleted;
     }
 
@@ -120,13 +118,6 @@ public class Product implements Serializable, Identifiable {
         return "[ " + id + " ]\n" + "Name: " + name + "\nAmount: " + amount + "\nPrice: " + price + " ₽" + (isDeleted ? "\nDELETED" : "");
     }
 
-    //    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Product product = (Product) o;
-//        return id == product.id;
-//    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
