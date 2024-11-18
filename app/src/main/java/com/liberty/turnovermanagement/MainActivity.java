@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Set locale
-        String languageCode = sharedPreferences.getString("language", "en");
+        String languageCode = sharedPreferences.getString("language", "ru");
         LocaleHelper.setLocale(this, languageCode);
 
 

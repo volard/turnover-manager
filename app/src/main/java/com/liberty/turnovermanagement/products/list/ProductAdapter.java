@@ -1,5 +1,6 @@
 package com.liberty.turnovermanagement.products.list;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -10,6 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.liberty.turnovermanagement.base.list.BaseAdapter;
 import com.liberty.turnovermanagement.databinding.ProductListItemBinding;
 import com.liberty.turnovermanagement.products.data.Product;
+
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
 
 /**
  * Creating ViewHolder objects to hold the views for each item.
@@ -50,7 +55,23 @@ public class ProductAdapter extends BaseAdapter<Product, ProductAdapter.ProductV
         void bind(Product product, OnItemClickListener<Product> listener) {
             binding.textViewName.setText(product.getName());
             binding.textViewAmount.setText("Amount: " + product.getAmount());
-            binding.textViewPrice.setText("Price: $ " + String.format("%.2f", product.getPrice()));
+
+
+            String priceText = String.valueOf(product.getPrice());
+            // русский просто добавляет пробелы, а так определяются запятые и точки, что привычнее и удобнее
+            Locale locale = new Locale("en", "EN");
+            try {
+                // Format the price as currency
+                NumberFormat currencyFormat = NumberFormat.getInstance(locale);
+                Number price = currencyFormat.parse(priceText); // Parse the text
+                String formattedPrice = currencyFormat.format(price); // Format as currency
+                binding.textViewPrice.setText("Price: $ " + formattedPrice);
+            } catch (ParseException e) {
+                // Handle parsing errors
+                Log.e("ProductDetails", "Error parsing price", e);
+                binding.textViewPrice.setText("Price: $ " + String.format("%.2f", product.getPrice()));
+            }
+
             itemView.setOnClickListener(v -> listener.onItemClick(product));
         }
     }

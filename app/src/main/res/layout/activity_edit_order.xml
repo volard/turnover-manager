@@ -10,9 +10,19 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/productDetailsHeadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Product"
+            android:text="@string/edit_order__headline"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product"
             android:textStyle="bold" />
 
         <Spinner
@@ -31,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Customer"
+            android:text="@string/customer"
             android:textStyle="bold" />
 
         <Spinner
@@ -50,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Order Details"
+            android:text="@string/view_order__order_details"
             android:textStyle="bold" />
 
 
@@ -58,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Amount"
+            android:hint="@string/amount"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -80,7 +90,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="City"
+            android:hint="@string/city"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -94,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Street"
+            android:hint="@string/street"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -108,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Home"
+            android:hint="@string/home"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -123,7 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Selected Date and Time" />
+            />
 
 
         <com.google.android.material.button.MaterialButton
@@ -131,7 +141,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Save"
+            android:text="@string/save"
             android:textSize="16sp"
             android:padding="12dp"
             style="@style/Widget.Material3.Button.Icon" />
@@ -141,7 +151,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Delete"
+            android:text="@string/delete"
             android:textSize="16sp"
             android:padding="12dp"
             android:visibility="gone"

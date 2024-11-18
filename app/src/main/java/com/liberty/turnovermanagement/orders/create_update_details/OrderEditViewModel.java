@@ -1,8 +1,10 @@
 package com.liberty.turnovermanagement.orders.create_update_details;
 
 import android.app.Application;
+import android.util.Pair;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
@@ -23,9 +25,14 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
     private final CustomerDao customerDao;
     private final OrderDao orderDao;
 
+
     private final LiveData<List<Product>> products;
+
+    // I can setup products versions only after I get selected product AND product versions for the product
     private final MutableLiveData<Product> selectedProduct = new MutableLiveData<>();
     private final MutableLiveData<List<ProductHistory>> productVersions = new MutableLiveData<>();
+    private final MediatorLiveData<Pair<Product, List<ProductHistory>>> selectedProductAndVersions = new MediatorLiveData<>();
+
     private final LiveData<List<Customer>> customers;
     private final MutableLiveData<List<CustomerHistory>> customerVersions = new MutableLiveData<>();
 
@@ -36,6 +43,20 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
         orderDao = db.orderDao();
         products = productDao.getAll();
         customers = customerDao.getAll();
+
+        selectedProductAndVersions.addSource(selectedProduct, product -> {
+            Pair<Product, List<ProductHistory>> currentValue = selectedProductAndVersions.getValue();
+            selectedProductAndVersions.setValue(new Pair<>(product, currentValue != null ? currentValue.second : null));
+        });
+
+        selectedProductAndVersions.addSource(productVersions, productHistoryList -> {
+            Pair<Product, List<ProductHistory>> currentValue = selectedProductAndVersions.getValue();
+            selectedProductAndVersions.setValue(new Pair<>(currentValue != null ? currentValue.first : null, productHistoryList));
+        });
+    }
+
+    public LiveData<Pair<Product, List<ProductHistory>>> getSelectedProductAndVersions() {
+        return selectedProductAndVersions;
     }
 
     @Override

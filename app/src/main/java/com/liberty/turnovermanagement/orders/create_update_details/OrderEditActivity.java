@@ -6,8 +6,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
-
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
@@ -33,20 +31,24 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
 
     private void setupObservers() {
         viewModel.getSelectedItem().observe(this, order -> {
-            updateProductSpinner(order.getProductId());
-            updateCustomerSpinner(order.getCustomerId());
+            setInitialSelectionProductSpinner(order.getProductId());
+            setInitialSelectionCustomerSpinner(order.getCustomerId());
         });
 
         viewModel.getSelectedItem().observe(this, order -> {
             viewModel.loadCustomerVersions(order.getCustomerId());
         });
 
-        viewModel.getSelectedProduct().observe(this, product -> {
-            viewModel.loadProductVersions(viewModel.getSelectedItem().getValue().getProductId());
+        viewModel.getSelectedProductAndVersions().observe(this, pair -> {
+            if (pair.first == null || pair.second == null) {
+                return;
+            }
+            Product selectedProduct = pair.first;
+            List<ProductHistory> versions = pair.second;
+            updateProductVersionSpinner(versions, selectedProduct);
         });
 
         viewModel.getProducts().observe(this, this::updateProductSpinner);
-        viewModel.getProductVersions().observe(this, this::updateProductVersionSpinner);
         viewModel.getCustomers().observe(this, this::updateCustomerSpinner);
         viewModel.getCustomerVersions().observe(this, this::updateCustomerVersionSpinner);
     }
@@ -80,7 +82,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.tvSelectedDateTime.setText(order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
     }
 
-    private void updateProductSpinner(long productId) {
+    private void setInitialSelectionProductSpinner(long productId) {
         viewModel.getProducts().observe(this, products -> {
             if (products != null) {
                 int selectedPosition = (int) Constants.UNINITIALIZED_INDICATOR;
@@ -97,7 +99,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         });
     }
 
-    private void updateCustomerSpinner(long customerId) {
+    private void setInitialSelectionCustomerSpinner(long customerId) {
         viewModel.getCustomers().observe(this, customers -> {
             if (customers != null) {
                 int selectedPosition = (int) Constants.UNINITIALIZED_INDICATOR;
@@ -223,9 +225,9 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Product selectedProduct = (Product) parent.getItemAtPosition(position);
                 int maxQuantity = selectedProduct.getAmount();
-                binding.tvMaxQuantityHint.setText("Max: " + maxQuantity); // Visual hint for maximum amount
+                binding.tvMaxQuantityHint.setText("Max: " + maxQuantity);
                 viewModel.loadProductVersions(selectedProduct.getId());
-
+                viewModel.getSelectedProduct().postValue(selectedProduct);
             }
 
             @Override
@@ -263,7 +265,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.productSpinner.setAdapter(adapter);
     }
 
-    private void updateProductVersionSpinner(List<ProductHistory> productVersions) {
+    private void updateProductVersionSpinner(List<ProductHistory> productVersions, Product selectedProduct) {
         if (productVersions.isEmpty()) {
             binding.productVersionSpinner.setVisibility(View.GONE);
         } else {
@@ -274,14 +276,15 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             if (currentOrder != null){
                 // everytime customer match that one which in the order, the order's version is set up
                 if (currentOrder.getProductId() == selectedProduct.getId()){
-                    for (int i = 0; i < productVersions.size(); i++) {
-                        if (productVersions.get(i).getVersion() == currentOrder.getProductVersion()) {
-                            binding.customerVersionSpinner.setSelection(i);
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        ProductHistory item = adapter.getItem(i);
+                        if (item == null){continue;}
+                        if (item.getVersion() == currentOrder.getProductVersion()) {
+                            binding.productVersionSpinner.setSelection(i);
                             break;
                         }
                     }
                 }
-
             }
 
             binding.productVersionSpinner.setVisibility(View.VISIBLE);
@@ -304,8 +307,10 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             if (currentOrder != null){
                 // everytime customer match that one which in the order, the order's version is set up
                 if (currentOrder.getCustomerId() == selectedCustomerId){
-                    for (int i = 0; i < customerVersions.size(); i++) {
-                        if (customerVersions.get(i).getVersion() == currentOrder.getCustomerVersion()) {
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        CustomerHistory item = adapter.getItem(i);
+                        if (item == null){continue;}
+                        if (item.getVersion() == currentOrder.getCustomerVersion()) {
                             binding.customerVersionSpinner.setSelection(i);
                             break;
                         }

@@ -118,6 +118,6 @@ public class CustomerHistory {
     @NonNull
     @Override
     public String toString() {
-        return "[ " + createdAt.format(Constants.DATE_TIME_FORMATTER) + " ] - " + surname + " " + name + " " + middleName;
+        return "[ v" + version + " ] " + surname + " " + name + " " + middleName;
     }
 }

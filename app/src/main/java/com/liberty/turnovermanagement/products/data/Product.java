@@ -124,7 +124,7 @@ public class Product implements Serializable, Identifiable {
     @NonNull
     @Override
     public String toString() {
-        return "[ " + id + " ]\n" + "Name: " + name + "\nAmount: " + amount + "\nPrice: " + price + " ₽" + (isDeleted ? "\nDELETED" : "");
+        return "[ v" + version + " ] " + name + ", " + price + " ₽";
     }
 
     @Override

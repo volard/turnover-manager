@@ -94,6 +94,6 @@ public class ProductHistory {
     @NonNull
     @Override
     public String toString() {
-        return "[ " + createdAt.format(Constants.DATE_TIME_FORMATTER) + " ] - " + name;
+        return "[ v" + version + " ] - " + name;
     }
 }

@@ -49,8 +49,8 @@ public class CustomerSpinnerAdapter extends ArrayAdapter<Customer> {
         if (customer != null) {
             // Customize this to display the information you want
             String displayText = String.format(
-                    "%d - %s %s %s",
-                    customer.getId(),
+                    "[ v%d ] %s %s %s",
+                    customer.getVersion(),
                     customer.getSurname(),
                     customer.getName(),
                     customer.getMiddleName()

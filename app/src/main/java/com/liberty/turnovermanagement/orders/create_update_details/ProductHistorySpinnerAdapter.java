@@ -24,7 +24,7 @@ public class ProductHistorySpinnerAdapter extends ArrayAdapter<ProductHistory> {
         super(context, 0, products);
 
         actualVersion = actualProduct.toHistory();
-        products.add(actualVersion);
+        products.add(0, actualVersion);
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -61,8 +61,7 @@ public class ProductHistorySpinnerAdapter extends ArrayAdapter<ProductHistory> {
                 textView.setText("Actual version");
             } else {
                 // Customize this to display the information you want
-                String displayText = currentProductHistory.getId() + " - " + currentProductHistory.getName();
-                textView.setText(displayText);
+                textView.setText(currentProductHistory.toString());
             }
 
         }

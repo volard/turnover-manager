@@ -15,6 +15,7 @@ import com.liberty.turnovermanagement.products.data.Product;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Locale;
 
 public class ProductDetailsActivity extends BaseDetailsActivity<Product, ProductDetailViewModel, ActivityDetailsProductBinding> {
 
@@ -38,9 +39,11 @@ public class ProductDetailsActivity extends BaseDetailsActivity<Product, Product
                 binding.editTextPrice.removeTextChangedListener(this); // Remove to avoid infinite loop
 
                 String priceText = s.toString();
+                // русский просто добавляет пробелы, а так определяются запятые и точки, что привычнее и удобнее
+                Locale locale = new Locale("en", "EN");
                 try {
                     // Format the price as currency
-                    NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+                    NumberFormat currencyFormat = NumberFormat.getInstance(locale);
                     Number price = currencyFormat.parse(priceText); // Parse the text
                     String formattedPrice = currencyFormat.format(price); // Format as currency
 

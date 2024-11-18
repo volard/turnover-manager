@@ -6,6 +6,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+
+    <TextView
+        android:id="@+id/productDetailsHeadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit/view product"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/labelDeleted"
         android:layout_width="match_parent"
@@ -34,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
-                android:text="This customer has been deleted"
+                android:text="@string/element_was_deleted"
                 android:textColor="#D32F2F"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -63,7 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Amount">
+        android:hint="@string/amount">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextAmount"
@@ -96,7 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:padding="12dp"
-        android:text="Save"
+        android:text="@string/save"
         android:textSize="16sp" />
 
     <com.google.android.material.button.MaterialButton
@@ -107,7 +119,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:padding="12dp"
-        android:text="Share" />
+        android:text="@string/share" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonDelete"
@@ -116,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:padding="12dp"
-        android:text="Delete"
+        android:text="@string/delete"
         android:textSize="16sp"
         android:visibility="gone" />
 

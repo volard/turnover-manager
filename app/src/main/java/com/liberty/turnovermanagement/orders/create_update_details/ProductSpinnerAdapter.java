@@ -46,9 +46,7 @@ public class ProductSpinnerAdapter extends ArrayAdapter<Product> {
         Product product = getItem(position);
 
         if (product != null) {
-            // Customize this to display the information you want
-            String displayText = product.getId() + " - " + product.getName();
-            textView.setText(displayText);
+            textView.setText(product.toString());
         }
 
         return convertView;

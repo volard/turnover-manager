@@ -58,9 +58,7 @@ public class CustomerHistorySpinnerAdapter extends ArrayAdapter<CustomerHistory>
             if (currentCustomerHistory.getId() == Constants.UNINITIALIZED_INDICATOR) {
                 textView.setText("Actual version");
             } else {
-                // Customize this to display the information you want
-                String displayText = currentCustomerHistory.getId() + " - " + currentCustomerHistory.getSurname() + " " + currentCustomerHistory.getName() + " " + currentCustomerHistory.getMiddleName();
-                textView.setText(displayText);
+                textView.setText(currentCustomerHistory.toString());
             }
 
         }

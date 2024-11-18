@@ -9,27 +9,27 @@
         android:id="@+id/switch_theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Dark Theme" />
+        android:text="@string/settings__clear_data" />
 
     <CheckBox
         android:id="@+id/checkbox_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Show archived data" />
+        android:text="@string/settings__show_archived_data" />
 
     <Button
         android:id="@+id/btn_regenerate_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Regenerate Test Data" />
+        android:text="@string/settings__regenerate_test_data" />
 
     <Button
         android:id="@+id/btn_clear_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Clear data" />
+        android:text="@string/settings__clear_data" />
 
 </LinearLayout>
