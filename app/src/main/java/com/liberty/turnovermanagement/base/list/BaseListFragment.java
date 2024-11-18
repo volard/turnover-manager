@@ -33,6 +33,7 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     protected abstract Class<?> getCreateActivityClass();
     protected abstract void setupRecyclerView();
     protected abstract void setupObservers();
+    private final boolean isSearchInitialized = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,9 +77,10 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setupSearchView();
         setupRecyclerView();
         setupObservers();
-        setupSearchView();
+
         binding.fab.setOnClickListener(v -> openCreateActivity());
     }
 
@@ -101,9 +103,12 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     protected void updateList(List<T> items) {
         if (items.isEmpty()) {
             showEmptyState();
+            binding.searchView.setVisibility(View.GONE);
         } else {
+            binding.searchView.setVisibility(View.VISIBLE);
             hideEmptyState();
             adapter.setItems(items);
+            adapter.getFilter().filter(""); // trigger search view update to show all items
         }
     }
 

@@ -63,6 +63,7 @@ public abstract class BaseAdapter<T, VH extends RecyclerView.ViewHolder>
         itemsFull = new ArrayList<>(items);
         itemsFiltered = new ArrayList<>(items);
         submitList(itemsFiltered);
+        submitList(itemsFull);
     }
 
     protected abstract boolean isItemFiltered(T item, String filterPattern);
