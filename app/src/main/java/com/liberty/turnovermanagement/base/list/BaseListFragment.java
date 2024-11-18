@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.Identifiable;
 import com.liberty.turnovermanagement.databinding.FragmentListBinding;
@@ -27,7 +26,6 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     protected VM viewModel;
     protected BaseAdapter<T, VH> adapter;
     protected FragmentListBinding binding;
-    protected View emptyStateLayout;
     protected ActivityResultLauncher<Intent> detailsLauncher;
 
     protected abstract Class<VM> getViewModelClass();
@@ -72,7 +70,6 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentListBinding.inflate(inflater, container, false);
-        emptyStateLayout = inflater.inflate(R.layout.layout_empty_state, container, false);
         return binding.getRoot();
     }
 
@@ -92,12 +89,12 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     }
 
     protected void showEmptyState() {
-        emptyStateLayout.setVisibility(View.VISIBLE);
+        binding.emptyStateLayout.setVisibility(View.VISIBLE);
         binding.recyclerView.setVisibility(View.GONE);
     }
 
     protected void hideEmptyState() {
-        emptyStateLayout.setVisibility(View.GONE);
+        binding.emptyStateLayout.setVisibility(View.GONE);
         binding.recyclerView.setVisibility(View.VISIBLE);
     }
 
