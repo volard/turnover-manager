@@ -16,6 +16,8 @@ import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +169,9 @@ public abstract class AppDatabase extends RoomDatabase {
             Product product = new Product();
             product.setName(productNames[i]);
             product.setAmount(random.nextInt(50) + 1);
-            product.setPrice((random.nextDouble() * 50000) + 5000); // Prices in rubles
+            BigDecimal price = BigDecimal.valueOf(random.nextDouble() * 50000 + 5000);
+            price = price.setScale(2, RoundingMode.HALF_UP); // Round to 2 decimal places
+            product.setPrice(price.doubleValue());
             product.setDeleted(false);
             products.add(product);
         }

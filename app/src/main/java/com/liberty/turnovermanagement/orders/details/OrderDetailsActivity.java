@@ -41,6 +41,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         binding.buttonEdit.setOnClickListener(v -> openEditActivity());
         binding.buttonDelete.setOnClickListener(v -> deleteItem());
+        binding.shareButton.setOnClickListener(v -> shareItem());
     }
 
 
@@ -63,6 +64,21 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
 
+    private void shareItem() {
+        Order order = viewModel.getSelectedItem().getValue();
+        if (order == null){
+            return;
+        }
+        String shareText = String.format("Check out this order at city: %s", order.getCity());
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+
+        startActivity(Intent.createChooser(shareIntent, "Share via"));
+    }
+
+
     protected void updateUI(Order order) {
         if (order == null) {
             return;
@@ -75,7 +91,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         // Make the address info card visible
         binding.addressInfoCard.setVisibility(View.VISIBLE);
-        binding.editTextAmount.setText(String.valueOf(order.getAmount()));
+
+        binding.shareButton.setVisibility(View.VISIBLE);
 
         // Update date time
         binding.tvSelectedDateTime.setText("Selected: " + order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
@@ -92,7 +109,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private void updateProductUI(Product product) {
         if (product != null) {
             binding.productNameTextView.setText(getString(R.string.product_name_format, product.getName()));
-            binding.productAmountTextView.setText(getString(R.string.product_amount_format, product.getAmount()));
             binding.productPriceTextView.setText(getString(R.string.product_price_format, product.getPrice()));
         } else {
             binding.productNameTextView.setText(R.string.product_not_found);

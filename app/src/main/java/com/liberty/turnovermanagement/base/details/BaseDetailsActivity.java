@@ -3,7 +3,10 @@ package com.liberty.turnovermanagement.base.details;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;
@@ -25,7 +28,6 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
     protected abstract T getItemToSaveOrUpdate();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,6 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
         setContentView(binding.getRoot());
 
         viewModel = new ViewModelProvider(this).get(getViewModelClass());
-
 
         itemId = getIntent().getLongExtra(Constants.ITEM_ID, Constants.UNINITIALIZED_INDICATOR);
 
@@ -61,7 +62,6 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
         finishActivity();
     }
-
 
     protected abstract void setupButtons();
 

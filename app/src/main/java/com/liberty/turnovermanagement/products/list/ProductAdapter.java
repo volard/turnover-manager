@@ -50,7 +50,7 @@ public class ProductAdapter extends BaseAdapter<Product, ProductAdapter.ProductV
         void bind(Product product, OnItemClickListener<Product> listener) {
             binding.textViewName.setText(product.getName());
             binding.textViewAmount.setText("Amount: " + product.getAmount());
-            binding.textViewPrice.setText("Price: $" + String.format("%.2f", product.getPrice()));
+            binding.textViewPrice.setText("Price: $ " + String.format("%.2f", product.getPrice()));
             itemView.setOnClickListener(v -> listener.onItemClick(product));
         }
     }

@@ -1,5 +1,13 @@
 package com.liberty.turnovermanagement.products.list;
 
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.liberty.turnovermanagement.base.list.BaseListFragment;
@@ -28,6 +36,8 @@ public class ProductsFragment extends BaseListFragment<Product, ProductListViewM
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+
+
 
     @Override
     protected void setupObservers() {

@@ -1,12 +1,14 @@
 package com.liberty.turnovermanagement.customers.details;
 
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
+import com.liberty.turnovermanagement.products.data.Product;
 
 public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, CustomerDetailsViewModel, ActivityDetailsCustomerBinding> {
 
@@ -24,7 +26,24 @@ public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, Custo
     protected void setupButtons() {
         binding.buttonSave.setOnClickListener(v -> saveOrUpdateItem());
         binding.buttonDelete.setOnClickListener(v -> deleteItem());
+        binding.shareButton.setOnClickListener(v -> shareItem());
     }
+
+
+    private void shareItem() {
+        Customer customer = viewModel.getSelectedItem().getValue();
+        if (customer == null){
+            return;
+        }
+        String shareText = String.format("Check out this customer: %s %s %s",  customer.getSurname(), customer.getName(), customer.getMiddleName());
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+
+        startActivity(Intent.createChooser(shareIntent, "Share via"));
+    }
+
 
     @Override
     protected void updateUI(Customer customer) {
@@ -47,6 +66,7 @@ public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, Custo
             binding.labelDeleted.setVisibility(View.VISIBLE);
         } else {
             binding.buttonDelete.setVisibility(View.VISIBLE);
+            binding.shareButton.setVisibility(View.VISIBLE);
         }
     }
 

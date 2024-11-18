@@ -100,6 +100,16 @@
         android:textSize="16sp" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/shareButton"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:padding="12dp"
+        android:text="Share" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonDelete"
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="match_parent"

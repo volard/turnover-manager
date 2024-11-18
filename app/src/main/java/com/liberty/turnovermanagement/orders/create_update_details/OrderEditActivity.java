@@ -28,7 +28,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         setupObservers();
     }
 
-
     private void setupObservers() {
         viewModel.getProducts().observe(this, this::updateProductSpinner);
         viewModel.getProductVersions().observe(this, this::updateProductVersionSpinner);
@@ -75,7 +74,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         // Load customer versions
         viewModel.loadCustomerVersions(order.getCustomerId());
     }
-
 
     private void updateProductSpinner(long productId) {
         viewModel.getProducts().observe(this, products -> {
