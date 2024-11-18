@@ -10,19 +10,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.liberty.turnovermanagement.base.Constants;
+import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
 
 import java.util.List;
 
 public class ProductHistorySpinnerAdapter extends ArrayAdapter<ProductHistory> {
     private final LayoutInflater layoutInflater;
+    private final ProductHistory actualVersion;
 
 
-    public ProductHistorySpinnerAdapter(Context context, List<ProductHistory> products) {
+    public ProductHistorySpinnerAdapter(Context context, List<ProductHistory> products, Product actualProduct) {
         super(context, 0, products);
-        ProductHistory currentItemShadow = new ProductHistory();
-        currentItemShadow.setId(Constants.UNINITIALIZED_INDICATOR);
-        products.add(0, currentItemShadow);
+
+        actualVersion = actualProduct.toHistory();
+        products.add(actualVersion);
         layoutInflater = LayoutInflater.from(context);
     }
 
@@ -55,7 +57,7 @@ public class ProductHistorySpinnerAdapter extends ArrayAdapter<ProductHistory> {
 
         if (currentProductHistory != null) {
 
-            if (currentProductHistory.getId() == Constants.UNINITIALIZED_INDICATOR) {
+            if (currentProductHistory.getVersion() == actualVersion.getVersion()) {
                 textView.setText("Actual version");
             } else {
                 // Customize this to display the information you want

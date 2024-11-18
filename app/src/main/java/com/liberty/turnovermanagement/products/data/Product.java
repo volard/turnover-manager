@@ -91,6 +91,18 @@ public class Product implements Serializable, Identifiable {
     public Product() {
     }
 
+    public ProductHistory toHistory() {
+        ProductHistory ph = new ProductHistory();
+        ph.setId(this.getId());
+        ph.setName(this.getName());
+        ph.setAmount(this.getAmount());
+        ph.setPrice(this.getPrice());
+        ph.setVersion(this.getVersion());
+        ph.setCreatedAt(this.getLastUpdated());
+        ph.setProductId(this.getId());
+        return ph;
+    }
+
     // Setters
     public void setId(long id) {
         this.id = id;

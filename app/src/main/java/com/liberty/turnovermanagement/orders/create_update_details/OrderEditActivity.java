@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
+
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewModel, ActivityEditOrderBinding> {
+    private long selectedCustomerId = Constants.UNINITIALIZED_INDICATOR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +32,17 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     }
 
     private void setupObservers() {
+        viewModel.getSelectedItem().observe(this, order -> {
+            updateProductSpinner(order.getProductId());
+            updateCustomerSpinner(order.getCustomerId());
+        });
 
         viewModel.getSelectedItem().observe(this, order -> {
-            // Update product spinner
-            updateProductSpinner(order.getProductId());
+            viewModel.loadCustomerVersions(order.getCustomerId());
+        });
 
-            // Update customer spinner
-            updateCustomerSpinner(order.getCustomerId());
+        viewModel.getSelectedProduct().observe(this, product -> {
+            viewModel.loadProductVersions(viewModel.getSelectedItem().getValue().getProductId());
         });
 
         viewModel.getProducts().observe(this, this::updateProductSpinner);
@@ -65,18 +72,12 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             return;
         }
 
+        selectedCustomerId = order.getCustomerId();
         binding.editTextCity.setText(order.getCity());
         binding.editTextStreet.setText(order.getStreet());
         binding.editTextHome.setText(order.getHome());
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
         binding.tvSelectedDateTime.setText(order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
-
-
-        // Load product versions
-        viewModel.loadProductVersions(order.getProductId());
-
-        // Load customer versions
-        viewModel.loadCustomerVersions(order.getCustomerId());
     }
 
     private void updateProductSpinner(long productId) {
@@ -112,7 +113,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
         });
     }
-
 
     @Override
     protected Order getItemToSaveOrUpdate() {
@@ -225,11 +225,11 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
                 int maxQuantity = selectedProduct.getAmount();
                 binding.tvMaxQuantityHint.setText("Max: " + maxQuantity); // Visual hint for maximum amount
                 viewModel.loadProductVersions(selectedProduct.getId());
+
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         binding.productVersionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -237,25 +237,23 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 ProductHistory productHistory = (ProductHistory) parent.getItemAtPosition(position);
                 int maxQuantity = productHistory.getAmount();
-                binding.tvMaxQuantityHint.setText("Max: " + maxQuantity); // Visual hint for maximum amount
+                binding.tvMaxQuantityHint.setText("Max: " + maxQuantity);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         binding.customerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Customer selectedCustomer = (Customer) parent.getItemAtPosition(position);
+                selectedCustomerId = selectedCustomer.getId();
                 viewModel.loadCustomerVersions(selectedCustomer.getId());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 
@@ -269,8 +267,22 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         if (productVersions.isEmpty()) {
             binding.productVersionSpinner.setVisibility(View.GONE);
         } else {
-            ProductHistorySpinnerAdapter adapter = new ProductHistorySpinnerAdapter(this, productVersions);
+            ProductHistorySpinnerAdapter adapter = new ProductHistorySpinnerAdapter(this, productVersions, selectedProduct);
             binding.productVersionSpinner.setAdapter(adapter);
+
+            Order currentOrder = viewModel.getSelectedItem().getValue();
+            if (currentOrder != null){
+                // everytime customer match that one which in the order, the order's version is set up
+                if (currentOrder.getProductId() == selectedProduct.getId()){
+                    for (int i = 0; i < productVersions.size(); i++) {
+                        if (productVersions.get(i).getVersion() == currentOrder.getProductVersion()) {
+                            binding.customerVersionSpinner.setSelection(i);
+                            break;
+                        }
+                    }
+                }
+
+            }
 
             binding.productVersionSpinner.setVisibility(View.VISIBLE);
         }
@@ -290,14 +302,16 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
 
             Order currentOrder = viewModel.getSelectedItem().getValue();
             if (currentOrder != null){
-                long customerId = currentOrder.getCustomerId();
-//                int selectedPosition =
-                for (int i = 0; i < customerVersions.size(); i++) {
-                    if (customerVersions.get(i).getId() == customerId) {
-                        selectedPosition = i;
-                        break;
+                // everytime customer match that one which in the order, the order's version is set up
+                if (currentOrder.getCustomerId() == selectedCustomerId){
+                    for (int i = 0; i < customerVersions.size(); i++) {
+                        if (customerVersions.get(i).getVersion() == currentOrder.getCustomerVersion()) {
+                            binding.customerVersionSpinner.setSelection(i);
+                            break;
+                        }
                     }
                 }
+
             }
 
             binding.customerVersionSpinner.setVisibility(View.VISIBLE);

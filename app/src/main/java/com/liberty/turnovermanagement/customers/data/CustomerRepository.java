@@ -2,9 +2,6 @@ package com.liberty.turnovermanagement.customers.data;
 
 import android.app.Application;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.liberty.turnovermanagement.AppDatabase;
 
 import java.time.LocalDateTime;
@@ -15,6 +12,11 @@ public class CustomerRepository {
     public CustomerRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         customerDao = db.customerDao();
+    }
+
+
+    public CustomerRepository(CustomerDao customerDao) {
+        this.customerDao = customerDao;
     }
 
     public boolean update(Customer newCustomer) {
@@ -70,6 +72,11 @@ public class CustomerRepository {
     }
 
 
+    public void deleteAll() {
+        customerDao.deleteAll();
+        customerDao.deleteAllVersions();
+    }
+
     public boolean hasChanges(Customer currentCustomer, Customer newCustomer) {
         if (currentCustomer == null || newCustomer == null) {
             return false;
@@ -83,20 +90,16 @@ public class CustomerRepository {
     }
 
 
-    public LiveData<Customer> getCustomerByIdAndVersion(long customerId, long version) {
-        MutableLiveData<Customer> customer = new MutableLiveData<>();
-        AppDatabase.databaseWriteExecutor.execute(() -> {
-            Customer currentCustomer = customerDao.getCustomerById(customerId);
-            if (currentCustomer != null && currentCustomer.getVersion() == version) {
-                customer.postValue(currentCustomer);
-            } else {
-                CustomerHistory historicalCustomer = customerDao.getCustomerHistoryByIdAndVersion(customerId, version);
-                if (historicalCustomer != null) {
-                    customer.postValue(historicalCustomer.getCustomer());
-                }
+    public Customer getCustomerByIdAndVersion(long customerId, long version) {
+        Customer currentCustomer = customerDao.getCustomerById(customerId);
+        if (currentCustomer != null && currentCustomer.getVersion() == version) {
+            return currentCustomer;
+        } else {
+            CustomerHistory historicalCustomer = customerDao.getCustomerHistoryByIdAndVersion(customerId, version);
+            if (historicalCustomer != null) {
+                return historicalCustomer.getCustomer();
             }
-        });
-        return customer;
+        }
+        return null;
     }
-
 }

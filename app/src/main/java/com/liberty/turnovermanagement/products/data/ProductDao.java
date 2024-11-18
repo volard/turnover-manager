@@ -5,6 +5,8 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.liberty.turnovermanagement.customers.data.CustomerHistory;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,6 +43,9 @@ public interface ProductDao {
     @Query("SELECT * FROM product_history WHERE productId = :productId AND version = :version")
     ProductHistory getProductByIdAndVersion(long productId, long version);
 
+    @Query("SELECT * FROM product_history WHERE productId = :productId AND version = :version")
+    ProductHistory getProductHistoryByIdAndVersion(long productId, long version);
+
     @Query("SELECT version FROM products WHERE id = :productId")
     long getProductVersion(long productId);
 
@@ -49,6 +54,9 @@ public interface ProductDao {
 
     @Query("DELETE FROM products")
     void deleteAll();
+
+    @Query("DELETE FROM product_history")
+    void deleteAllVersions();
 
     @Insert
     List<Long> insertAllAndGetIds(List<Product> products);

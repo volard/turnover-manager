@@ -10,11 +10,13 @@ import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
+import com.liberty.turnovermanagement.customers.data.CustomerRepository;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
+import com.liberty.turnovermanagement.products.data.ProductRepository;
 
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
     private final CustomerDao customerDao;
     private final LiveData<List<Product>> products;
     private final LiveData<List<Customer>> customers;
+    private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
     private final MutableLiveData<Customer> customerForOrder = new MutableLiveData<>();
     private final MutableLiveData<Product> productForOrder = new MutableLiveData<>();
 
@@ -34,6 +38,8 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
         customerDao = db.customerDao();
         products = productDao.getAll();
         customers = customerDao.getAll();
+        customerRepository = new CustomerRepository(customerDao);
+        productRepository = new ProductRepository(productDao);
     }
 
     public LiveData<Product> getProductForOrder() {
@@ -42,24 +48,9 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
 
     public void loadProductForOrder(long productId, long productVersion) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Product product = getProductForOrder(productId, productVersion);
+            Product product = productRepository.getProductByIdAndVersion(productId, productVersion);
             productForOrder.postValue(product);
         });
-    }
-
-    private Product getProductForOrder(long productId, long productVersion) {
-        Product currentProduct = productDao.getProductById(productId);
-
-        if (currentProduct != null && currentProduct.getVersion() == productVersion) {
-            return currentProduct;
-        } else {
-            ProductHistory historicalProduct = productDao.getProductByIdAndVersion(productId, productVersion);
-            if (historicalProduct != null) {
-                return historicalProduct.getProduct();
-            }
-        }
-
-        return null;
     }
 
 
@@ -104,26 +95,10 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
 
     public void loadCustomerForOrder(long customerId, long customerVersion) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Customer customer = getCustomerForOrder(customerId, customerVersion);
+            Customer customer = customerRepository.getCustomerByIdAndVersion(customerId, customerVersion);
             customerForOrder.postValue(customer);
         });
     }
-
-    private Customer getCustomerForOrder(long customerId, long customerVersion) {
-        Customer currentCustomer = customerDao.getCustomerById(customerId);
-
-        if (currentCustomer != null && currentCustomer.getVersion() == customerVersion) {
-            return currentCustomer;
-        } else {
-            CustomerHistory historicalCustomer = customerDao.getCustomerHistoryByIdAndVersion(customerId, customerVersion);
-            if (historicalCustomer != null) {
-                return historicalCustomer.getCustomer();
-            }
-        }
-
-        return null;
-    }
-
 
     public LiveData<Customer> getCustomerForOrder() {
         return customerForOrder;

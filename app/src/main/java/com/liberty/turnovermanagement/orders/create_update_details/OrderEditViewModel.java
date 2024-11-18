@@ -24,6 +24,7 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
     private final OrderDao orderDao;
 
     private final LiveData<List<Product>> products;
+    private final MutableLiveData<Product> selectedProduct = new MutableLiveData<>();
     private final MutableLiveData<List<ProductHistory>> productVersions = new MutableLiveData<>();
     private final LiveData<List<Customer>> customers;
     private final MutableLiveData<List<CustomerHistory>> customerVersions = new MutableLiveData<>();
@@ -41,9 +42,17 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
     public void loadItem(long itemId) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             Order order = orderDao.getOrderById(itemId);
+            Product product = productDao.getProductById(order.getProductId());
             selectedItem.postValue(order);
+            selectedProduct.postValue(product);
         });
     }
+
+    public MutableLiveData<Product> getSelectedProduct() {
+        return selectedProduct;
+    }
+
+
 
     @Override
     public void updateItem(Order order) {

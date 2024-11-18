@@ -3,6 +3,8 @@ package com.liberty.turnovermanagement.products.data;
 import android.app.Application;
 
 import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.customers.data.Customer;
+import com.liberty.turnovermanagement.customers.data.CustomerHistory;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +14,10 @@ public class ProductRepository {
     public ProductRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
         productDao = db.productDao();
+    }
+
+    public ProductRepository(ProductDao productDao) {
+        this.productDao = productDao;
     }
 
     public boolean updateProduct(Product newProduct) {
@@ -66,6 +72,24 @@ public class ProductRepository {
         return !currentProduct.getName().equals(newProduct.getName()) ||
                 currentProduct.getAmount() != newProduct.getAmount() ||
                 currentProduct.getPrice() != newProduct.getPrice();
+    }
+
+    public Product getProductByIdAndVersion(long productId, long version) {
+        Product currentProduct = productDao.getProductById(productId);
+        if (currentProduct != null && currentProduct.getVersion() == version) {
+            return currentProduct;
+        } else {
+            ProductHistory historicalProduct = productDao.getProductHistoryByIdAndVersion(productId, version);
+            if (historicalProduct != null) {
+                return historicalProduct.getProduct();
+            }
+        }
+        return null;
+    }
+
+    public void deleteAll(){
+        productDao.deleteAll();
+        productDao.deleteAllVersions();
     }
 
 }

@@ -55,4 +55,7 @@ public interface CustomerDao {
 
     @Query("UPDATE customers SET isDeleted = 1 WHERE id = :customerId")
     void softDelete(long customerId);
+
+    @Query("DELETE FROM customer_history")
+    void deleteAllVersions();
 }

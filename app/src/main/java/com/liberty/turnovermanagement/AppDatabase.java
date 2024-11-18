@@ -10,11 +10,13 @@ import androidx.room.TypeConverters;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
+import com.liberty.turnovermanagement.customers.data.CustomerRepository;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
+import com.liberty.turnovermanagement.products.data.ProductRepository;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -42,47 +44,24 @@ import java.util.concurrent.Executors;
 @TypeConverters({DateTimeStringConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
 
-    /**
-     * Abstract method to get ProductDao
-     *
-     * @return ProductDao instance
-     */
     public abstract ProductDao productDao();
-
-    /**
-     * Abstract method to get CustomerDao
-     *
-     * @return CustomerDao instance
-     */
     public abstract CustomerDao customerDao();
-
-    /**
-     * Abstract method to get OrderDao
-     *
-     * @return OrderDao instance
-     */
     public abstract OrderDao orderDao();
 
-    // Singleton instance of the database
+    private static final String DATABASE_NAME = "main_database";
+
     private static volatile AppDatabase INSTANCE;
 
-    // Thread pool for database operations
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    /**
-     * Gets the singleton instance of the AppDatabase.
-     *
-     * @param context The application context
-     * @return The singleton instance of AppDatabase
-     */
     public static AppDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "main_database")
+                                    AppDatabase.class, DATABASE_NAME)
                             .fallbackToDestructiveMigration()
                             .build();
                 }
@@ -93,15 +72,16 @@ public abstract class AppDatabase extends RoomDatabase {
 
 
     public void clearAllData() {
+        ProductRepository productRepository = new ProductRepository(productDao());
+        CustomerRepository customerRepository = new CustomerRepository(customerDao());
+
         databaseWriteExecutor.execute(() -> {
-            ProductDao productDao = productDao();
-            CustomerDao customerDao = customerDao();
             OrderDao orderDao = orderDao();
 
             // Clear existing data
             orderDao.deleteAll();
-            productDao.deleteAll();
-            customerDao.deleteAll();
+            productRepository.deleteAll();
+            customerRepository.deleteAll();
         });
     }
 
