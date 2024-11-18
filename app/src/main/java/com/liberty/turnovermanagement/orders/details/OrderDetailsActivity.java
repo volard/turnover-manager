@@ -96,6 +96,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
         // Update date time
         binding.tvSelectedDateTime.setText("Selected: " + order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
+        binding.textAmount.setText("Amount: " + order.getAmount());
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
 
@@ -112,7 +113,6 @@ public class OrderDetailsActivity extends AppCompatActivity {
             binding.productPriceTextView.setText(getString(R.string.product_price_format, product.getPrice()));
         } else {
             binding.productNameTextView.setText(R.string.product_not_found);
-            binding.productAmountTextView.setText("");
             binding.productPriceTextView.setText("");
         }
     }
@@ -131,4 +131,3 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
     }
 }
-

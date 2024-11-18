@@ -261,13 +261,14 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.productSpinner.setAdapter(adapter);
     }
 
-    private void updateProductVersionSpinner(List<ProductHistory> productVersions) {
+    private void updateProductVersionSpinner(List<ProductHistory> productVersions, long currentProductVersionId) {
         if (productVersions.isEmpty()) {
             binding.productVersionSpinner.setVisibility(View.GONE);
         } else {
-            binding.productVersionSpinner.setVisibility(View.VISIBLE);
             ProductHistorySpinnerAdapter adapter = new ProductHistorySpinnerAdapter(this, productVersions);
             binding.productVersionSpinner.setAdapter(adapter);
+
+            binding.productVersionSpinner.setVisibility(View.VISIBLE);
         }
     }
 
@@ -276,13 +277,22 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.customerSpinner.setAdapter(adapter);
     }
 
-    private void updateCustomerVersionSpinner(List<CustomerHistory> customerVersions) {
+    private void updateCustomerVersionSpinner(List<CustomerHistory> customerVersions, long currentCustomerVersionId) {
         if (customerVersions.isEmpty()) {
             binding.customerVersionSpinner.setVisibility(View.GONE);
         } else {
-            binding.customerVersionSpinner.setVisibility(View.VISIBLE);
             CustomerHistorySpinnerAdapter adapter = new CustomerHistorySpinnerAdapter(this, customerVersions);
             binding.customerVersionSpinner.setAdapter(adapter);
+
+            int selectedPosition = (int) Constants.UNINITIALIZED_INDICATOR;
+            for (int i = 0; i < customerVersions.size(); i++) {
+                if (customers.get(i).getId() == customerId) {
+                    selectedPosition = i;
+                    break;
+                }
+            }
+
+            binding.customerVersionSpinner.setVisibility(View.VISIBLE);
         }
     }
 }

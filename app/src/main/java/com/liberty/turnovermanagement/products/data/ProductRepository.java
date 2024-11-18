@@ -18,6 +18,9 @@ public class ProductRepository {
         // Get current product from database
         Product currentProduct = productDao.getProductById(newProduct.getId());
 
+        if (currentProduct == null) {
+            return false;
+        }
 
         // Check if there are actual changes
         if (!hasChanges(currentProduct, newProduct)) {
