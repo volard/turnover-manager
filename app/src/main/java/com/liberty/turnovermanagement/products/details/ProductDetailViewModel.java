@@ -7,15 +7,18 @@ import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
+import com.liberty.turnovermanagement.products.data.ProductRepository;
 
 import java.time.LocalDateTime;
 
 public class ProductDetailViewModel extends BaseDetailsViewModel<Product, ProductHistory> {
     private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
     public ProductDetailViewModel(Application application) {
         super(application);
         productDao = db.productDao();
+        productRepository = new ProductRepository(application);
     }
 
     @Override
@@ -29,41 +32,10 @@ public class ProductDetailViewModel extends BaseDetailsViewModel<Product, Produc
     @Override
     public void updateItem(Product product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Product currentProduct = productDao.getProductById(product.getId());
-
-            if (currentProduct != null) {
-                ProductHistory history = new ProductHistory();
-                history.setProductId(currentProduct.getId());
-                history.setName(currentProduct.getName());
-                history.setAmount(currentProduct.getAmount());
-                history.setPrice(currentProduct.getPrice());
-                history.setCreatedAt(currentProduct.getLastUpdated());
-                history.setVersion(currentProduct.getVersion());
-
-                productDao.insertHistory(
-                        history.getProductId(),
-                        history.getName(),
-                        history.getAmount(),
-                        history.getPrice(),
-                        history.getVersion(),
-                        history.getCreatedAt()
-                );
-
-                long newVersion = currentProduct.getVersion() + 1;
-                LocalDateTime now = LocalDateTime.now();
-                productDao.update(
-                        product.getId(),
-                        product.getName(),
-                        product.getAmount(),
-                        product.getPrice(),
-                        newVersion,
-                        now
-                );
-
-                Product updated = productDao.getProductById(product.getId());
-                updated.setVersion(newVersion);
-                updated.setLastUpdated(now);
-                selectedItem.postValue(updated);
+            boolean result = productRepository.updateProduct(product);
+            if (result){
+                product.setLastUpdated(LocalDateTime.now());
+                selectedItem.postValue(product);
             }
         });
     }

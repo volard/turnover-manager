@@ -29,6 +29,15 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     }
 
     private void setupObservers() {
+
+        viewModel.getSelectedItem().observe(this, order -> {
+            // Update product spinner
+            updateProductSpinner(order.getProductId());
+
+            // Update customer spinner
+            updateCustomerSpinner(order.getCustomerId());
+        });
+
         viewModel.getProducts().observe(this, this::updateProductSpinner);
         viewModel.getProductVersions().observe(this, this::updateProductVersionSpinner);
         viewModel.getCustomers().observe(this, this::updateCustomerSpinner);
@@ -62,11 +71,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
         binding.tvSelectedDateTime.setText(order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
 
-        // Update product spinner
-        updateProductSpinner(order.getProductId());
-
-        // Update customer spinner
-        updateCustomerSpinner(order.getCustomerId());
 
         // Load product versions
         viewModel.loadProductVersions(order.getProductId());
@@ -261,7 +265,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.productSpinner.setAdapter(adapter);
     }
 
-    private void updateProductVersionSpinner(List<ProductHistory> productVersions, long currentProductVersionId) {
+    private void updateProductVersionSpinner(List<ProductHistory> productVersions) {
         if (productVersions.isEmpty()) {
             binding.productVersionSpinner.setVisibility(View.GONE);
         } else {
@@ -277,18 +281,22 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         binding.customerSpinner.setAdapter(adapter);
     }
 
-    private void updateCustomerVersionSpinner(List<CustomerHistory> customerVersions, long currentCustomerVersionId) {
+    private void updateCustomerVersionSpinner(List<CustomerHistory> customerVersions) {
         if (customerVersions.isEmpty()) {
             binding.customerVersionSpinner.setVisibility(View.GONE);
         } else {
             CustomerHistorySpinnerAdapter adapter = new CustomerHistorySpinnerAdapter(this, customerVersions);
             binding.customerVersionSpinner.setAdapter(adapter);
 
-            int selectedPosition = (int) Constants.UNINITIALIZED_INDICATOR;
-            for (int i = 0; i < customerVersions.size(); i++) {
-                if (customers.get(i).getId() == customerId) {
-                    selectedPosition = i;
-                    break;
+            Order currentOrder = viewModel.getSelectedItem().getValue();
+            if (currentOrder != null){
+                long customerId = currentOrder.getCustomerId();
+//                int selectedPosition =
+                for (int i = 0; i < customerVersions.size(); i++) {
+                    if (customerVersions.get(i).getId() == customerId) {
+                        selectedPosition = i;
+                        break;
+                    }
                 }
             }
 

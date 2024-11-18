@@ -20,50 +20,51 @@ public class CustomerRepository {
     public boolean update(Customer newCustomer) {
         Customer currentCustomer = customerDao.getCustomerById(newCustomer.getId());
 
+        if (currentCustomer == null) {
+            return false;
+        }
 
         // Check if there are actual changes
         if (!hasChanges(currentCustomer, newCustomer)) {
             return false;
         }
 
-        if (currentCustomer != null) {
-            // Create history record
-            CustomerHistory history = new CustomerHistory();
-            history.setCustomerId(currentCustomer.getId());
-            history.setSurname(currentCustomer.getSurname());
-            history.setName(currentCustomer.getName());
-            history.setMiddleName(currentCustomer.getMiddleName());
-            history.setPhone(currentCustomer.getPhone());
-            history.setEmail(currentCustomer.getEmail());
-            history.setCreatedAt(currentCustomer.getLastUpdated());
-            history.setVersion(currentCustomer.getVersion());
+        // Create history record
+        CustomerHistory history = new CustomerHistory();
+        history.setCustomerId(currentCustomer.getId());
+        history.setSurname(currentCustomer.getSurname());
+        history.setName(currentCustomer.getName());
+        history.setMiddleName(currentCustomer.getMiddleName());
+        history.setPhone(currentCustomer.getPhone());
+        history.setEmail(currentCustomer.getEmail());
+        history.setCreatedAt(currentCustomer.getLastUpdated());
+        history.setVersion(currentCustomer.getVersion());
 
-            // Insert history record
-            customerDao.insertHistory(
-                    history.getCustomerId(),
-                    history.getSurname(),
-                    history.getName(),
-                    history.getMiddleName(),
-                    history.getPhone(),
-                    history.getEmail(),
-                    history.getVersion(),
-                    history.getCreatedAt()
-            );
+        // Insert history record
+        customerDao.insertHistory(
+                history.getCustomerId(),
+                history.getSurname(),
+                history.getName(),
+                history.getMiddleName(),
+                history.getPhone(),
+                history.getEmail(),
+                history.getVersion(),
+                history.getCreatedAt()
+        );
 
-            // Update newCustomer with new version
-            long newVersion = currentCustomer.getVersion() + 1;
-            LocalDateTime now = LocalDateTime.now();
-            customerDao.update(
-                    newCustomer.getId(),
-                    newCustomer.getSurname(),
-                    newCustomer.getName(),
-                    newCustomer.getMiddleName(),
-                    newCustomer.getPhone(),
-                    newCustomer.getEmail(),
-                    newVersion,
-                    now
-            );
-        }
+        // Update newCustomer with new version
+        long newVersion = currentCustomer.getVersion() + 1;
+        LocalDateTime now = LocalDateTime.now();
+        customerDao.update(
+                newCustomer.getId(),
+                newCustomer.getSurname(),
+                newCustomer.getName(),
+                newCustomer.getMiddleName(),
+                newCustomer.getPhone(),
+                newCustomer.getEmail(),
+                newVersion,
+                now
+        );
 
         return true;
     }

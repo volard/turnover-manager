@@ -7,15 +7,18 @@ import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
+import com.liberty.turnovermanagement.customers.data.CustomerRepository;
 
 import java.time.LocalDateTime;
 
 public class CustomerDetailsViewModel extends BaseDetailsViewModel<Customer, CustomerHistory> {
     private final CustomerDao customerDao;
+    private final CustomerRepository customerRepository;
 
     public CustomerDetailsViewModel(Application application) {
         super(application);
         customerDao = db.customerDao();
+        customerRepository = new CustomerRepository(application);
     }
 
     @Override
@@ -29,47 +32,10 @@ public class CustomerDetailsViewModel extends BaseDetailsViewModel<Customer, Cus
     @Override
     public void updateItem(Customer customer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
-            Customer currentCustomer = customerDao.getCustomerById(customer.getId());
-
-            if (currentCustomer != null) {
-                CustomerHistory history = new CustomerHistory();
-                history.setCustomerId(currentCustomer.getId());
-                history.setSurname(currentCustomer.getSurname());
-                history.setName(currentCustomer.getName());
-                history.setMiddleName(currentCustomer.getMiddleName());
-                history.setPhone(currentCustomer.getPhone());
-                history.setEmail(currentCustomer.getEmail());
-                history.setCreatedAt(currentCustomer.getLastUpdated());
-                history.setVersion(currentCustomer.getVersion());
-
-                customerDao.insertHistory(
-                        history.getCustomerId(),
-                        history.getSurname(),
-                        history.getName(),
-                        history.getMiddleName(),
-                        history.getPhone(),
-                        history.getEmail(),
-                        history.getVersion(),
-                        history.getCreatedAt()
-                );
-
-                long newVersion = currentCustomer.getVersion() + 1;
-                LocalDateTime now = LocalDateTime.now();
-                customerDao.update(
-                        customer.getId(),
-                        customer.getSurname(),
-                        customer.getName(),
-                        customer.getMiddleName(),
-                        customer.getPhone(),
-                        customer.getEmail(),
-                        newVersion,
-                        now
-                );
-
-                Customer updated = customerDao.getCustomerById(customer.getId());
-                updated.setVersion(newVersion);
-                updated.setLastUpdated(now);
-                selectedItem.postValue(updated);
+            boolean result = customerRepository.update(customer);
+            if (result){
+                customer.setLastUpdated(LocalDateTime.now());
+                selectedItem.postValue(customer);
             }
         });
     }
