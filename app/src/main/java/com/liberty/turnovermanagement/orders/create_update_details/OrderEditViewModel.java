@@ -74,7 +74,6 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
     }
 
 
-
     @Override
     public void updateItem(Order order) {
         AppDatabase.databaseWriteExecutor.execute(() -> {

@@ -1,13 +1,5 @@
 package com.liberty.turnovermanagement.products.list;
 
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.liberty.turnovermanagement.base.list.BaseListFragment;
@@ -32,11 +24,10 @@ public class ProductsFragment extends BaseListFragment<Product, ProductListViewM
 
     @Override
     protected void setupRecyclerView() {
-        adapter = new ProductAdapter(this::openDetailsActivity);
+        adapter = new ProductAdapter(this::openDetailsActivity, getContext());
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-
 
 
     @Override

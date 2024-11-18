@@ -70,7 +70,7 @@ public class ProductDetailsActivity extends BaseDetailsActivity<Product, Product
     private void shareItem() {
         // 1. Get the data to share (e.g., product name, details)
         Product product = viewModel.getSelectedItem().getValue();
-        if (product == null){
+        if (product == null) {
             return;
         }
         String productName = product.getName();

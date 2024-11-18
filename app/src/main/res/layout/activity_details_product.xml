@@ -11,7 +11,7 @@
         android:id="@+id/productDetailsHeadline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit/view product"
+        android:text="@string/edit_view_product__headline"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
@@ -37,7 +37,6 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:contentDescription="Warning icon"
                 android:src="@drawable/ic_warning"
                 app:tint="#D32F2F" />
 
@@ -60,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Product Name">
+        android:hint="@string/product_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextName"
@@ -90,7 +89,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Price">
+        android:hint="@string/price">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextPrice"

@@ -33,7 +33,7 @@ public class CustomerDetailsViewModel extends BaseDetailsViewModel<Customer, Cus
     public void updateItem(Customer customer) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             boolean result = customerRepository.update(customer);
-            if (result){
+            if (result) {
                 customer.setLastUpdated(LocalDateTime.now());
                 selectedItem.postValue(customer);
             }

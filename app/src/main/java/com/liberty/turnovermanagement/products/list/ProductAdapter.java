@@ -1,5 +1,7 @@
 package com.liberty.turnovermanagement.products.list;
 
+
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.base.list.BaseAdapter;
 import com.liberty.turnovermanagement.databinding.ProductListItemBinding;
 import com.liberty.turnovermanagement.products.data.Product;
@@ -23,15 +26,18 @@ import java.util.Locale;
  */
 public class ProductAdapter extends BaseAdapter<Product, ProductAdapter.ProductViewHolder> {
 
-    public ProductAdapter(OnItemClickListener<Product> listener) {
+    private final Context context;
+
+    public ProductAdapter(OnItemClickListener<Product> listener, Context context) {
         super(new ProductDiffCallback(), listener);
+        this.context = context;
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ProductListItemBinding binding = ProductListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new ProductViewHolder(binding);
+        return new ProductViewHolder(binding, context);
     }
 
     @Override
@@ -46,15 +52,17 @@ public class ProductAdapter extends BaseAdapter<Product, ProductAdapter.ProductV
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         private final ProductListItemBinding binding;
+        private final Context context;
 
-        ProductViewHolder(ProductListItemBinding binding) {
+        ProductViewHolder(ProductListItemBinding binding, Context context) {
             super(binding.getRoot());
             this.binding = binding;
+            this.context = context;
         }
 
         void bind(Product product, OnItemClickListener<Product> listener) {
             binding.textViewName.setText(product.getName());
-            binding.textViewAmount.setText("Amount: " + product.getAmount());
+            binding.textViewAmount.setText(context.getString(R.string.product_amount_format, product.getAmount()));
 
 
             String priceText = String.valueOf(product.getPrice());
@@ -65,11 +73,11 @@ public class ProductAdapter extends BaseAdapter<Product, ProductAdapter.ProductV
                 NumberFormat currencyFormat = NumberFormat.getInstance(locale);
                 Number price = currencyFormat.parse(priceText); // Parse the text
                 String formattedPrice = currencyFormat.format(price); // Format as currency
-                binding.textViewPrice.setText("Price: $ " + formattedPrice);
+                binding.textViewPrice.setText(context.getString(R.string.product_price_number, formattedPrice));
             } catch (ParseException e) {
                 // Handle parsing errors
                 Log.e("ProductDetails", "Error parsing price", e);
-                binding.textViewPrice.setText("Price: $ " + String.format("%.2f", product.getPrice()));
+                binding.textViewPrice.setText(context.getString(R.string.product_price_format, product.getPrice()));
             }
 
             itemView.setOnClickListener(v -> listener.onItemClick(product));

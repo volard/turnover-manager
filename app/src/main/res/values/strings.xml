@@ -51,4 +51,16 @@
     <string name="save">Save</string>
     <string name="edit_order__headline">Edit order</string>
     <string name="element_was_deleted">This item is deleted</string>
+    <string name="view_order__headline">View order</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="middle_name">Middle name</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
+    <string name="edit_view_customer__headline">Edit\\view customer</string>
+    <string name="edit_view_product__headline">Edit\\view product</string>
+    <string name="price">Price</string>
+    <string name="product_name">Product name</string>
+    <string name="actual_version">Actual version</string>
+    <string name="product_price_number">Price: %s</string>
 </resources>

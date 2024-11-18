@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
 

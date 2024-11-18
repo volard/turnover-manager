@@ -3,8 +3,6 @@ package com.liberty.turnovermanagement.products.data;
 import android.app.Application;
 
 import com.liberty.turnovermanagement.AppDatabase;
-import com.liberty.turnovermanagement.customers.data.Customer;
-import com.liberty.turnovermanagement.customers.data.CustomerHistory;
 
 import java.time.LocalDateTime;
 
@@ -87,7 +85,7 @@ public class ProductRepository {
         return null;
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         productDao.deleteAll();
         productDao.deleteAllVersions();
     }

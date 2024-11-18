@@ -15,7 +15,7 @@
             android:id="@+id/editOrderHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View Order"
+            android:text="@string/view_order__headline"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
@@ -42,7 +42,6 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:contentDescription="Warning icon"
                     android:src="@drawable/ic_warning"
                     app:tint="#D32F2F" />
 
@@ -51,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:text="This customer has been deleted"
+                    android:text="@string/element_was_deleted"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -83,7 +82,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Address Information"
+                    android:text="@string/view_order__address_information"
                     android:textAppearance="?attr/textAppearanceHeadline6" />
 
                 <TextView
@@ -92,20 +91,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textAppearance="?attr/textAppearanceBody1" />
-
-                <TextView
-                    android:id="@+id/streetTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="?attr/textAppearanceBody2" />
-
-                <TextView
-                    android:id="@+id/homeTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textAppearance="?attr/textAppearanceBody2" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -132,7 +117,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Order details"
+                    android:text="@string/view_order__order_details"
                     android:textAppearance="?attr/textAppearanceHeadline6" />
 
                 <TextView
@@ -147,7 +132,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Selected: Not set"
                     android:textAppearance="?attr/textAppearanceBody1" />
 
             </LinearLayout>
@@ -176,7 +160,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Customer Information"
+                    android:text="@string/view_order__customer_information"
                     android:textAppearance="?attr/textAppearanceHeadline6" />
 
                 <TextView
@@ -226,7 +210,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Product Information"
+                    android:text="@string/view_order__product_information"
                     android:textAppearance="?attr/textAppearanceHeadline6" />
 
                 <TextView
@@ -253,7 +237,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:text="Edit"
+            android:text="@string/edit"
             android:textSize="16sp" />
 
         <com.google.android.material.button.MaterialButton
@@ -264,7 +248,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:padding="12dp"
-            android:text="Share" />
+            android:text="@string/share" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDelete"
@@ -272,7 +256,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:text="Delete"
+            android:text="@string/delete"
             android:textSize="16sp"
             android:visibility="gone" />
 

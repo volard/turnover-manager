@@ -33,7 +33,7 @@ public class ProductDetailViewModel extends BaseDetailsViewModel<Product, Produc
     public void updateItem(Product product) {
         AppDatabase.databaseWriteExecutor.execute(() -> {
             boolean result = productRepository.updateProduct(product);
-            if (result){
+            if (result) {
                 product.setLastUpdated(LocalDateTime.now());
                 selectedItem.postValue(product);
             }

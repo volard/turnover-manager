@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
-import com.liberty.turnovermanagement.base.Constants;
 
 import java.time.LocalDateTime;
 

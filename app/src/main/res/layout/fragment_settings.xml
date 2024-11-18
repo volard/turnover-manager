@@ -9,7 +9,7 @@
         android:id="@+id/switch_theme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/settings__clear_data" />
+        android:text="@string/settings__dark_theme" />
 
     <CheckBox
         android:id="@+id/checkbox_option"

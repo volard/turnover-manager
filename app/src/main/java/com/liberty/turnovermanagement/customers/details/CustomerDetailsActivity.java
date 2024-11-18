@@ -8,7 +8,6 @@ import android.view.View;
 import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
-import com.liberty.turnovermanagement.products.data.Product;
 
 public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, CustomerDetailsViewModel, ActivityDetailsCustomerBinding> {
 
@@ -32,10 +31,10 @@ public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, Custo
 
     private void shareItem() {
         Customer customer = viewModel.getSelectedItem().getValue();
-        if (customer == null){
+        if (customer == null) {
             return;
         }
-        String shareText = String.format("Check out this customer: %s %s %s",  customer.getSurname(), customer.getName(), customer.getMiddleName());
+        String shareText = String.format("Check out this customer: %s %s %s", customer.getSurname(), customer.getName(), customer.getMiddleName());
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");

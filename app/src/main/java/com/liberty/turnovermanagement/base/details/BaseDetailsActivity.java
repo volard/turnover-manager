@@ -3,10 +3,7 @@ package com.liberty.turnovermanagement.base.details;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewbinding.ViewBinding;

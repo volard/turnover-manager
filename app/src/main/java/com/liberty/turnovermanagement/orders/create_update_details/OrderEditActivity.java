@@ -231,7 +231,8 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         binding.productVersionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -243,7 +244,8 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         binding.customerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -255,7 +257,8 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 
@@ -273,12 +276,14 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             binding.productVersionSpinner.setAdapter(adapter);
 
             Order currentOrder = viewModel.getSelectedItem().getValue();
-            if (currentOrder != null){
+            if (currentOrder != null) {
                 // everytime customer match that one which in the order, the order's version is set up
-                if (currentOrder.getProductId() == selectedProduct.getId()){
+                if (currentOrder.getProductId() == selectedProduct.getId()) {
                     for (int i = 0; i < adapter.getCount(); i++) {
                         ProductHistory item = adapter.getItem(i);
-                        if (item == null){continue;}
+                        if (item == null) {
+                            continue;
+                        }
                         if (item.getVersion() == currentOrder.getProductVersion()) {
                             binding.productVersionSpinner.setSelection(i);
                             break;
@@ -304,12 +309,14 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             binding.customerVersionSpinner.setAdapter(adapter);
 
             Order currentOrder = viewModel.getSelectedItem().getValue();
-            if (currentOrder != null){
+            if (currentOrder != null) {
                 // everytime customer match that one which in the order, the order's version is set up
-                if (currentOrder.getCustomerId() == selectedCustomerId){
+                if (currentOrder.getCustomerId() == selectedCustomerId) {
                     for (int i = 0; i < adapter.getCount(); i++) {
                         CustomerHistory item = adapter.getItem(i);
-                        if (item == null){continue;}
+                        if (item == null) {
+                            continue;
+                        }
                         if (item.getVersion() == currentOrder.getCustomerVersion()) {
                             binding.customerVersionSpinner.setSelection(i);
                             break;

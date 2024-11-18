@@ -9,13 +9,11 @@ import com.liberty.turnovermanagement.AppDatabase;
 import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
-import com.liberty.turnovermanagement.customers.data.CustomerHistory;
 import com.liberty.turnovermanagement.customers.data.CustomerRepository;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
-import com.liberty.turnovermanagement.products.data.ProductHistory;
 import com.liberty.turnovermanagement.products.data.ProductRepository;
 
 import java.util.List;

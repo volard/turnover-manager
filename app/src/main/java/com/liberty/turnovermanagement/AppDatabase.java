@@ -45,7 +45,9 @@ import java.util.concurrent.Executors;
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ProductDao productDao();
+
     public abstract CustomerDao customerDao();
+
     public abstract OrderDao orderDao();
 
     private static final String DATABASE_NAME = "main_database";

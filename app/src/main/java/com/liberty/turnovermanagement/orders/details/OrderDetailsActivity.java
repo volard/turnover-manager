@@ -66,7 +66,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     private void shareItem() {
         Order order = viewModel.getSelectedItem().getValue();
-        if (order == null){
+        if (order == null) {
             return;
         }
         String shareText = String.format("Check out this order at city: %s", order.getCity());
@@ -85,9 +85,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         }
 
         // Update address info card
-        binding.cityTextView.setText("City: " + order.getCity());
-        binding.streetTextView.setText("Street: " + order.getStreet());
-        binding.homeTextView.setText("Home: " + order.getHome());
+        binding.cityTextView.setText(order.getCity() + ", " + order.getStreet() + ", " + order.getHome());
 
         // Make the address info card visible
         binding.addressInfoCard.setVisibility(View.VISIBLE);
@@ -95,8 +93,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
         binding.shareButton.setVisibility(View.VISIBLE);
 
         // Update date time
-        binding.tvSelectedDateTime.setText("Selected: " + order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
-        binding.textAmount.setText("Amount: " + order.getAmount());
+        binding.tvSelectedDateTime.setText(order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
+        binding.textAmount.setText(getString(R.string.product_amount_format, order.getAmount()));
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
 

@@ -60,7 +60,8 @@ public class Order implements Serializable, Identifiable {
     }
 
     @Ignore
-    public Order() {}
+    public Order() {
+    }
 
     public long getCustomerVersion() {
         return customerVersion;

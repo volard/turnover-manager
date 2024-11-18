@@ -27,7 +27,7 @@ public class OrdersFragment extends BaseListFragment<Order, OrderListViewModel, 
 
     @Override
     protected void setupRecyclerView() {
-        adapter = new OrderAdapter(this::openDetailsActivity);
+        adapter = new OrderAdapter(this::openDetailsActivity, getContext());
         binding.recyclerView.setAdapter(adapter);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

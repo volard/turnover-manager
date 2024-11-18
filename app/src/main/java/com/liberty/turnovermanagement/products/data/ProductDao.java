@@ -5,8 +5,6 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.liberty.turnovermanagement.customers.data.CustomerHistory;
-
 import java.time.LocalDateTime;
 import java.util.List;
 

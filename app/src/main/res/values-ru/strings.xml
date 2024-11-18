@@ -10,7 +10,7 @@
     <string name="customer_email_format">Почта: %s</string>
     <string name="customer_not_found">Информатция о покупателе не найдена</string>
     <string name="product_name_format">Название: %s</string>
-    <string name="product_amount_format">Количество: %s</string>
+    <string name="product_amount_format">Количество: %d</string>
     <string name="product_price_format">Цена: $%.2f</string>
     <string name="product_not_found">Информацаия о товаре не найдена</string>
     <string name="settings__clear_data">Очистить данные</string>
@@ -39,4 +39,16 @@
     <string name="save">Сохранить</string>
     <string name="edit_order__headline">Изменить заказ</string>
     <string name="element_was_deleted">Эта запись удалена</string>
+    <string name="view_order__headline">Просмотр заказа</string>
+    <string name="name">Имя</string>
+    <string name="surname">Фамилия</string>
+    <string name="middle_name">Отчество</string>
+    <string name="phone">Телефон</string>
+    <string name="email">Почта</string>
+    <string name="edit_view_customer__headline">Изменение\\просмотр покупателя</string>
+    <string name="edit_view_product__headline">Изменение\\просмотр товара</string>
+    <string name="price">Цена</string>
+    <string name="product_name">Название товара</string>
+    <string name="actual_version">Текущая версия</string>
+    <string name="product_price_number">Цена: %s</string>
 </resources>
