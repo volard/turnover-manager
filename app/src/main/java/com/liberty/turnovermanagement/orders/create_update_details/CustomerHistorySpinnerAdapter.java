@@ -11,11 +11,10 @@ import androidx.annotation.NonNull;
 
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
-import com.liberty.turnovermanagement.products.data.ProductHistory;
 
 import java.util.List;
 
-public class CustomerHistorySpinnerAdapter  extends ArrayAdapter<CustomerHistory> {
+public class CustomerHistorySpinnerAdapter extends ArrayAdapter<CustomerHistory> {
     private final LayoutInflater layoutInflater;
 
 
@@ -56,10 +55,9 @@ public class CustomerHistorySpinnerAdapter  extends ArrayAdapter<CustomerHistory
 
         if (currentCustomerHistory != null) {
 
-            if (currentCustomerHistory.getId() == Constants.UNINITIALIZED_INDICATOR){
+            if (currentCustomerHistory.getId() == Constants.UNINITIALIZED_INDICATOR) {
                 textView.setText("Actual version");
-            }
-            else {
+            } else {
                 // Customize this to display the information you want
                 String displayText = currentCustomerHistory.getId() + " - " + currentCustomerHistory.getSurname() + " " + currentCustomerHistory.getName() + " " + currentCustomerHistory.getMiddleName();
                 textView.setText(displayText);

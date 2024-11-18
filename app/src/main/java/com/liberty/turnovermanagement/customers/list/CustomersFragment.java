@@ -3,8 +3,8 @@ package com.liberty.turnovermanagement.customers.list;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.base.list.BaseListFragment;
+import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 
 

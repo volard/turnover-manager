@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.Identifiable;
 import com.liberty.turnovermanagement.databinding.FragmentListBinding;
@@ -29,10 +28,15 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
     protected ActivityResultLauncher<Intent> detailsLauncher;
 
     protected abstract Class<VM> getViewModelClass();
+
     protected abstract Class<?> getDetailsActivityClass();
+
     protected abstract Class<?> getCreateActivityClass();
+
     protected abstract void setupRecyclerView();
+
     protected abstract void setupObservers();
+
     private final boolean isSearchInitialized = false;
 
     @Override
@@ -112,7 +116,7 @@ public abstract class BaseListFragment<T extends Identifiable, VM extends BaseLi
         }
     }
 
-    private void sendItemToActivity(T item, Class<?> activityClass){
+    private void sendItemToActivity(T item, Class<?> activityClass) {
         Intent intent = new Intent(requireContext(), activityClass);
         if (item != null) {
             intent.putExtra(Constants.ITEM_ID, item.getId());

@@ -65,7 +65,8 @@ public class Customer implements Serializable, Identifiable {
     }
 
     @Ignore
-    public Customer(){}
+    public Customer() {
+    }
 
 
     // Getters
@@ -98,7 +99,7 @@ public class Customer implements Serializable, Identifiable {
         this.id = id;
     }
 
-    public void setDeleted(boolean state){
+    public void setDeleted(boolean state) {
         this.isDeleted = state;
     }
 
@@ -125,9 +126,9 @@ public class Customer implements Serializable, Identifiable {
     @NonNull
     @Override
     public String toString() {
-        return  "[ "+ id + " ]\n" +
+        return "[ " + id + " ]\n" +
                 "Fullname: " + surname + ' ' + name + " " + middleName +
-                "\nPhone: "  + phone +
+                "\nPhone: " + phone +
                 "\nEmail: " + email + (isDeleted ? "\nDELETED" : "");
     }
 

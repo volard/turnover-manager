@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.liberty.turnovermanagement.base.Constants;
@@ -16,13 +15,8 @@ import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewModel, ActivityEditOrderBinding> {
 
@@ -33,7 +27,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         setupSpinners();
         setupObservers();
     }
-
 
 
     private void setupObservers() {
@@ -87,7 +80,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     private void updateProductSpinner(long productId) {
         viewModel.getProducts().observe(this, products -> {
             if (products != null) {
-                int selectedPosition = (int)Constants.UNINITIALIZED_INDICATOR;
+                int selectedPosition = (int) Constants.UNINITIALIZED_INDICATOR;
                 for (int i = 0; i < products.size(); i++) {
                     if (products.get(i).getId() == productId) {
                         selectedPosition = i;
@@ -104,7 +97,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
     private void updateCustomerSpinner(long customerId) {
         viewModel.getCustomers().observe(this, customers -> {
             if (customers != null) {
-                int selectedPosition = (int)Constants.UNINITIALIZED_INDICATOR;
+                int selectedPosition = (int) Constants.UNINITIALIZED_INDICATOR;
                 for (int i = 0; i < customers.size(); i++) {
                     if (customers.get(i).getId() == customerId) {
                         selectedPosition = i;
@@ -158,7 +151,6 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
         }
 
 
-
         try {
             int amount = Integer.parseInt(amountStr);
             if (amount <= 0) {
@@ -200,8 +192,7 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
                     binding.editTextAmount.setError("Amount exceeds available stock");
                     return null;
                 }
-            }
-            else {
+            } else {
                 if (enteredAmount > selectedProduct.getAmount()) {
                     binding.editTextAmount.setError("Amount exceeds available stock");
                     return null;
@@ -239,10 +230,10 @@ public class OrderEditActivity extends BaseDetailsActivity<Order, OrderEditViewM
             }
         });
 
-        binding.productVersionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+        binding.productVersionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-               ProductHistory productHistory = (ProductHistory) parent.getItemAtPosition(position);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ProductHistory productHistory = (ProductHistory) parent.getItemAtPosition(position);
                 int maxQuantity = productHistory.getAmount();
                 binding.tvMaxQuantityHint.setText("Max: " + maxQuantity); // Visual hint for maximum amount
             }

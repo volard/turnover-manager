@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.liberty.turnovermanagement.base.list.BaseAdapter;
 import com.liberty.turnovermanagement.databinding.OrderListItemBinding;
 import com.liberty.turnovermanagement.orders.data.Order;
-import com.liberty.turnovermanagement.base.list.BaseAdapter;
 
 import java.time.format.DateTimeFormatter;
 

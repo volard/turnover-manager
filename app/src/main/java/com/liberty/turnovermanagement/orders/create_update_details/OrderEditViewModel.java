@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
-import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
@@ -60,7 +59,6 @@ public class OrderEditViewModel extends BaseDetailsViewModel<Order, Void> {
             orderDao.delete(order);
         });
     }
-
 
 
     @Override

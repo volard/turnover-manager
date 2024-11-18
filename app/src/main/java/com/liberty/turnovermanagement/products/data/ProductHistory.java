@@ -36,7 +36,7 @@ public class ProductHistory {
     }
 
     @Ignore
-    public Product getProduct(){
+    public Product getProduct() {
         Product product = new Product();
         product.setId(this.getId());
         product.setName(this.getName());

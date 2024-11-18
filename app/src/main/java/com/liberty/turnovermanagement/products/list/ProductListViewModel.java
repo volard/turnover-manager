@@ -1,9 +1,10 @@
 package com.liberty.turnovermanagement.products.list;
 
 import android.app.Application;
+
+import com.liberty.turnovermanagement.base.list.BaseListViewModel;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
-import com.liberty.turnovermanagement.base.list.BaseListViewModel;
 
 public class ProductListViewModel extends BaseListViewModel<Product> {
     private final ProductDao productDao;

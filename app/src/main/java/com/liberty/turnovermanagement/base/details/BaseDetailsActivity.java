@@ -18,8 +18,11 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
     protected VB binding;
 
     protected abstract VB inflateBinding(LayoutInflater inflater);
+
     protected abstract Class<VM> getViewModelClass();
+
     protected abstract void updateUI(T item);
+
     protected abstract T getItemToSaveOrUpdate();
 
 
@@ -43,7 +46,7 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
         setupButtons();
     }
 
-    protected void saveOrUpdateItem(){
+    protected void saveOrUpdateItem() {
         T item = getItemToSaveOrUpdate();
 
         if (item == null) {
@@ -62,7 +65,7 @@ public abstract class BaseDetailsActivity<T, VM extends BaseDetailsViewModel<T, 
 
     protected abstract void setupButtons();
 
-    protected void finishActivity(){
+    protected void finishActivity() {
         setResult(Activity.RESULT_OK);
         finish();
     }

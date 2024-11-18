@@ -4,9 +4,9 @@ package com.liberty.turnovermanagement.customers.details;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsCustomerBinding;
-import com.liberty.turnovermanagement.base.details.BaseDetailsActivity;
 
 public class CustomerDetailsActivity extends BaseDetailsActivity<Customer, CustomerDetailsViewModel, ActivityDetailsCustomerBinding> {
 

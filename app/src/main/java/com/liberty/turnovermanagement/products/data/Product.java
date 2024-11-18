@@ -7,14 +7,11 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import com.liberty.turnovermanagement.DateTimeStringConverter;
-import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.base.Identifiable;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
-
-import kotlin.UNINITIALIZED_VALUE;
 
 @Entity(tableName = "products")
 public class Product implements Serializable, Identifiable {

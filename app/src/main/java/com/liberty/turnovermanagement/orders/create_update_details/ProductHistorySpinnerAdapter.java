@@ -55,10 +55,9 @@ public class ProductHistorySpinnerAdapter extends ArrayAdapter<ProductHistory> {
 
         if (currentProductHistory != null) {
 
-            if (currentProductHistory.getId() == Constants.UNINITIALIZED_INDICATOR){
+            if (currentProductHistory.getId() == Constants.UNINITIALIZED_INDICATOR) {
                 textView.setText("Actual version");
-            }
-            else {
+            } else {
                 // Customize this to display the information you want
                 String displayText = currentProductHistory.getId() + " - " + currentProductHistory.getName();
                 textView.setText(displayText);

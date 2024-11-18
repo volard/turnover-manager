@@ -109,9 +109,9 @@ public abstract class AppDatabase extends RoomDatabase {
      */
     public void generateTestData() {
         databaseWriteExecutor.execute(() -> {
-            ProductDao productDao   = productDao();
+            ProductDao productDao = productDao();
             CustomerDao customerDao = customerDao();
-            OrderDao orderDao       = orderDao();
+            OrderDao orderDao = orderDao();
 
             // Clear existing data
             orderDao.deleteAll();
@@ -123,11 +123,11 @@ public abstract class AppDatabase extends RoomDatabase {
             List<Customer> customers = generateCustomers();
             List<Long> productIds = productDao.insertAllAndGetIds(products);
             List<Long> customerIds = customerDao.insertAllAndGetIds(customers);
-            for (Customer customer:
-                 customers) {
+            for (Customer customer :
+                    customers) {
                 customer.setId(customerIds.get(customers.indexOf(customer)));
             }
-            for (Product product:
+            for (Product product :
                     products) {
                 product.setId(productIds.get(products.indexOf(product)));
             }
@@ -144,8 +144,8 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     private String transliterate(String message) {
-        char[] abcCyr = {' ','а','б','в','г','д','е','ё', 'ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х', 'ц','ч', 'ш','щ','ъ','ы','ь','э', 'ю','я'};
-        String[] abcLat = {" ","a","b","v","g","d","e","e","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","h","ts","ch","sh","sch", "","y", "","e","yu","ya"};
+        char[] abcCyr = {' ', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь', 'э', 'ю', 'я'};
+        String[] abcLat = {" ", "a", "b", "v", "g", "d", "e", "e", "zh", "z", "i", "y", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u", "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya"};
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < message.length(); i++) {
             for (int x = 0; x < abcCyr.length; x++) {
@@ -205,8 +205,8 @@ public abstract class AppDatabase extends RoomDatabase {
         Random random = new Random();
         for (int i = 0; i < 10; i++) {
             Order order = new Order();
-            Product product = products.get(random.nextInt(products.size()-1));
-            Customer customer = customers.get(random.nextInt(customers.size()-1));
+            Product product = products.get(random.nextInt(products.size() - 1));
+            Customer customer = customers.get(random.nextInt(customers.size() - 1));
             order.setProductId(product.getId());
             order.setCustomerId(customer.getId());
             order.setProductVersion(product.getVersion());

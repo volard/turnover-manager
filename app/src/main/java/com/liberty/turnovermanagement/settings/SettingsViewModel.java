@@ -54,7 +54,7 @@ public class SettingsViewModel extends AndroidViewModel {
         appDatabase.generateTestData();
     }
 
-    public void clearData(){
+    public void clearData() {
         appDatabase.clearAllData();
     }
 }

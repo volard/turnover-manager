@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
+import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.customers.data.Customer;
 import com.liberty.turnovermanagement.customers.data.CustomerDao;
 import com.liberty.turnovermanagement.customers.data.CustomerHistory;
@@ -13,10 +14,8 @@ import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.orders.data.OrderDao;
 import com.liberty.turnovermanagement.products.data.Product;
 import com.liberty.turnovermanagement.products.data.ProductDao;
-import com.liberty.turnovermanagement.base.details.BaseDetailsViewModel;
 import com.liberty.turnovermanagement.products.data.ProductHistory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
@@ -25,7 +24,7 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
     private final CustomerDao customerDao;
     private final LiveData<List<Product>> products;
     private final LiveData<List<Customer>> customers;
-    private final MutableLiveData<Customer> customerForOrder= new MutableLiveData<>();
+    private final MutableLiveData<Customer> customerForOrder = new MutableLiveData<>();
     private final MutableLiveData<Product> productForOrder = new MutableLiveData<>();
 
     public OrderDetailsViewModel(Application application) {
@@ -62,7 +61,6 @@ public class OrderDetailsViewModel extends BaseDetailsViewModel<Order, Void> {
 
         return null;
     }
-
 
 
     @Override

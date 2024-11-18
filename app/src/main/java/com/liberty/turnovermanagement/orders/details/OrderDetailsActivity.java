@@ -12,17 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.liberty.turnovermanagement.R;
 import com.liberty.turnovermanagement.base.Constants;
 import com.liberty.turnovermanagement.customers.data.Customer;
-import com.liberty.turnovermanagement.customers.details.CustomerDetailsActivity;
 import com.liberty.turnovermanagement.databinding.ActivityDetailsOrderBinding;
 import com.liberty.turnovermanagement.orders.create_update_details.OrderEditActivity;
 import com.liberty.turnovermanagement.orders.data.Order;
 import com.liberty.turnovermanagement.products.data.Product;
-import com.liberty.turnovermanagement.products.details.ProductDetailsActivity;
-
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class OrderDetailsActivity extends AppCompatActivity {
 
@@ -70,9 +63,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
 
-
     protected void updateUI(Order order) {
-        if (order == null) { return; }
+        if (order == null) {
+            return;
+        }
 
         // Update address info card
         binding.cityTextView.setText("City: " + order.getCity());
@@ -84,7 +78,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
         binding.editTextAmount.setText(String.valueOf(order.getAmount()));
 
         // Update date time
-        binding.tvSelectedDateTime.setText("Selected: " + order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER) );
+        binding.tvSelectedDateTime.setText("Selected: " + order.getCreatedAt().format(Constants.DATE_TIME_FORMATTER));
 
         binding.buttonDelete.setVisibility(View.VISIBLE);
 

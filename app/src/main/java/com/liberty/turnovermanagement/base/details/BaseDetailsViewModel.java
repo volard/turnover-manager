@@ -8,8 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.liberty.turnovermanagement.AppDatabase;
 
-import java.util.List;
-
 public abstract class BaseDetailsViewModel<T, H> extends AndroidViewModel {
     protected final MutableLiveData<T> selectedItem = new MutableLiveData<>();
     protected final AppDatabase db;
